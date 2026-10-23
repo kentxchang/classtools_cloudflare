@@ -1,0 +1,16 @@
+{
+  // 剛好學 Cloudflare 版設定檔（Wrangler 部署用）
+  "name": "classtools",          // 網站名稱，會成為網址 https://<name>.<你的子網域>.workers.dev
+  "main": "src/worker.js",
+  "compatibility_date": "2025-09-01",
+  "assets": {
+    "directory": "./public"              // 網頁檔案所在資料夾
+  },
+  "durable_objects": {
+    "bindings": [{ "name": "ROOMS", "class_name": "Room" }]
+  },
+  "migrations": [
+    // 第一次部署時建立使用 SQLite 資料庫的 Durable Object（免費方案可用）
+    { "tag": "v1", "new_sqlite_classes": ["Room"] }
+  ]
+}
