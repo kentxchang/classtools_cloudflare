@@ -3371,42 +3371,120 @@
     </div>
 
     <div id="ai-settings-modal" class="magnified-image-modal hidden">
-        <div id="ai-settings-modal-content" class="magnified-image-modal-content">
+        <div id="ai-settings-modal-content" class="magnified-image-modal-content" style="max-width: 600px; width: 95%;">
             <button id="ai-settings-modal-close-btn" class="magnified-image-modal-close">×</button>
-            <h4>AI 設定</h4>
-            <div class="space-y-4">
+            <h4 class="text-2xl font-bold mb-3 text-gray-800 flex items-center">
+                <i class="fas fa-robot text-blue-600 mr-2"></i>AI 服務設定
+            </h4>
+            <div class="space-y-4 text-left">
                 <div>
-                    <label for="ai-source-select">AI 模型來源:</label>
-                    <select id="ai-source-select" class="drawing-tool-select">
-                        <option value="gemini-default">使用目前 Gemini (不可使用)</option>
-                        <option value="gemini-custom" selected>自訂 Gemini API Key</option>
+                    <label for="ai-source-select" class="block font-semibold text-gray-700 mb-1">AI 模型來源:</label>
+                    <select id="ai-source-select" class="drawing-tool-select w-full px-3 py-2 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="gemini-custom" selected>Google Gemini (雲端 API)</option>
+                        <option value="ollama">本地 Ollama (本機開源模型)</option>
+                        <option value="apple-ai" id="apple-ai-option">🍎 macOS 本地 Apple AI (系統內建模型)</option>
                     </select>
                 </div>
-                <div id="gemini-api-key-group" class="hidden">
-                    <label for="gemini-api-key-input">Gemini API Key:</label>
-                    <input type="password" id="gemini-api-key-input" placeholder="請貼上您的 Gemini API Key"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
 
-                    <div style="margin-top: 15px;">
-                        <label for="ai-model-select">選擇 AI 模型:</label>
-                        <select id="ai-model-select" class="drawing-tool-select">
-                            <option value="gemini-2.5-flash" selected>Gemini 2.5 Flash (穩定版，免 Key 首選)</option>
-                            <option value="gemini-3-flash-preview">Gemini 3 Flash Preview (最新功能預覽)</option>
+                <!-- 1. Google Gemini 設定群組 -->
+                <div id="gemini-api-key-group" class="space-y-3">
+                    <div>
+                        <label for="gemini-api-key-input" class="block font-semibold text-gray-700 mb-1">Gemini API Key:</label>
+                        <input type="password" id="gemini-api-key-input" placeholder="請貼上您的 Gemini API Key (可為空使用 Preview 模型)"
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div>
+                        <label for="ai-model-select" class="block font-semibold text-gray-700 mb-1">選擇 Gemini 模型:</label>
+                        <select id="ai-model-select" class="drawing-tool-select w-full px-3 py-2 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="gemini-3-flash-preview" selected>Gemini 3 Flash Preview (最新功能預覽)</option>
                             <option value="gemini-3-pro-preview">Gemini 3 Pro Preview (高邏輯任務首選)</option>
                             <option value="gemma-4-31b-it">Gemma 4 31B IT (需 API Key)</option>
                             <option value="gemma-4-26b-a4b-it">Gemma 4 26B A4B IT (需 API Key)</option>
                         </select>
-                        <div
-                            style="margin-top: 10px; padding: 12px; background-color: #f0f9ff; border-left: 4px solid #3b82f6; border-radius: 4px;">
+                        <div style="margin-top: 10px; padding: 12px; background-color: #f0f9ff; border-left: 4px solid #3b82f6; border-radius: 4px;">
                             <p style="font-size: 13px; color: #1e40af; margin: 0; line-height: 1.5;">
-                                <i class="fas fa-info-circle"></i> <strong>Gemini Canvas 使用說明：</strong><br>
-                                • 選擇 Preview 模型可免 API Key 直接測試 AI 功能<br>
+                                <i class="fas fa-info-circle"></i> <strong>Gemini 使用說明：</strong><br>
+                                • 選擇 Preview 預覽模型可免 API Key 直接測試 AI 功能<br>
+                                • 建議填入個人 Gemini API Key 享受更高生成配額與穩定度
                             </p>
                         </div>
                     </div>
                 </div>
+
+                <!-- 2. 本地 Ollama 設定群組 -->
+                <div id="ollama-settings-group" class="hidden space-y-3">
+                    <div>
+                        <label for="ollama-host-input" class="block font-semibold text-gray-700 mb-1">Ollama 服務網址 (Host):</label>
+                        <input type="text" id="ollama-host-input" value="http://localhost:11434" placeholder="http://localhost:11434"
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <p class="text-xs text-gray-500 mt-1">預設為 http://localhost:11434</p>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <label for="ollama-model-select" class="font-semibold text-gray-700">選擇本機已安裝模型:</label>
+                            <button type="button" id="fetch-ollama-models-btn" class="px-2.5 py-1 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded-md flex items-center transition shadow-sm">
+                                <i class="fas fa-sync-alt mr-1"></i> 自動抓取本機模型
+                            </button>
+                        </div>
+                        <select id="ollama-model-select" class="drawing-tool-select w-full px-3 py-2 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">-- 請先點擊「自動抓取」或手動輸入 --</option>
+                        </select>
+                        <p id="ollama-fetch-status" class="text-xs text-gray-500 mt-1"></p>
+                    </div>
+
+                    <div>
+                        <label for="ollama-custom-model-input" class="block text-xs font-medium text-gray-600 mb-1">手動指定模型名稱 (選填，若清單未列出時使用):</label>
+                        <input type="text" id="ollama-custom-model-input" placeholder="例如: llama3.2, qwen2.5:7b, gemma2:9b"
+                            class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-500">
+                    </div>
+
+                    <div style="margin-top: 10px; padding: 12px; background-color: #f0fdf4; border-left: 4px solid #16a34a; border-radius: 4px;">
+                        <p style="font-size: 13px; color: #166534; margin: 0; line-height: 1.5;">
+                            <i class="fas fa-check-circle"></i> <strong>本地 Ollama 提示：</strong><br>
+                            • 請確認電腦終端機已啟動 Ollama (<code>ollama serve</code>)<br>
+                            • 若瀏覽器提示跨網域 (CORS) 阻擋，請設定允許跨來源後啟動：<br>
+                            &nbsp;&nbsp;<code class="bg-white px-1 py-0.5 rounded border border-green-200 text-xs">OLLAMA_ORIGINS="*" ollama serve</code>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 3. macOS 本地 Apple AI 設定群組 -->
+                <div id="apple-ai-settings-group" class="hidden space-y-3">
+                    <div id="apple-ai-detected-banner" class="p-3 bg-purple-50 border border-purple-200 rounded-lg text-sm text-purple-800">
+                        <i class="fab fa-apple mr-1 text-base"></i><strong>macOS 本地 Apple AI：</strong> 支援調用 macOS 最新系統內建下載的 Apple AI 模型 (Apple Intelligence 3B AFM)。
+                    </div>
+
+                    <div>
+                        <label for="apple-ai-host-input" class="block font-semibold text-gray-700 mb-1">Apple AI 服務網址 (Host):</label>
+                        <input type="text" id="apple-ai-host-input" value="http://localhost:11435" placeholder="http://localhost:11435"
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <p class="text-xs text-gray-500 mt-1">afm-Server 預設為 http://localhost:11435；apple-to-openai / maclocal-api 預設為 http://localhost:8000</p>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <label for="apple-ai-model-input" class="font-semibold text-gray-700">模型名稱 / 識別碼:</label>
+                            <button type="button" id="test-apple-ai-btn" class="px-2.5 py-1 text-xs bg-purple-600 hover:bg-purple-700 text-white rounded-md flex items-center transition shadow-sm">
+                                <i class="fas fa-plug mr-1"></i> 測試連線
+                            </button>
+                        </div>
+                        <input type="text" id="apple-ai-model-input" value="apple-intelligence" placeholder="apple-intelligence 或 foundation"
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <p id="apple-ai-test-status" class="text-xs text-gray-500 mt-1"></p>
+                    </div>
+
+                    <div style="margin-top: 10px; padding: 12px; background-color: #faf5ff; border-left: 4px solid #9333ea; border-radius: 4px;">
+                        <p style="font-size: 13px; color: #6b21a8; margin: 0; line-height: 1.5;">
+                            <i class="fas fa-apple-alt"></i> <strong>Apple Intelligence 本地模型說明：</strong><br>
+                            • 適用於 Apple Silicon (M系列晶片) Mac，需在系統設定中開啟 Apple Intelligence 並下載模型<br>
+                            • 配合輕量本地伺服器（如 afm-Server、maclocal-api 或 apple-to-openai）轉接，即可完全離線由 Mac 內建晶片執行生成，免金鑰、零網路延遲！
+                        </p>
+                    </div>
+                </div>
             </div>
-            <div class="settings-button-group">
+            <div class="settings-button-group mt-4">
                 <button id="save-ai-settings-btn" class="btn btn-primary">儲存設定 💾</button>
             </div>
         </div>
@@ -3603,7 +3681,7 @@
                                     <span
                                         class="inline-flex items-center px-3 py-1 bg-purple-50 rounded-full text-xs font-medium text-purple-700">
                                         <i class="fas fa-robot mr-1.5"></i>
-                                        <span id="ai-mc-model-name">使用模型: Gemini 2.5 Flash</span>
+                                        <span id="ai-mc-model-name">使用模型: Gemini 3 Flash Preview</span>
                                     </span>
                                 </div>
                             </div>
@@ -3756,7 +3834,7 @@
                                     <span
                                         class="inline-flex items-center px-3 py-1 bg-purple-50 rounded-full text-xs font-medium text-purple-700">
                                         <i class="fas fa-robot mr-1.5"></i>
-                                        <span id="ai-seq-model-name">使用模型: Gemini 2.5 Flash</span>
+                                        <span id="ai-seq-model-name">使用模型: Gemini 3 Flash Preview</span>
                                     </span>
                                 </div>
                             </div>
@@ -3874,7 +3952,7 @@
                                     <span
                                         class="inline-flex items-center px-3 py-1 bg-purple-50 rounded-full text-xs font-medium text-purple-700">
                                         <i class="fas fa-robot mr-1.5"></i>
-                                        <span id="ai-match-model-name">使用模型: Gemini 2.5 Flash</span>
+                                        <span id="ai-match-model-name">使用模型: Gemini 3 Flash Preview</span>
                                     </span>
                                 </div>
                             </div>
@@ -4420,9 +4498,13 @@
 
         // AI Settings Global Object
         let aiSettings = {
-            aiSource: 'gemini-custom', // 'gemini-default' or 'gemini-custom'
-            geminiApiKey: '', // Custom API key if 'gemini-custom' is selected (empty for preview models)
-            selectedModel: 'gemini-2.5-flash' // Selected AI model (default to Canvas-friendly free testing)
+            aiSource: 'gemini-custom', // 'gemini-custom', 'ollama', or 'apple-ai'
+            geminiApiKey: '', // Custom API key if 'gemini-custom' is selected
+            selectedModel: 'gemini-3-flash-preview', // Selected AI model (default to Gemini 3 Flash Preview)
+            ollamaHost: 'http://localhost:11434', // Local Ollama host
+            ollamaModel: '', // Selected Ollama model
+            appleAiHost: 'http://localhost:11435', // Local macOS Apple AI host (e.g. afm-Server or apple-to-openai)
+            appleAiModel: 'apple-intelligence' // Selected macOS Apple AI model
         };
 
         // MODIFIED: Combined Dispatch Settings Global Object
@@ -8408,14 +8490,266 @@
         const geminiApiKeyGroup = document.getElementById('gemini-api-key-group');
         const geminiApiKeyInput = document.getElementById('gemini-api-key-input');
         const saveAiSettingsBtn = document.getElementById('save-ai-settings-btn');
-
         const aiModelSelect = document.getElementById('ai-model-select');
 
+        // Ollama & Apple AI elements
+        const ollamaSettingsGroup = document.getElementById('ollama-settings-group');
+        const ollamaHostInput = document.getElementById('ollama-host-input');
+        const ollamaModelSelect = document.getElementById('ollama-model-select');
+        const ollamaCustomModelInput = document.getElementById('ollama-custom-model-input');
+        const fetchOllamaModelsBtn = document.getElementById('fetch-ollama-models-btn');
+        const ollamaFetchStatus = document.getElementById('ollama-fetch-status');
+
+        const appleAiSettingsGroup = document.getElementById('apple-ai-settings-group');
+        const appleAiDetectedBanner = document.getElementById('apple-ai-detected-banner');
+        const appleAiHostInput = document.getElementById('apple-ai-host-input');
+        const appleAiModelInput = document.getElementById('apple-ai-model-input');
+        const testAppleAiBtn = document.getElementById('test-apple-ai-btn');
+        const appleAiTestStatus = document.getElementById('apple-ai-test-status');
+        const appleAiOption = document.getElementById('apple-ai-option');
+
+        function detectIsMacOS() {
+            return /Macintosh|Mac OS X|MacIntel/i.test(navigator.userAgent || navigator.platform || '');
+        }
+
+        function updateAiSourceDisplay(source) {
+            const isGemini = (source === 'gemini-custom' || source === 'gemini-default');
+            const isOllama = (source === 'ollama');
+            const isAppleAi = (source === 'apple-ai');
+
+            if (geminiApiKeyGroup) geminiApiKeyGroup.classList.toggle('hidden', !isGemini);
+            if (ollamaSettingsGroup) ollamaSettingsGroup.classList.toggle('hidden', !isOllama);
+            if (appleAiSettingsGroup) appleAiSettingsGroup.classList.toggle('hidden', !isAppleAi);
+
+            if (appleAiDetectedBanner) {
+                const isMac = detectIsMacOS();
+                appleAiDetectedBanner.classList.toggle('hidden', !isMac);
+            }
+        }
+
+        async function fetchOllamaModels(silent = false) {
+            const host = (ollamaHostInput ? ollamaHostInput.value : aiSettings.ollamaHost || 'http://localhost:11434').trim().replace(/\/+$/, '');
+            const btn = document.getElementById('fetch-ollama-models-btn');
+            const statusEl = document.getElementById('ollama-fetch-status');
+
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> 抓取中...';
+            }
+            if (statusEl) {
+                statusEl.textContent = '連線至 Ollama 抓取模型中...';
+                statusEl.className = 'text-xs text-blue-600 mt-1';
+            }
+
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 6000);
+                const res = await fetch(`${host}/api/tags`, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' },
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+
+                if (!res.ok) {
+                    throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+                }
+                const data = await res.json();
+                const models = Array.isArray(data.models) ? data.models : [];
+
+                if (ollamaModelSelect) {
+                    ollamaModelSelect.innerHTML = '';
+                    if (models.length === 0) {
+                        const opt = document.createElement('option');
+                        opt.value = '';
+                        opt.textContent = '-- 尚未下載模型，請先在終端機執行 ollama pull --';
+                        ollamaModelSelect.appendChild(opt);
+                        if (statusEl) {
+                            statusEl.textContent = '⚠️ Ollama 已連線，但尚未下載任何模型。可執行例如 ollama pull llama3.2';
+                            statusEl.className = 'text-xs text-amber-600 mt-1';
+                        }
+                    } else {
+                        models.forEach(m => {
+                            const opt = document.createElement('option');
+                            const sizeGB = m.size ? ` (${(m.size / (1024 * 1024 * 1024)).toFixed(1)} GB)` : '';
+                            opt.value = m.name;
+                            opt.textContent = `${m.name}${sizeGB}`;
+                            ollamaModelSelect.appendChild(opt);
+                        });
+
+                        // 選擇先前記住的模型，或預設選第一個
+                        if (aiSettings.ollamaModel && models.some(m => m.name === aiSettings.ollamaModel)) {
+                            ollamaModelSelect.value = aiSettings.ollamaModel;
+                        } else {
+                            ollamaModelSelect.value = models[0].name;
+                            aiSettings.ollamaModel = models[0].name;
+                        }
+
+                        if (statusEl) {
+                            statusEl.textContent = `✅ 成功連線！已自動抓取 ${models.length} 個本機 Ollama 模型`;
+                            statusEl.className = 'text-xs text-green-600 mt-1 font-semibold';
+                        }
+                        if (!silent) {
+                            showMessage(`成功抓取 ${models.length} 個本機 Ollama 模型！`, 'success');
+                        }
+                    }
+                }
+            } catch (err) {
+                console.warn('抓取 Ollama 模型失敗:', err);
+                if (statusEl) {
+                    statusEl.textContent = `❌ 無法連線 (${err.message})。請確認 Ollama 正在運行 (ollama serve) 並已允許跨域存取`;
+                    statusEl.className = 'text-xs text-red-600 mt-1';
+                }
+                if (!silent) {
+                    showMessage('無法連線至 Ollama，請確認服務已啟動並開啟 CORS', 'error');
+                }
+                // 保底選項
+                if (ollamaModelSelect && ollamaModelSelect.options.length === 0) {
+                    const fallbackModel = aiSettings.ollamaModel || 'llama3.2';
+                    const opt = document.createElement('option');
+                    opt.value = fallbackModel;
+                    opt.textContent = `${fallbackModel} (未連線/自訂預設)`;
+                    ollamaModelSelect.appendChild(opt);
+                    ollamaModelSelect.value = fallbackModel;
+                }
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-sync-alt mr-1"></i> 自動抓取本機模型';
+                }
+            }
+        }
+
+        async function testAppleAiConnection() {
+            const host = (appleAiHostInput ? appleAiHostInput.value : aiSettings.appleAiHost || 'http://localhost:11435').trim().replace(/\/+$/, '');
+            const model = (appleAiModelInput ? appleAiModelInput.value : aiSettings.appleAiModel || 'apple-intelligence').trim();
+            const btn = document.getElementById('test-apple-ai-btn');
+            const statusEl = document.getElementById('apple-ai-test-status');
+
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> 測試中...';
+            }
+            if (statusEl) {
+                statusEl.textContent = '測試連線至 Apple AI 本地服務...';
+                statusEl.className = 'text-xs text-blue-600 mt-1';
+            }
+
+            // 檢查是否有 window.ai 原生支援
+            if (typeof window !== 'undefined' && window.ai?.languageModel) {
+                if (statusEl) {
+                    statusEl.textContent = '✅ 偵測到瀏覽器原生系統 AI 介面已啟用！';
+                    statusEl.className = 'text-xs text-green-600 mt-1 font-semibold';
+                }
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-plug mr-1"></i> 測試連線';
+                }
+                showMessage('✅ 偵測到 macOS 系統原生 AI 介面！', 'success');
+                return;
+            }
+
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 4000);
+                const modelsUrl = host.endsWith('/v1') ? `${host}/models` : `${host}/v1/models`;
+                let connected = false;
+
+                try {
+                    const res = await fetch(modelsUrl, { signal: controller.signal });
+                    if (res.ok) connected = true;
+                } catch (e) {
+                    // 若 /v1/models 不通，嘗試 ping chat completions
+                    const chatUrl = host.endsWith('/v1') ? `${host}/chat/completions` : `${host}/v1/chat/completions`;
+                    const chatRes = await fetch(chatUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            model: model,
+                            messages: [{ role: 'user', content: 'ping' }],
+                            max_tokens: 1
+                        }),
+                        signal: controller.signal
+                    });
+                    if (chatRes.ok || chatRes.status === 400 || chatRes.status === 422) {
+                        connected = true;
+                    }
+                } finally {
+                    clearTimeout(timeoutId);
+                }
+
+                if (connected) {
+                    if (statusEl) {
+                        statusEl.textContent = '✅ 連線成功！本地 Apple AI 模型伺服器已就緒。';
+                        statusEl.className = 'text-xs text-green-600 mt-1 font-semibold';
+                    }
+                    showMessage('macOS 本地 Apple AI 連線成功！', 'success');
+                } else {
+                    throw new Error('未收到預期回應');
+                }
+            } catch (err) {
+                if (statusEl) {
+                    statusEl.textContent = `❌ 連線未成功 (${err.message})。請確認已啟動 afm-Server (埠號 11435) 或 apple-to-openai (埠號 8000)。`;
+                    statusEl.className = 'text-xs text-red-600 mt-1';
+                }
+                showMessage('無法連線至本地 Apple AI 伺服器', 'error');
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-plug mr-1"></i> 測試連線';
+                }
+            }
+        }
+
         function showAISettingsModal() {
-            aiSourceSelect.value = aiSettings.aiSource;
-            geminiApiKeyInput.value = aiSettings.geminiApiKey;
-            aiModelSelect.value = aiSettings.selectedModel;
-            geminiApiKeyGroup.classList.toggle('hidden', aiSettings.aiSource !== 'gemini-custom');
+            const isMac = detectIsMacOS();
+            if (appleAiOption) {
+                if (isMac) {
+                    appleAiOption.textContent = '🍎 macOS 本地 Apple AI (系統內建模型，本機已支援)';
+                } else {
+                    appleAiOption.textContent = '🍎 macOS 本地 Apple AI (僅支援 macOS)';
+                }
+            }
+
+            // 確保 aiSource 格式正確
+            let currentSource = aiSettings.aiSource;
+            if (currentSource === 'gemini-default') currentSource = 'gemini-custom';
+            aiSourceSelect.value = currentSource || 'gemini-custom';
+
+            geminiApiKeyInput.value = aiSettings.geminiApiKey || '';
+            aiModelSelect.value = normalizeModelName(aiSettings.selectedModel);
+
+            if (ollamaHostInput) ollamaHostInput.value = aiSettings.ollamaHost || 'http://localhost:11434';
+            if (ollamaCustomModelInput) ollamaCustomModelInput.value = '';
+
+            // 如果已有儲存的 ollamaModel 但下拉選單尚未加載，先加入此選項
+            if (ollamaModelSelect && aiSettings.ollamaModel && ollamaModelSelect.options.length <= 1) {
+                let exists = false;
+                for (let i = 0; i < ollamaModelSelect.options.length; i++) {
+                    if (ollamaModelSelect.options[i].value === aiSettings.ollamaModel) {
+                        exists = true;
+                        break;
+                    }
+                }
+                if (!exists) {
+                    const opt = document.createElement('option');
+                    opt.value = aiSettings.ollamaModel;
+                    opt.textContent = `${aiSettings.ollamaModel} (已儲存)`;
+                    ollamaModelSelect.appendChild(opt);
+                }
+                ollamaModelSelect.value = aiSettings.ollamaModel;
+            }
+
+            if (appleAiHostInput) appleAiHostInput.value = aiSettings.appleAiHost || 'http://localhost:11435';
+            if (appleAiModelInput) appleAiModelInput.value = aiSettings.appleAiModel || 'apple-intelligence';
+
+            updateAiSourceDisplay(currentSource);
+
+            // 若目前為 Ollama 模式，靜默自動嘗試抓取最新模型清單
+            if (currentSource === 'ollama') {
+                fetchOllamaModels(true);
+            }
+
             aiSettingsModal.classList.remove('hidden');
         }
 
@@ -8433,10 +8767,27 @@
             let errorMessage = '';
             let solutions = [];
 
-            // Determine error type and provide Chinese explanation
-            if (response && !response.ok) {
+            // 針對 Ollama 專屬錯誤處理解析
+            if (aiSettings.aiSource === 'ollama') {
+                errorMessage = error.message || '本地 Ollama 呼叫失敗';
+                solutions = [
+                    '請確認電腦終端機已啟動 Ollama 服務（執行：ollama serve）',
+                    `請確認已下載所選模型（例如執行：ollama pull ${aiSettings.ollamaModel || 'llama3.2'}）`,
+                    '若瀏覽器出現跨網域 (CORS) 阻擋，啟動時請允許跨來源：<br><code class="bg-gray-100 px-1 rounded">OLLAMA_ORIGINS="*" ollama serve</code><br>(Windows PowerShell: <code class="bg-gray-100 px-1 rounded">$env:OLLAMA_ORIGINS="*" ; ollama serve</code>)',
+                    '請至右上角齒輪「AI 設定」確認 Ollama 服務網址是否正確（預設 http://localhost:11434）'
+                ];
+            } else if (aiSettings.aiSource === 'apple-ai') {
+                // 針對 macOS 本地 Apple AI 專屬錯誤處理解析
+                errorMessage = error.message || 'macOS 本地 Apple AI 呼叫失敗';
+                solutions = [
+                    '請確認您的 Mac 搭載 Apple Silicon (M1/M2/M3/M4 系列晶片)',
+                    '請至 Mac「系統設定 > Apple Intelligence」確認已開啟功能並完成本地模型下載',
+                    '請確認已啟動本地轉接伺服器（例如 afm-Server 埠號 11435，或 apple-to-openai 埠號 8000）',
+                    '請至右上角齒輪「AI 設定」確認服務網址與埠號是否正確，並點擊「測試連線」'
+                ];
+            } else if (response && !response.ok) {
+                // Gemini API 錯誤代碼解析
                 const statusCode = response.status;
-
                 if (statusCode === 400) {
                     errorMessage = 'API 請求格式錯誤或 API Key 無效';
                     solutions = [
@@ -8462,7 +8813,7 @@
                     errorMessage = 'API 請求次數超過限制';
                     solutions = [
                         '您已超過 API 的使用次數限制',
-                        '請稍後再試，或升級您的 API 方案',
+                        '請稍後再試，或更換為本地 Ollama / Apple AI 方案',
                         '如使用免費方案，請等待配額重置（通常為每分鐘重置）'
                     ];
                 } else if (statusCode === 500 || statusCode === 503) {
@@ -8497,10 +8848,9 @@
             } else {
                 errorMessage = error.message || 'AI 生成過程發生未知錯誤';
                 solutions = [
-                    '請檢查網路連線',
-                    '請確認 API Key 設定正確',
-                    '請稍後再試',
-                    '如持續發生問題，請聯繫技術支援'
+                    '請檢查連線設定',
+                    '請確認所選模型設定正確',
+                    '請稍後再試，或切換至其他模型來源'
                 ];
             }
 
@@ -8520,6 +8870,25 @@
             aiSettings.aiSource = aiSourceSelect.value;
             aiSettings.geminiApiKey = geminiApiKeyInput.value.trim();
             aiSettings.selectedModel = normalizeModelName(aiModelSelect.value);
+
+            // 儲存 Ollama 設定
+            if (ollamaHostInput) {
+                aiSettings.ollamaHost = ollamaHostInput.value.trim() || 'http://localhost:11434';
+            }
+            if (ollamaCustomModelInput && ollamaCustomModelInput.value.trim()) {
+                aiSettings.ollamaModel = ollamaCustomModelInput.value.trim();
+            } else if (ollamaModelSelect && ollamaModelSelect.value) {
+                aiSettings.ollamaModel = ollamaModelSelect.value;
+            }
+
+            // 儲存 Apple AI 設定
+            if (appleAiHostInput) {
+                aiSettings.appleAiHost = appleAiHostInput.value.trim() || 'http://localhost:11435';
+            }
+            if (appleAiModelInput) {
+                aiSettings.appleAiModel = appleAiModelInput.value.trim() || 'apple-intelligence';
+            }
+
             localStorage.setItem('aiSettings', JSON.stringify(aiSettings));
             updateModelDisplays();
             showMessage('AI 設定已儲存！', 'success');
@@ -8531,43 +8900,45 @@
             if (savedSettings) {
                 try {
                     const parsedSettings = JSON.parse(savedSettings);
-                    if (parsedSettings.aiSource) aiSettings.aiSource = parsedSettings.aiSource;
-                    // MODIFIED: Allow empty API key for preview models
+                    if (parsedSettings.aiSource) {
+                        aiSettings.aiSource = parsedSettings.aiSource === 'gemini-default' ? 'gemini-custom' : parsedSettings.aiSource;
+                    }
                     aiSettings.geminiApiKey = parsedSettings.geminiApiKey || '';
                     aiSettings.selectedModel = normalizeModelName(parsedSettings.selectedModel);
+                    if (parsedSettings.ollamaHost) aiSettings.ollamaHost = parsedSettings.ollamaHost;
+                    if (parsedSettings.ollamaModel) aiSettings.ollamaModel = parsedSettings.ollamaModel;
+                    if (parsedSettings.appleAiHost) aiSettings.appleAiHost = parsedSettings.appleAiHost;
+                    if (parsedSettings.appleAiModel) aiSettings.appleAiModel = parsedSettings.appleAiModel;
                 } catch (e) {
                     console.error("Failed to parse AI settings from localStorage:", e);
-                    // If parsing fails, use preview model with empty key
                     aiSettings.geminiApiKey = '';
-                    aiSettings.selectedModel = 'gemini-2.5-flash';
+                    aiSettings.selectedModel = 'gemini-3-flash-preview';
                 }
             } else {
-                // If no settings are saved at all, use preview model with empty key
                 aiSettings.geminiApiKey = '';
-                aiSettings.selectedModel = 'gemini-2.5-flash';
+                aiSettings.selectedModel = 'gemini-3-flash-preview';
             }
             updateModelDisplays();
         }
 
         function normalizeModelName(model) {
             const modelAliases = {
-                'gemini-2.5-flash-preview-09-2025': 'gemini-2.5-flash',
+                'gemini-2.5-flash': 'gemini-3-flash-preview',
+                'gemini-2.5-flash-preview-09-2025': 'gemini-3-flash-preview',
                 'gemini-3-flash': 'gemini-3-flash-preview',
                 'gemini-3-pro': 'gemini-3-pro-preview',
                 'gemma-4-27b-it': 'gemma-4-31b-it',
                 'gemma-3-27b-it': 'gemma-4-31b-it'
             };
-            return modelAliases[model] || model || 'gemini-2.5-flash';
+            return modelAliases[model] || model || 'gemini-3-flash-preview';
         }
 
         function getApiUrl(apiKey) {
             const key = (apiKey || '').trim();
             let model = normalizeModelName(aiSettings.selectedModel);
-            // 沒有 Key 時強制使用 gemini-2.5-flash，保留 Gemini Canvas 免 Key 體驗
             if (!key) {
-                model = 'gemini-2.5-flash';
+                model = 'gemini-3-flash-preview';
                 console.log(`✓ 使用免 Key 模式: ${model}`);
-                console.log('  ⭐ 此模式適用於 Gemini Canvas 預覽環境');
             } else {
                 console.log(`✓ 使用 API Key 模式: ${model}`);
             }
@@ -8630,8 +9001,119 @@
         }
 
         async function callAi(payload, apiKey = aiSettings.geminiApiKey) {
-            const key = (apiKey || '').trim();
-            const model = key ? normalizeModelName(aiSettings.selectedModel) : 'gemini-2.5-flash';
+            // 1. 本地 Ollama 模式
+            if (aiSettings.aiSource === 'ollama') {
+                const host = (aiSettings.ollamaHost || 'http://localhost:11434').trim().replace(/\/+$/, '');
+                const model = (aiSettings.ollamaModel || 'llama3.2').trim();
+                const messages = geminiPayloadToOpenAiMessages(payload);
+                const temp = payload.generationConfig?.temperature ?? 0.7;
+
+                try {
+                    // 優先使用 Ollama 原生 /api/chat 端點
+                    const response = await fetch(`${host}/api/chat`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            model: model,
+                            messages: messages.map(m => ({
+                                role: m.role || 'user',
+                                content: typeof m.content === 'string' ? m.content : JSON.stringify(m.content)
+                            })),
+                            stream: false,
+                            options: { temperature: temp }
+                        })
+                    });
+
+                    if (!response.ok) {
+                        // 若 /api/chat 失敗，嘗試相容的 /v1/chat/completions
+                        const v1Response = await fetch(`${host}/v1/chat/completions`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                model: model,
+                                messages: messages,
+                                temperature: temp,
+                                stream: false
+                            })
+                        });
+                        if (!v1Response.ok) {
+                            throw new Error(`Ollama 請求失敗 (${response.status}: ${response.statusText})`);
+                        }
+                        const v1Data = await v1Response.json();
+                        const text = extractOpenAiText(v1Data);
+                        if (!text) throw new Error('Ollama 回傳內容為空');
+                        return text;
+                    }
+
+                    const data = await response.json();
+                    if (data.error) throw new Error(data.error);
+                    const text = data.message?.content || extractOpenAiText(data);
+                    if (!text) throw new Error('Ollama 回傳內容為空');
+                    return text;
+                } catch (err) {
+                    console.error('Ollama 呼叫失敗:', err);
+                    if (err.message && (err.message.includes('Failed to fetch') || err.name === 'TypeError')) {
+                        throw new Error(`無法連線至本地 Ollama (${host})。請確認已執行「ollama serve」，若為跨域問題請設定 OLLAMA_ORIGINS="*" 啟動。`);
+                    }
+                    throw err;
+                }
+            }
+
+            // 2. macOS 本地 Apple AI 模式
+            if (aiSettings.aiSource === 'apple-ai') {
+                // 若瀏覽器原生支援 window.ai 則優先使用
+                if (typeof window !== 'undefined' && window.ai?.languageModel) {
+                    try {
+                        const userPrompt = payload.contents?.map(c => (c.parts || []).map(p => p.text).join('\n')).join('\n') || '';
+                        const session = await window.ai.languageModel.create();
+                        const result = await session.prompt(userPrompt);
+                        if (result) return result;
+                    } catch (e) {
+                        console.warn('原生 window.ai 呼叫失敗，嘗試透過本地 Apple AI 服務端點呼叫:', e);
+                    }
+                }
+
+                const host = (aiSettings.appleAiHost || 'http://localhost:11435').trim().replace(/\/+$/, '');
+                const model = (aiSettings.appleAiModel || 'apple-intelligence').trim();
+                const messages = geminiPayloadToOpenAiMessages(payload);
+                const temp = payload.generationConfig?.temperature ?? 0.7;
+                const endpoint = host.endsWith('/v1') ? `${host}/chat/completions` : `${host}/v1/chat/completions`;
+
+                try {
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer local'
+                        },
+                        body: JSON.stringify({
+                            model: model,
+                            messages: messages,
+                            temperature: temp,
+                            stream: false
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`macOS Apple AI 請求失敗 (${response.status}: ${response.statusText})`);
+                    }
+
+                    const data = await response.json();
+                    const text = extractOpenAiText(data) || data.message?.content;
+                    if (!text) throw new Error('Apple AI 回傳內容為空');
+                    return text;
+                } catch (err) {
+                    console.error('Apple AI 呼叫失敗:', err);
+                    if (err.message && (err.message.includes('Failed to fetch') || err.name === 'TypeError')) {
+                        throw new Error(`無法連線至 macOS 本地 Apple AI 服務 (${host})。請確認已開啟 Apple Intelligence 並啟動本地轉接服務 (afm-Server 或 apple-to-openai)。`);
+                    }
+                    throw err;
+                }
+            }
+
+            // 3. Google Gemini 模式 (保留其他模型，預設 gemini-3-flash-preview)
+            const key = (apiKey || aiSettings.geminiApiKey || '').trim();
+            const model = key ? normalizeModelName(aiSettings.selectedModel) : 'gemini-3-flash-preview';
 
             if (key && isOpenAiCompatibleModel(model)) {
                 const response = await fetch('https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', {
@@ -8701,8 +9183,16 @@
         }
 
         function getCurrentModelName() {
+            if (aiSettings.aiSource === 'ollama') {
+                const model = aiSettings.ollamaModel || '本機模型';
+                return `Ollama: ${model}`;
+            }
+            if (aiSettings.aiSource === 'apple-ai') {
+                const model = aiSettings.appleAiModel || 'apple-intelligence';
+                return `Apple AI: ${model}`;
+            }
+
             const modelMap = {
-                'gemini-2.5-flash': 'Gemini 2.5 Flash',
                 'gemini-3-flash-preview': 'Gemini 3 Flash Preview',
                 'gemini-3-pro-preview': 'Gemini 3 Pro Preview',
                 'gemma-4-31b-it': 'Gemma 4 31B IT',
@@ -11255,7 +11745,18 @@ ${textResponses.join('\n\n')}`;
             document.getElementById('ai-settings-btn').addEventListener('click', showAISettingsModal);
             aiSettingsModalCloseBtn.addEventListener('click', hideAISettingsModal);
             saveAiSettingsBtn.addEventListener('click', saveAISettings);
-            aiSourceSelect.addEventListener('change', (e) => geminiApiKeyGroup.classList.toggle('hidden', e.target.value !== 'gemini-custom'));
+            aiSourceSelect.addEventListener('change', (e) => {
+                updateAiSourceDisplay(e.target.value);
+                if (e.target.value === 'ollama') {
+                    fetchOllamaModels(true);
+                }
+            });
+            if (fetchOllamaModelsBtn) {
+                fetchOllamaModelsBtn.addEventListener('click', () => fetchOllamaModels(false));
+            }
+            if (testAppleAiBtn) {
+                testAppleAiBtn.addEventListener('click', testAppleAiConnection);
+            }
 
             // API Error Modal listeners
             document.getElementById('api-error-modal-close-btn').addEventListener('click', hideAPIErrorModal);
