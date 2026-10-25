@@ -1,0 +1,39 @@
+            <div id="interaction-recording"
+                class="hidden text-center flex flex-col items-center justify-center h-full min-h-screen p-4">
+                <h3 class="text-3xl font-bold text-slate-800 mb-8 flex items-center justify-center gap-3">
+                    <span class="bg-indigo-100 text-indigo-600 p-2 rounded-lg"><i
+                            class="fas fa-microphone-lines"></i></span> 錄音題
+                </h3>
+                <div class="bg-white p-10 rounded-3xl shadow-xl border border-slate-100 max-w-lg w-full">
+                    <div class="flex items-center justify-center space-x-3 text-xl text-slate-500 mb-8">
+                        <i id="recording-status-icon" class="fas fa-microphone-alt text-4xl text-slate-300"></i>
+                        <p id="recording-status-text" class="font-medium">準備錄音...</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mb-8">
+                        <button id="start-recording-btn"
+                            class="col-span-2 py-4 bg-red-500 text-white rounded-2xl text-xl font-bold hover:bg-red-600 shadow-lg shadow-red-200 transition flex items-center justify-center gap-2">
+                            <i class="fas fa-circle"></i> 開始錄音
+                        </button>
+                        <button id="stop-recording-btn"
+                            class="py-4 bg-slate-700 text-white rounded-2xl text-lg font-bold hover:bg-slate-800 transition flex items-center justify-center gap-2"
+                            disabled>
+                            <i class="fas fa-square"></i> 停止
+                        </button>
+                        <button id="play-recording-btn"
+                            class="py-4 bg-blue-500 text-white rounded-2xl text-lg font-bold hover:bg-blue-600 transition flex items-center justify-center gap-2"
+                            disabled>
+                            <i class="fas fa-play"></i> 試聽
+                        </button>
+                    </div>
+                    <button id="reset-recording-btn"
+                        class="w-full py-2 text-slate-400 hover:text-slate-600 font-medium mb-4 transition" disabled>
+                        <i class="fas fa-rotate-left mr-1"></i> 重新錄製
+                    </button>
+                    <audio id="audio-preview" controls class="w-full mb-6 hidden"></audio>
+                    <button id="submit-recording-btn"
+                        class="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled>
+                        <i class="fas fa-paper-plane mr-2"></i> 送出錄音
+                    </button>
+                </div>
+            </div>

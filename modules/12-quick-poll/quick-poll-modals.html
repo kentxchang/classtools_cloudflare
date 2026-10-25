@@ -1,0 +1,134 @@
+    <!-- 快速投票設定模態框 -->
+    <div id="quick-poll-settings-modal" class="magnified-image-modal hidden">
+        <div id="quick-poll-settings-modal-content" class="magnified-image-modal-content" style="max-width: 600px;">
+            <button id="quick-poll-settings-modal-close-btn" class="magnified-image-modal-close">×</button>
+            <h4 class="text-2xl font-bold mb-4 text-gray-800">快速投票設定</h4>
+            <div class="w-full space-y-4">
+                <!-- 投票類型選擇 -->
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">投票類型：</label>
+                    <div class="space-y-2">
+                        <label
+                            class="inline-flex items-center w-full p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                            <input type="radio" name="pollType" value="emoji" class="form-radio text-lime-600 h-5 w-5"
+                                checked>
+                            <span class="ml-3 text-gray-700">心情符號（😊 😐 😕）</span>
+                        </label>
+                        <label
+                            class="inline-flex items-center w-full p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                            <input type="radio" name="pollType" value="simple" class="form-radio text-lime-600 h-5 w-5">
+                            <span class="ml-3 text-gray-700">簡單選項（同意 / 不同意 / 不確定）</span>
+                        </label>
+                        <label
+                            class="inline-flex items-center w-full p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                            <input type="radio" name="pollType" value="rating5"
+                                class="form-radio text-lime-600 h-5 w-5">
+                            <span class="ml-3 text-gray-700">數字等級（1-5 分）</span>
+                        </label>
+                        <label
+                            class="inline-flex items-center w-full p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                            <input type="radio" name="pollType" value="rating10"
+                                class="form-radio text-lime-600 h-5 w-5">
+                            <span class="ml-3 text-gray-700">數字等級（1-10 分）</span>
+                        </label>
+                        <label
+                            class="inline-flex items-center w-full p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                            <input type="radio" name="pollType" value="custom" class="form-radio text-lime-600 h-5 w-5">
+                            <span class="ml-3 text-gray-700">自訂選項</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 自訂選項輸入區 -->
+                <div id="custom-poll-options-section" class="hidden">
+                    <label for="custom-poll-options-input"
+                        class="block text-gray-700 text-sm font-bold mb-2">自訂選項（每行一個）：</label>
+                    <textarea id="custom-poll-options-input" rows="4"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-lime-500"
+                        placeholder="例如：
+選項 A
+選項 B
+選項 C"></textarea>
+                </div>
+
+                <!-- 匿名設定 -->
+                <div class="flex items-center">
+                    <input type="checkbox" id="quick-poll-anonymous-checkbox" checked
+                        class="form-checkbox h-5 w-5 text-lime-600 rounded">
+                    <label for="quick-poll-anonymous-checkbox"
+                        class="ml-2 text-gray-700 font-medium">匿名投票（不記錄學生姓名）</label>
+                </div>
+            </div>
+
+            <div class="settings-button-group mt-6 w-full">
+                <button id="start-quick-poll-btn" class="btn bg-lime-500 hover:bg-lime-600">開始投票 🚀</button>
+                <button id="cancel-quick-poll-settings-btn" class="btn btn-gray">取消 ↩️</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 快速投票統計模態框 -->
+    <div id="quick-poll-stats-modal" class="magnified-image-modal hidden">
+        <div id="quick-poll-stats-modal-content" class="magnified-image-modal-content"
+            style="max-width: 900px; max-height: 90vh;">
+            <button id="quick-poll-stats-modal-close-btn" class="magnified-image-modal-close">×</button>
+            <h4 class="text-2xl font-bold mb-4 text-gray-800 text-center">投票統計結果</h4>
+            <p id="quick-poll-stats-question" class="text-lg text-gray-700 mb-4 text-center font-medium"></p>
+
+            <!-- 上方區塊：左右兩欄布局 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+                <!-- 左欄：圖表類型切換和統計資訊 -->
+                <div>
+                    <!-- 圖表類型切換 -->
+                    <div class="flex justify-center gap-4 mb-4">
+                        <button id="chart-type-bar-btn"
+                            class="btn bg-blue-500 hover:bg-blue-600 !w-auto text-sm h-10 px-4">長條圖</button>
+                        <button id="chart-type-pie-btn" class="btn btn-gray !w-auto text-sm h-10 px-4">圓餅圖</button>
+                    </div>
+
+                    <!-- 投票統計資訊 -->
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="grid grid-cols-2 gap-4 text-center">
+                            <div>
+                                <p class="text-gray-600 text-sm">總投票數</p>
+                                <p id="poll-total-votes" class="text-3xl font-bold text-lime-600">0</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-600 text-sm">在線學生數</p>
+                                <p id="poll-online-students" class="text-3xl font-bold text-blue-600">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右欄：詳細數據表格 -->
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="border px-4 py-2 text-left">選項</th>
+                                <th class="border px-4 py-2 text-right">票數</th>
+                                <th class="border px-4 py-2 text-right">百分比</th>
+                            </tr>
+                        </thead>
+                        <tbody id="quick-poll-stats-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- D3.js 圖表容器 -->
+            <div class="bg-white border rounded-lg p-4 overflow-x-auto" style="min-height: 500px;">
+                <svg id="quick-poll-chart-svg" width="800" height="450"></svg>
+            </div>
+
+            <div class="flex justify-center gap-4 mt-6">
+                <button id="download-poll-results-btn" class="btn btn-green !w-auto text-base h-11 px-6">
+                    <i class="fas fa-download mr-2"></i>下載結果 (CSV)
+                </button>
+                <button id="end-quick-poll-btn" class="btn btn-red !w-auto text-base h-11 px-6">
+                    <i class="fas fa-stop mr-2"></i>結束投票
+                </button>
+            </div>
+        </div>
+    </div>

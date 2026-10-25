@@ -1,0 +1,228 @@
+        /* 【06 派送網址/HTML — 樣式】 modules/06-url-dispatch/url-dispatch-html.css */
+        /* NEW: HTML Dispatch Styles */
+        /* This ID is now reused for the combined dispatch, but the content will be in the iframe */
+        #interaction-html-dispatch {
+            position: fixed;
+            /* Use fixed positioning to cover entire screen */
+            top: 0;
+            left: 0;
+            width: 100vw;
+            /* Full viewport width */
+            height: 100vh;
+            /* Full viewport height */
+            margin: 0;
+            padding: 0;
+            border: none;
+            overflow: hidden;
+            /* Prevent scrolling at container level */
+            background-color: white;
+            z-index: 1000;
+            /* Ensure it's above other content */
+        }
+
+        #html-content-iframe {
+            width: 100vw;
+            /* Full viewport width */
+            height: 100vh;
+            /* Full viewport height */
+            margin: 0;
+            padding: 0;
+            border: none;
+            background-color: white;
+            display: block;
+            /* Ensure no inline spacing */
+        }
+
+        /* HTML Dispatch Status Indicator */
+        .html-dispatch-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background-color: rgba(239, 68, 68, 0.9);
+            /* Red background with transparency */
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 1001;
+            /* Above the HTML content */
+            animation: blink-glow 1.5s ease-in-out infinite alternate;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+        }
+
+        @keyframes blink-glow {
+            0% {
+                opacity: 0.7;
+                transform: scale(1);
+                box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1.05);
+                box-shadow: 0 4px 16px rgba(239, 68, 68, 0.6);
+            }
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-5px);
+            }
+
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(5px);
+            }
+        }
+
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .animate-fade-in-up {
+            animation: fade-in-up 0.6s ease-out forwards;
+        }
+
+
+        /* 派送 HTML：右下角「截圖送出」按鈕、選單與預覽視窗 */
+        .dispatch-shot-btn {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 1002;
+            padding: 12px 20px;
+            border-radius: 999px;
+            background: #2563eb;
+            color: #fff;
+            font-weight: 700;
+            box-shadow: 0 6px 18px rgba(37, 99, 235, .4);
+        }
+
+        .dispatch-shot-btn:disabled {
+            opacity: .7;
+        }
+
+        .dispatch-shot-menu {
+            position: fixed;
+            right: 20px;
+            bottom: 76px;
+            z-index: 1002;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 8px;
+            border-radius: 14px;
+            background: #fff;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .2);
+        }
+
+        .dispatch-shot-menu.hidden,
+        .dispatch-shot-modal.hidden {
+            display: none;
+        }
+
+        .dispatch-shot-menu button {
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-weight: 700;
+            text-align: left;
+            color: #334155;
+        }
+
+        .dispatch-shot-menu button:hover {
+            background: #eff6ff;
+        }
+
+        .dispatch-shot-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 1003;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(15, 23, 42, .55);
+        }
+
+        .dispatch-shot-card {
+            width: min(720px, calc(100vw - 32px));
+            max-height: calc(100vh - 32px);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 18px;
+            border-radius: 16px;
+            background: #fff;
+        }
+
+        .dispatch-shot-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .dispatch-shot-preview {
+            flex: 1;
+            min-height: 0;
+            overflow: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+        }
+
+        .dispatch-shot-preview img {
+            display: block;
+            width: 100%;
+        }
+
+        .dispatch-shot-status {
+            min-height: 1.25rem;
+            font-weight: 700;
+            color: #059669;
+        }
+
+        .dispatch-shot-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .dispatch-shot-actions button {
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-weight: 700;
+            background: #f1f5f9;
+            color: #334155;
+        }
+
+        .dispatch-shot-actions .dispatch-shot-send {
+            background: #2563eb;
+            color: #fff;
+        }
+
+        .dispatch-shot-actions .dispatch-shot-send:disabled {
+            opacity: .6;
+        }

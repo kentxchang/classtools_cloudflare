@@ -1,0 +1,27 @@
+            <div id="interaction-quick-poll"
+                class="hidden text-center flex flex-col items-center justify-center h-full min-h-screen p-4">
+                <h3 class="text-3xl font-bold text-slate-800 mb-6 flex items-center gap-3">
+                    <span class="bg-lime-100 text-lime-600 p-2 rounded-lg"><i
+                            class="fas fa-square-poll-vertical"></i></span> 快速投票
+                </h3>
+                <p id="quick-poll-question-display"
+                    class="text-xl text-slate-600 mb-10 font-medium px-6 py-4 bg-white rounded-2xl shadow-sm border border-slate-100 max-w-3xl">
+                </p>
+
+                <!-- 投票選項容器 -->
+                <div id="quick-poll-options-container" class="w-full max-w-2xl grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- 選項按鈕將會動態生成在這裡 -->
+                </div>
+
+                <!-- 已投票狀態 -->
+                <div id="quick-poll-voted-status" class="hidden mt-10 animate-fade-in-up">
+                    <div class="bg-white border-2 border-green-100 rounded-3xl p-8 shadow-xl text-center max-w-sm">
+                        <div
+                            class="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center text-4xl mx-auto mb-4">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <h4 class="text-2xl font-bold text-slate-800 mb-2">投票成功！</h4>
+                        <p class="text-slate-500">感謝您的參與</p>
+                    </div>
+                </div>
+            </div>

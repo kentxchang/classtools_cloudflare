@@ -1,0 +1,93 @@
+/* 【同步白板 / 同步簡報 共用核心（CTP 子系統） — 樣式】 modules/sync-common/ctp.css */
+    #ctp-overlay{ --tools-a:#3B82F6; --tools-b:#8B5CF6; --wb-a:#F97316; --wb-b:#FACC15; --ppt-a:#10B981; --ppt-b:#06B6D4;
+      --ink:#1E293B; --ink2:#64748B; --glass:rgba(255,255,255,.65); --glass-bd:rgba(255,255,255,.8);
+      --radius:16px; --shadow:0 8px 24px rgba(30,41,59,.10); --mode-a:var(--wb-a); --mode-b:var(--wb-b);
+      position:fixed; inset:0; z-index:9000; display:flex; flex-direction:column;
+      background:#F1F5F9; color:var(--ink); font-family:'Noto Sans TC',sans-serif }
+    #ctp-overlay[data-mode="whiteboard"]{ --mode-a:var(--wb-a); --mode-b:var(--wb-b) }
+    #ctp-overlay[data-mode="presentation"]{ --mode-a:var(--ppt-a); --mode-b:var(--ppt-b) }
+    #ctp-bar{ flex:0 0 auto; display:flex; align-items:center; gap:10px; padding:9px 16px; font-weight:900;
+      background:rgba(255,255,255,.85); border-bottom:1px solid rgba(148,163,184,.3) }
+    #ctp-overlay #shell-main{ flex:1; position:relative; overflow:hidden; display:flex; flex-direction:column }
+    #ctp-module{ flex:1; min-height:0; overflow:auto; padding:12px }
+    #ctp-overlay .glass{ background:var(--glass); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+      border:1px solid var(--glass-bd); border-radius:var(--radius); box-shadow:var(--shadow) }
+    #ctp-overlay .ctpbtn, #shell-modal-root .ctpbtn{ display:inline-flex; align-items:center; justify-content:center; gap:6px;
+      padding:9px 18px; border-radius:12px; font-weight:700; font-size:14px; white-space:nowrap;
+      transition:transform .12s, box-shadow .12s, filter .12s }
+    #ctp-overlay .ctpbtn:active, #shell-modal-root .ctpbtn:active{ transform:scale(.95) }
+    #ctp-overlay .ctpbtn:hover, #shell-modal-root .ctpbtn:hover{ filter:brightness(1.06); box-shadow:0 4px 14px rgba(30,41,59,.18) }
+    #ctp-overlay .ctpbtn-grad, #shell-modal-root .ctpbtn-grad{ background:linear-gradient(135deg,var(--mode-a),var(--mode-b)); color:#fff }
+    #ctp-overlay .ctpbtn-ghost, #shell-modal-root .ctpbtn-ghost{ background:rgba(255,255,255,.7); border:1px solid rgba(148,163,184,.4); color:var(--ink) }
+    #ctp-overlay .ctpbtn-danger, #shell-modal-root .ctpbtn-danger{ background:#EF4444; color:#fff }
+    #ctp-overlay .ctpbtn-sm, #shell-modal-root .ctpbtn-sm{ padding:5px 12px; font-size:12.5px; border-radius:9px }
+    #ctp-overlay .field, #shell-modal-root .field{ width:100%; padding:9px 12px; border:1.5px solid #CBD5E1; border-radius:10px;
+      background:rgba(255,255,255,.85); outline:none; transition:border-color .15s }
+    #ctp-overlay .field:focus, #shell-modal-root .field:focus{ border-color:var(--mode-a) }
+    #ctp-overlay .lbl, #shell-modal-root .lbl{ display:block; font-size:12.5px; font-weight:700; color:var(--ink2); margin:10px 0 4px }
+    #ctp-overlay .hint, #shell-modal-root .hint{ font-size:12px; color:var(--ink2); line-height:1.6; margin-top:8px }
+    #ctp-overlay .num, #shell-modal-root .num{ font-family:'Inter','Noto Sans TC',sans-serif }
+    #ctp-overlay .badge, #shell-modal-root .badge{ display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:999px; font-size:12px; font-weight:700 }
+    #ctp-overlay .badge-amber, #shell-modal-root .badge-amber{ background:#FEF3C7; color:#B45309 }
+    #ctp-overlay .badge-blue, #shell-modal-root .badge-blue{ background:#DBEAFE; color:#1D4ED8 }
+    #ctp-overlay .badge-green, #shell-modal-root .badge-green{ background:#DCFCE7; color:#15803D }
+    #ctp-overlay .badge-gray, #shell-modal-root .badge-gray{ background:#E2E8F0; color:#475569 }
+    /* Modal / Toast（light DOM，置於 overlay 內） */
+    #shell-modal-root{ position:fixed; inset:0; z-index:9300; display:none; align-items:center; justify-content:center; background:rgba(15,23,42,.45); backdrop-filter:blur(4px); padding:16px }
+    #shell-modal-root.show{ display:flex }
+    #shell-modal-box{ width:min(560px,96vw); max-height:88vh; overflow-y:auto; padding:20px;
+      --mode-a:#F97316; --mode-b:#FACC15; --ink:#1E293B; --ink2:#64748B; --glass:rgba(255,255,255,.92); --glass-bd:rgba(255,255,255,.85); --radius:16px;
+      background:var(--glass); border:1px solid var(--glass-bd); border-radius:var(--radius); color:var(--ink) }
+    #shell-modal-box.wide{ width:min(880px,96vw) }
+    #shell-toast-root{ position:fixed; top:64px; left:50%; transform:translateX(-50%); z-index:9400; display:flex; flex-direction:column; gap:8px; align-items:center; pointer-events:none }
+    #shell-toast-root .toast{ padding:10px 22px; border-radius:999px; color:#fff; font-weight:700; font-size:14px; box-shadow:0 8px 20px rgba(15,23,42,.25) }
+    #shell-toast-root .toast.ok{ background:#16A34A } #shell-toast-root .toast.err{ background:#DC2626 } #shell-toast-root .toast.info{ background:#334155 }
+    /* 白板 */
+    #ctp-overlay .wb-layout{ position:relative; height:100%; min-height:0; display:flex; flex-direction:column; border-radius:var(--radius); overflow:hidden }
+    #wb-canvas-wrap{ position:relative; flex:1; min-height:0; background:#fff; overflow:hidden; touch-action:none; border-radius:0 0 var(--radius) var(--radius) }
+    #wb-canvas{ position:absolute; inset:0 }
+    #ctp-overlay .wb-toolbar{ position:absolute; left:10px; top:50%; transform:translateY(-50%); z-index:20; display:grid; grid-template-columns:repeat(2,38px); gap:4px; padding:7px; max-height:88%; overflow-y:auto; overflow-x:hidden; align-content:start }
+    #ctp-overlay .wb-toolbar .span2{ grid-column:1/-1 }
+    #ctp-overlay .wb-tool{ width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:17px; transition:.15s; background:rgba(255,255,255,.6) }
+    #ctp-overlay .wb-tool:hover{ background:rgba(249,115,22,.14) }
+    #ctp-overlay .wb-tool.active{ background:linear-gradient(135deg,var(--wb-a),var(--wb-b)); color:#fff; box-shadow:0 3px 10px rgba(249,115,22,.4) }
+    #ctp-overlay .wb-topbar{ flex:0 0 auto; display:flex; align-items:center; gap:8px; padding:7px 10px; background:rgba(255,255,255,.85); border-bottom:1px solid rgba(148,163,184,.25); flex-wrap:wrap }
+    #ctp-overlay .wb-page-tab{ padding:4px 10px; border-radius:8px; font-size:12.5px; font-weight:800; background:rgba(148,163,184,.15); border:1.5px solid transparent; cursor:pointer }
+    #ctp-overlay .wb-page-tab.active{ border-color:var(--wb-a); background:#FFF7ED; color:#C2410C }
+    #wb-side{ position:absolute; right:0; top:0; bottom:0; width:230px; z-index:25; background:rgba(255,255,255,.92); backdrop-filter:blur(10px); border-left:1px solid rgba(148,163,184,.3); padding:12px; transform:translateX(100%); transition:transform .25s; overflow-y:auto }
+    #wb-side.open{ transform:none }
+    #ctp-overlay .wb-color{ width:26px; height:26px; border-radius:50%; border:2.5px solid transparent; cursor:pointer }
+    #ctp-overlay .wb-color.active{ border-color:var(--ink) }
+    #wb-ctxmenu{ position:fixed; z-index:9200; min-width:150px; padding:6px; display:none; background:rgba(255,255,255,.97); border:1px solid var(--glass-bd); border-radius:12px; box-shadow:var(--shadow) }
+    #wb-ctxmenu button{ display:block; width:100%; text-align:left; padding:7px 12px; border-radius:8px; font-size:13.5px; font-weight:600; background:none }
+    #wb-ctxmenu button:hover{ background:rgba(249,115,22,.12) }
+    #wb-gate .glass, .resp-item{ background:rgba(255,255,255,.85) }
+    .resp-item{ display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:11px; margin-bottom:7px }
+    .resp-item .nm{ font-weight:800 }
+    /* 簡報 */
+    #ctp-overlay .ppt-layout{ display:grid; grid-template-columns:180px 1fr 280px; gap:12px; height:100%; min-height:0 }
+    #ctp-overlay .ppt-thumbs{ overflow-y:auto; padding:10px; display:flex; flex-direction:column; gap:8px }
+    #ctp-overlay .ppt-thumb{ position:relative; border-radius:10px; border:2.5px solid transparent; overflow:hidden; cursor:pointer; background:#fff; aspect-ratio:16/9; flex:0 0 auto }
+    #ctp-overlay .ppt-thumb.active{ border-color:var(--ppt-a) }
+    #ctp-overlay .ppt-thumb .no{ position:absolute; left:5px; top:4px; font-size:11px; font-weight:900; background:rgba(15,23,42,.55); color:#fff; padding:1px 7px; border-radius:99px }
+    #ctp-overlay .ppt-thumb img{ width:100%; height:100%; object-fit:cover }
+    #ctp-overlay .ppt-stage-wrap{ display:flex; flex-direction:column; min-height:0; gap:10px }
+    #ppt-stage{ position:relative; flex:1; min-height:0; border-radius:var(--radius); overflow:hidden; background:#0F172A; display:flex; align-items:center; justify-content:center }
+    #ppt-stage .slide{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background-size:contain; background-position:center; background-repeat:no-repeat }
+    #ppt-stage iframe{ width:100%; height:100%; border:none; background:#fff }
+    #ppt-annot{ position:absolute; inset:0; z-index:10; touch-action:none }
+    #ppt-laser{ position:absolute; width:18px; height:18px; border-radius:50%; background:radial-gradient(circle,#EF4444 30%,rgba(239,68,68,.25) 70%); z-index:15; pointer-events:none; transform:translate(-50%,-50%); display:none }
+    #ctp-overlay .ppt-ctrl{ display:flex; align-items:center; gap:8px; padding:9px 12px; flex-wrap:wrap }
+    #ctp-overlay .ppt-submits{ overflow-y:auto; padding:12px; display:flex; flex-direction:column; min-height:0 }
+    #ctp-overlay .ppt-side-title{ font-weight:900; font-size:14px; margin-bottom:8px }
+    #ctp-overlay .ppt-left{ display:flex; flex-direction:column; min-height:0; gap:8px }
+    #ctp-overlay .ppt-layout.ppt-max{ grid-template-columns:1fr }
+    #ctp-overlay .ppt-layout.ppt-max .ppt-thumbs, #ctp-overlay .ppt-layout.ppt-max .ppt-left, #ctp-overlay .ppt-layout.ppt-max .ppt-submits{ display:none }
+    /* 全螢幕 / 放大：讓 overlay 內容撐滿、並蓋住 01classtools 頂部列 */
+    body.wb-maxed #ctp-overlay #ctp-bar, body.ppt-maxed #ctp-overlay #ctp-bar{ }
+    body.ppt-fs #ctp-bar{ display:none }
+    body.ppt-fs #ctp-overlay .ppt-layout{ grid-template-columns:1fr; gap:0 }
+    body.ppt-fs #ctp-overlay .ppt-thumbs, body.ppt-fs #ctp-overlay .ppt-left, body.ppt-fs #ctp-overlay .ppt-submits{ display:none }
+    body.ppt-fs #ppt-stage{ border-radius:0 }
+    @keyframes ctp-popIn{ from{opacity:0; transform:scale(.92)} to{opacity:1; transform:none} }
+    #shell-modal-box, #shell-toast-root .toast{ animation:ctp-popIn .2s }

@@ -1,0 +1,38 @@
+            <div id="interaction-sequencing" class="hidden text-center w-full max-w-3xl mx-auto pt-10 px-4">
+                <h3 class="text-3xl font-bold text-slate-800 mb-4 flex items-center justify-center gap-3">
+                    <span class="bg-cyan-100 text-cyan-600 p-2 rounded-lg"><i
+                            class="fas fa-sort-numeric-down"></i></span> 排序題
+                </h3>
+                <p id="sequencing-question-text"
+                    class="text-lg text-slate-600 mb-8 bg-white p-4 rounded-xl shadow-sm border border-slate-100 inline-block">
+                </p>
+                <div class="sequencing-container space-y-2">
+                    <div id="sequencing-items-container" class="mb-8">
+                        <!-- 排序項目將動態生成在這裡 -->
+                    </div>
+                    <button id="submit-sequencing-btn"
+                        class="btn bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white rounded-xl font-bold shadow-lg shadow-cyan-200 py-3 max-w-xs mx-auto block">送出答案
+                        <i class="fas fa-check ml-2"></i></button>
+                </div>
+            </div>
+            <div id="interaction-matching" class="hidden text-center w-full max-w-5xl mx-auto pt-10 px-4">
+                <h3 class="text-3xl font-bold text-slate-800 mb-4 flex items-center justify-center gap-3">
+                    <span class="bg-fuchsia-100 text-fuchsia-600 p-2 rounded-lg"><i
+                            class="fas fa-right-left"></i></span> 配對題
+                </h3>
+                <p id="matching-question-text"
+                    class="text-lg text-slate-600 mb-8 bg-white p-4 rounded-xl shadow-sm border border-slate-100 inline-block">
+                </p>
+                <div class="matching-container bg-white p-6 rounded-3xl shadow-lg border border-slate-100">
+                    <svg id="matching-svg-canvas"></svg>
+                    <div class="matching-column" id="matching-column-a" style="z-index: 2;">
+                        <!-- A項目列表 -->
+                    </div>
+                    <div class="matching-column" id="matching-column-b" style="z-index: 2;">
+                        <!-- B項目列表 -->
+                    </div>
+                </div>
+                <button id="submit-matching-btn"
+                    class="btn bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white rounded-xl font-bold shadow-lg shadow-fuchsia-200 py-3 max-w-xs mx-auto mt-8 block">送出答案
+                    <i class="fas fa-check ml-2"></i></button>
+            </div>

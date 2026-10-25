@@ -1,0 +1,16 @@
+            <!-- Word Cloud Interaction (Student) -->
+            <div id="interaction-word-cloud" class="hidden text-center w-full max-w-3xl mx-auto pt-10 px-4">
+                <h3 class="text-3xl font-bold text-slate-800 mb-8 flex items-center justify-center gap-3">
+                    <span class="bg-pink-100 text-pink-600 p-2 rounded-lg"><i class="fas fa-cloud"></i></span> 即時文字雲
+                </h3>
+                <div class="bg-white p-6 rounded-2xl shadow-lg border border-slate-100">
+                    <p class="text-slate-600 mb-4 text-sm">請輸入關鍵字或短語（限制10字以內）</p>
+                    <input type="text" id="word-cloud-input" maxlength="10"
+                        class="w-full p-4 border border-slate-200 rounded-xl text-lg focus:outline-none focus:ring-2 focus:ring-pink-500 bg-slate-50 focus:bg-white transition text-center font-bold"
+                        placeholder="例如：創意、快樂、學習..." />
+                    <p class="text-xs text-slate-400 mt-2">已輸入：<span id="word-cloud-char-count">0</span>/10 字</p>
+                </div>
+                <button id="submit-word-cloud-btn"
+                    class="btn bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 mt-6 max-w-xs mx-auto rounded-xl shadow-lg shadow-pink-200 text-lg py-3">送出
+                    <i class="fas fa-paper-plane ml-2"></i></button>
+            </div>

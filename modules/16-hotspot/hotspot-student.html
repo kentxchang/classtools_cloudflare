@@ -1,0 +1,18 @@
+            <!-- 16 圖片點選題（學生端：在題目圖上點一個位置作答） -->
+            <div id="interaction-hotspot" class="hidden text-center w-full max-w-5xl mx-auto pt-6 px-4">
+                <h3 class="text-3xl font-bold text-slate-800 mb-3 flex items-center justify-center gap-3">
+                    <span class="bg-red-100 text-red-600 p-2 rounded-lg"><i class="fas fa-crosshairs"></i></span> 圖片點選題
+                </h3>
+                <p class="text-slate-500 mb-4">點一下圖片放上標記，可以再點其他位置移動；確定後按「送出」。</p>
+                <div class="bg-white p-3 rounded-2xl shadow-lg border border-slate-100 inline-block max-w-full">
+                    <div id="hotspot-student-stage" class="hotspot-stage">
+                        <img id="hotspot-student-img" class="hotspot-img" alt="題目圖片" draggable="false">
+                        <div id="hotspot-student-marker" class="hotspot-marker hidden"></div>
+                    </div>
+                    <p id="hotspot-student-noimg" class="hidden text-slate-400 py-16 px-10">等待老師的題目圖片…</p>
+                </div>
+                <p id="hotspot-student-status" class="mt-4 text-lg font-bold text-slate-500 min-h-[1.75rem]"></p>
+                <button id="submit-hotspot-btn"
+                    class="btn btn-primary mt-2 max-w-xs mx-auto rounded-xl shadow-lg text-lg py-3">送出位置
+                    <i class="fas fa-location-dot ml-2"></i></button>
+            </div>

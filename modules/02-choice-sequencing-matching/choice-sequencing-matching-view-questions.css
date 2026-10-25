@@ -1,0 +1,32 @@
+        /* 【02 選擇/排序/配對 — 樣式】 modules/02-choice-sequencing-matching/choice-sequencing-matching-view-questions.css */
+        /* 查看題目模態框樣式 */
+        #view-questions-modal-content {
+            max-width: 60% !important;
+            width: 60%;
+        }
+
+        .magnified-image-modal-content img {
+            max-width: 100%;
+            max-height: 80vh;
+            /* Limit image height within modal */
+            object-fit: contain;
+        }
+
+        .magnified-image-modal-close {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: #333;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            transition: background-color 0.2s;
+        }
+
+        .magnified-image-modal-close:hover {
+            background-color: #eee;
+        }
+

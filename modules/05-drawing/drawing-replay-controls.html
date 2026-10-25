@@ -1,0 +1,11 @@
+            <!-- 05 繪圖題：畫筆重播（教師點開學生作品時顯示；重播畫面與作品圖片大小、位置相同） -->
+            <canvas id="drawing-replay-canvas" class="hidden rounded"></canvas>
+            <div id="drawing-replay-bar" class="hidden mt-3 flex flex-wrap items-center justify-center gap-2">
+                <span class="font-bold text-slate-700 mr-1"><i class="fas fa-clock-rotate-left mr-1 text-purple-500"></i>重播畫筆</span>
+                <button class="drawing-replay-speed-btn px-3 py-1.5 rounded-lg font-bold bg-purple-100 text-purple-700 hover:bg-purple-200 transition" data-speed="0.5">0.5X</button>
+                <button class="drawing-replay-speed-btn px-3 py-1.5 rounded-lg font-bold bg-purple-100 text-purple-700 hover:bg-purple-200 transition" data-speed="1">1X</button>
+                <button class="drawing-replay-speed-btn px-3 py-1.5 rounded-lg font-bold bg-purple-100 text-purple-700 hover:bg-purple-200 transition" data-speed="2">2X</button>
+                <button class="drawing-replay-speed-btn px-3 py-1.5 rounded-lg font-bold bg-purple-100 text-purple-700 hover:bg-purple-200 transition" data-speed="3">3X</button>
+                <button id="drawing-replay-stop-btn" class="px-3 py-1.5 rounded-lg font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition"><i class="fas fa-stop mr-1"></i>停止</button>
+                <span id="drawing-replay-status" class="text-sm text-slate-500 w-full text-center"></span>
+            </div>

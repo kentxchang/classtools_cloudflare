@@ -1,0 +1,770 @@
+
+    <div id="app-container" class="relative min-h-screen flex flex-col">
+
+        <div id="entry-view"
+            class="relative w-full h-screen flex flex-col items-center justify-around p-4 overflow-y-auto">
+
+            <!-- 右上角按鈕區 -->
+            <div class="absolute top-4 right-4 z-10 flex gap-2">
+                <button id="deploy-guide-btn" type="button"
+                    class="inline-flex items-center px-4 py-2 bg-amber-100 hover:bg-amber-200 text-amber-700 text-sm font-medium rounded-xl shadow-sm border border-amber-200 transition-all duration-200">
+                    <i class="fas fa-book-open mr-2"></i>
+                    建置說明
+                </button>
+            </div>
+
+            <!-- Main Content wrapper -->
+            <div class="w-full max-w-6xl mx-auto p-4 sm:p-6 flex flex-col items-center animate-fade-in-up">
+
+                <div class="text-center mb-8">
+                    <div class="flex items-center justify-center gap-3 mb-4">
+                        <div
+                            class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg shadow-indigo-200">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h1 class="text-4xl md:text-5xl font-bold text-slate-800">剛好學：課堂互動so easy</h1>
+                    </div>
+                    <p class="text-lg text-slate-500">一個專為現代課堂設計的即時互動工具</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full md:max-w-5xl">
+
+                    <!-- Teacher Section -->
+                    <div class="landing-card group relative">
+                        <div
+                            class="absolute top-0 right-0 w-32 h-32 bg-pink-100 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition duration-500">
+                        </div>
+                        <div class="relative z-10 flex flex-col h-full">
+                            <div
+                                class="w-16 h-16 bg-pink-100 text-pink-600 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:bg-pink-600 group-hover:text-white transition shadow-sm">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                            </div>
+                            <h2 class="text-2xl font-bold text-slate-800 mb-2">我是教師</h2>
+                            <p class="text-slate-500 mb-6">建立教室，發起互動，即時查看學生反饋。</p>
+
+                            <div class="mt-auto">
+                                <button id="teacher-entry-btn"
+                                    class="w-full py-3 bg-pink-500 text-white rounded-xl font-bold hover:bg-pink-600 transition shadow-lg shadow-pink-200">
+                                    建立或進入教室 <i class="fas fa-arrow-right ml-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Student Section -->
+                    <div class="landing-card group relative">
+                        <div
+                            class="absolute top-0 right-0 w-32 h-32 bg-sky-100 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition duration-500">
+                        </div>
+                        <div class="relative z-10 flex flex-col h-full">
+                            <div
+                                class="w-16 h-16 bg-sky-100 text-sky-600 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:bg-sky-600 group-hover:text-white transition shadow-sm">
+                                <i class="fas fa-user-graduate"></i>
+                            </div>
+                            <h2 class="text-2xl font-bold text-slate-800 mb-2">我是學生</h2>
+                            <p class="text-slate-500 mb-6">輸入教室代碼，參與課堂問答與互動。</p>
+
+                            <div class="mt-auto">
+                                <button id="student-entry-btn"
+                                    class="w-full py-3 bg-sky-500 text-white rounded-xl font-bold hover:bg-sky-600 transition shadow-lg shadow-sky-200">
+                                    加入課堂 <i class="fas fa-sign-in-alt ml-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-8">
+                    <p class="text-xs text-slate-400">
+                        App ID: <span id="app-id-display"></span> &nbsp;&bull;&nbsp;
+                        User ID: <span id="user-id-display"></span>
+                    </p>
+                    <div class="mt-2 text-slate-400 text-sm">
+                        Made with <i class="fas fa-heart text-pink-400 mx-1"></i> by <a
+                            href="https://kentxchang.blogspot.tw" target="_blank" rel="noopener noreferrer"
+                            class="text-indigo-500 hover:text-indigo-600 font-bold hover:underline">阿剛老師 cloudflare V1.5</a>
+                    </div>
+                    <div class="mt-4 text-slate-500 text-xs max-w-2xl mx-auto px-4">
+                        <p class="mb-2">
+                            本作品採用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" target="_blank"
+                                rel="noopener noreferrer"
+                                class="text-indigo-500 hover:text-indigo-600 font-semibold hover:underline">CC BY-NC-SA
+                                4.0 創用CC授權</a>。
+                        </p>
+                        <p class="text-slate-400">
+                            歡迎非商業用途轉載、引用或改編，請保留「阿剛老師」署名，並附上本作品原始連結。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="teacher-classroom-code-view" class="hidden text-center w-full max-w-md mx-auto mt-10">
+            <div class="landing-card p-8">
+                <div class="mb-6 inline-block p-4 bg-blue-100 text-blue-600 rounded-full text-3xl">
+                    <i class="fas fa-chalkboard-user"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-800 mb-6">教師登入：請輸入教室代碼</h2>
+                <div class="space-y-4">
+                    <!-- 已開啟的教室清單（從 Firestore 即時讀取） -->
+                    <div id="teacher-open-classrooms-container" class="mb-4 text-left">
+                        <div class="flex items-center justify-between mb-2">
+                            <label
+                                class="block text-sm font-bold text-slate-500 uppercase tracking-wider">目前已開啟的教室</label>
+                            <button id="teacher-open-classrooms-refresh-btn" type="button"
+                                class="text-xs text-blue-500 hover:text-blue-700 font-medium transition">
+                                <i class="fas fa-rotate-right mr-1"></i>重新整理
+                            </button>
+                        </div>
+                        <div id="teacher-open-classrooms-list"
+                            class="space-y-2 max-h-60 overflow-y-auto pr-1">
+                            <p class="text-slate-400 text-sm text-center py-4">載入中…</p>
+                        </div>
+                    </div>
+
+                    <div class="relative flex items-center py-2">
+                        <div class="flex-grow border-t border-slate-200"></div>
+                        <span class="flex-shrink-0 mx-4 text-slate-400 text-xs">或建立新教室</span>
+                        <div class="flex-grow border-t border-slate-200"></div>
+                    </div>
+
+                    <input type="text" id="teacher-classroom-code-input" placeholder="請輸入自訂教室代碼"
+                        class="w-full p-3 border border-slate-200 rounded-xl text-lg focus:ring-2 focus:ring-blue-500 outline-none transition bg-slate-50 focus:bg-white text-center font-bold text-slate-700">
+
+                    <input type="password" id="teacher-new-classroom-password" placeholder="設定教室密碼（可留空＝不設密碼）"
+                        class="w-full p-3 border border-slate-200 rounded-xl text-base focus:ring-2 focus:ring-blue-500 outline-none transition bg-slate-50 focus:bg-white text-center text-slate-700">
+
+                    <button id="teacher-classroom-code-submit-btn"
+                        class="w-full py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl font-bold hover:shadow-lg hover:from-blue-600 hover:to-indigo-700 transition transform hover:-translate-y-0.5 shadow-blue-200">
+                        建立 / 進入教室 <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                    <button id="teacher-classroom-code-back-btn"
+                        class="w-full py-2 text-slate-400 text-sm hover:text-slate-600 font-medium transition">
+                        <i class="fas fa-arrow-left mr-1"></i> 返回
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="teacher-menu-view" class="hidden text-center relative w-full max-w-6xl mx-auto p-4">
+            <div
+                class="flex flex-col md:flex-row justify-between items-center mb-8 bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                <h2 class="text-2xl font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fas fa-layer-group text-indigo-500"></i> 教師面板：請選擇互動模式
+                </h2>
+
+                <div class="flex items-center gap-3 mt-4 md:mt-0">
+                    <button id="download-history-menu-btn"
+                        class="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-lg text-sm font-bold hover:bg-indigo-100 transition border border-indigo-100 flex items-center"
+                        title="下載本堂課的互動歷程紀錄">
+                        <i class="fas fa-download mr-2"></i> 歷程 💾
+                    </button>
+
+                    <button id="clear-all-banks-menu-btn"
+                        class="hidden px-4 py-2 bg-amber-50 text-amber-600 rounded-lg text-sm font-bold hover:bg-amber-100 transition border border-amber-100 flex items-center"
+                        title="手動清空本教室已儲存的所有題庫">
+                        <i class="fas fa-trash-alt mr-2"></i> 清空題庫 🗑️
+                    </button>
+
+                    <button id="end-class-session-menu-btn"
+                        class="px-4 py-2 bg-red-50 text-red-600 rounded-lg text-sm font-bold hover:bg-red-100 transition border border-red-100 flex items-center">
+                        <i class="fas fa-door-open mr-2"></i> <span id="end-class-button-text">下課 🔚</span>
+                    </button>
+
+                    <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-50 border border-slate-200">
+                        <div id="student-status-area"
+                            class="text-slate-600 text-sm font-medium cursor-pointer flex items-center justify-center hover:text-indigo-600 transition-colors">
+                            <span>在線人數: <span id="active-student-count"
+                                    class="font-bold text-indigo-600 text-lg">0</span></span>
+                        </div>
+                        <button id="refresh-student-count-btn"
+                            class="text-slate-400 hover:text-indigo-600 transition-colors" title="更新統計">
+                            <i class="fas fa-rotate"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mx-auto w-full">
+                <button data-mode="true_false"
+                    class="landing-card hover:scale-105 transition transform duration-200 !p-6 flex flex-col items-center justify-center gap-3 group">
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-2xl group-hover:bg-blue-600 group-hover:text-white transition">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <span class="font-bold text-slate-700 text-lg">是非題</span>
+                </button>
+                <button id="choice-sequencing-matching-menu-btn"
+                    class="landing-card hover:scale-105 transition transform duration-200 !p-6 flex flex-col items-center justify-center gap-3 group">
+                    <span class="ai-badge"><i class="fas fa-robot"></i>AI</span>
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-green-100 text-green-600 flex items-center justify-center text-2xl group-hover:bg-green-600 group-hover:text-white transition">
+                        <i class="fas fa-list-ol"></i>
+                    </div>
+                    <span class="font-bold text-slate-700 text-lg">選擇/排序/配對</span>
+                </button>
+                <button data-mode="text_input"
+                    class="landing-card hover:scale-105 transition transform duration-200 !p-6 flex flex-col items-center justify-center gap-3 group">
+                    <span class="ai-badge"><i class="fas fa-robot"></i>AI</span>
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center text-2xl group-hover:bg-orange-600 group-hover:text-white transition">
+                        <i class="fas fa-comment-dots"></i>
+                    </div>
+                    <span class="font-bold text-slate-700 text-lg">文字題</span>
+                </button>
+                <button data-mode="word_cloud"
+                    class="landing-card hover:scale-105 transition transform duration-200 !p-6 flex flex-col items-center justify-center gap-3 group">
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-pink-100 text-pink-600 flex items-center justify-center text-2xl group-hover:bg-pink-600 group-hover:text-white transition">
+                        <i class="fas fa-cloud"></i>
+                    </div>
+                    <span class="font-bold text-slate-700 text-lg">即時文字雲</span>
+                </button>
+                <button data-mode="drawing"
+                    class="landing-card hover:scale-105 transition transform duration-200 !p-6 flex flex-col items-center justify-center gap-3 group">
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center text-2xl group-hover:bg-purple-600 group-hover:text-white transition">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <span class="font-bold text-slate-700 text-lg">繪圖題</span>
+                </button>
+                <button data-mode="url_dispatch"
+                    class="landing-card hover:scale-105 transition transform duration-200 !p-6 flex flex-col items-center justify-center gap-3 group">
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-teal-100 text-teal-600 flex items-center justify-center text-2xl group-hover:bg-teal-600 group-hover:text-white transition">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                    <span class="font-bold text-slate-700 text-lg">派送網址/HTML</span>
+                </button>
+                <button data-mode="recording"
+                    class="landing-card hover:scale-105 transition transform duration-200 !p-6 flex flex-col items-center justify-center gap-3 group">
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-2xl group-hover:bg-indigo-600 group-hover:text-white transition">
+                        <i class="fas fa-microphone"></i>
+                    </div>
+                    <span class="font-bold text-slate-700 text-lg">錄音題</span>
+                </button>
+                <button id="reading-comprehension-settings-btn"
+                    class="landing-card hover:scale-105 transition transform duration-200 !p-6 flex flex-col items-center justify-center gap-3 group">
+                    <span class="ai-badge"><i class="fas fa-robot"></i>AI</span>
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-2xl group-hover:bg-rose-600 group-hover:text-white transition">
+                        <i class="fas fa-book-open-reader"></i>
+                    </div>
+                    <span class="font-bold text-slate-700 text-lg">閱讀測驗</span>
+                </button>
+                <button data-mode="sticky_note"
+                    class="landing-card hover:scale-105 transition transform duration-200 !p-6 flex flex-col items-center justify-center gap-3 group">
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-2xl group-hover:bg-amber-600 group-hover:text-white transition">
+                        <i class="fas fa-note-sticky"></i>
+                    </div>
+                    <span class="font-bold text-slate-700 text-lg">便利貼牆</span>
+                </button>
+                <button id="focus-game-settings-btn"
+                    class="landing-card hover:scale-105 transition transform duration-200 !p-6 flex flex-col items-center justify-center gap-3 group">
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-cyan-100 text-cyan-600 flex items-center justify-center text-2xl group-hover:bg-cyan-600 group-hover:text-white transition">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <span class="font-bold text-slate-700 text-lg">專注力遊戲</span>
+                </button>
+                <button data-mode="quick_answer"
+                    class="landing-card hover:scale-105 transition transform duration-200 !p-6 flex flex-col items-center justify-center gap-3 group">
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-2xl group-hover:bg-amber-600 group-hover:text-white transition">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <span class="font-bold text-slate-700 text-lg">搶答</span>
+                </button>
+                <button id="quick-poll-settings-btn"
+                    class="landing-card hover:scale-105 transition transform duration-200 !p-6 flex flex-col items-center justify-center gap-3 group">
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-lime-100 text-lime-600 flex items-center justify-center text-2xl group-hover:bg-lime-600 group-hover:text-white transition">
+                        <i class="fas fa-square-poll-vertical"></i>
+                    </div>
+                    <span class="font-bold text-slate-700 text-lg">快速投票</span>
+                </button>
+                <button id="sync-whiteboard-card"
+                    class="landing-card hover:scale-105 transition transform duration-200 !p-6 flex flex-col items-center justify-center gap-3 group">
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center text-2xl group-hover:bg-orange-600 group-hover:text-white transition">
+                        <i class="fas fa-chalkboard"></i>
+                    </div>
+                    <span class="font-bold text-slate-700 text-lg">同步白板</span>
+                </button>
+                <button id="sync-presentation-card"
+                    class="landing-card hover:scale-105 transition transform duration-200 !p-6 flex flex-col items-center justify-center gap-3 group">
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl group-hover:bg-emerald-600 group-hover:text-white transition">
+                        <i class="fas fa-display"></i>
+                    </div>
+                    <span class="font-bold text-slate-700 text-lg">同步簡報</span>
+                </button>
+                <button data-mode="calc"
+                    class="landing-card hover:scale-105 transition transform duration-200 !p-6 flex flex-col items-center justify-center gap-3 group">
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center text-2xl group-hover:bg-sky-600 group-hover:text-white transition">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <span class="font-bold text-slate-700 text-lg">計算題</span>
+                </button>
+                <button data-mode="hotspot"
+                    class="landing-card hover:scale-105 transition transform duration-200 !p-6 flex flex-col items-center justify-center gap-3 group">
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center text-2xl group-hover:bg-red-600 group-hover:text-white transition">
+                        <i class="fas fa-crosshairs"></i>
+                    </div>
+                    <span class="font-bold text-slate-700 text-lg">圖片點選題</span>
+                </button>
+            </div>
+
+            <!-- @include 05-drawing/drawing-teacher-background.html -->
+
+            <div class="flex justify-between items-center mt-8 px-4">
+                <button id="leave-classroom-btn"
+                    class="px-4 py-2 text-slate-500 hover:text-slate-700 font-medium transition flex items-center"
+                    title="暫離教室（保留資料）">
+                    <i class="fas fa-arrow-right-from-bracket mr-2"></i>暫離教室
+                </button>
+                <div class="flex gap-4">
+                    <button id="ai-settings-btn"
+                        class="w-10 h-10 rounded-full bg-slate-100 text-slate-500 hover:bg-blue-100 hover:text-blue-600 transition flex items-center justify-center text-lg shadow-sm"
+                        title="AI 設定">
+                        <i class="fas fa-robot"></i>
+                    </button>
+                    <button id="url-dispatch-settings-btn"
+                        class="w-10 h-10 rounded-full bg-slate-100 text-slate-500 hover:bg-teal-100 hover:text-teal-600 transition flex items-center justify-center text-lg shadow-sm"
+                        title="設定派送網址/HTML">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- @include 05-drawing/drawing-floating-paste.html -->
+
+        <button id="floating-qr-btn" class="hidden" title="顯示學生加入網址與 QR Code">
+            <i class="fas fa-qrcode"></i>
+            <span class="qr-tooltip">學生加入網址 / QR Code</span>
+        </button>
+
+        <div id="teacher-monitor-view" class="hidden w-full max-w-[95%] mx-auto p-4">
+            <div
+                class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 mb-6 flex flex-col lg:flex-row justify-between items-center gap-4 sticky top-4 z-20 backdrop-blur-sm bg-white/90">
+                <div class="flex items-center gap-4">
+                    <button id="download-history-monitor-btn"
+                        class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 transition shadow-md shadow-indigo-200 flex items-center"
+                        title="下載本堂課的互動歷程紀錄">
+                        <i class="fas fa-download mr-2"></i> 歷程 💾
+                    </button>
+                    <button id="end-class-session-monitor-btn"
+                        class="px-4 py-2 bg-red-500 text-white rounded-xl text-sm font-bold hover:bg-red-600 transition shadow-md shadow-red-200 flex items-center"
+                        title="下課並清空資料">
+                        <i class="fas fa-door-open mr-2"></i> <span id="end-class-monitor-button-text">下課</span>
+                    </button>
+                    <h2 class="text-2xl font-bold text-slate-800 tracking-tight"></h2>
+                </div>
+                <div class="flex flex-wrap justify-center gap-2">
+                    <button id="toggle-pause-btn" class="monitor-btn bg-slate-700 text-white hover:bg-slate-800">
+                        <i class="fas fa-pause mr-1.5"></i> <span id="toggle-pause-btn-text">暫停</span>
+                    </button>
+                    <button id="draw-lottery-btn"
+                        class="monitor-btn bg-orange-500 text-white hover:bg-orange-600 shadow-orange-200">抽籤
+                        🎲</button>
+                    <button id="show-unsubmitted-students-btn"
+                        class="monitor-btn bg-amber-500 text-white hover:bg-amber-600 shadow-amber-200 hidden">未作答
+                        📝</button>
+                    <button id="ai-text-summary-btn"
+                        class="monitor-btn bg-violet-600 text-white hover:bg-violet-700 shadow-violet-200 hidden">AI 分析
+                        🤖</button>
+                    <button id="download-media-btn"
+                        class="monitor-btn bg-purple-500 text-white hover:bg-purple-600 shadow-purple-200 hidden">下載媒體
+                        💾</button>
+                    <button id="show-statistics-btn"
+                        class="monitor-btn bg-blue-500 text-white hover:bg-blue-600 shadow-blue-200 hidden">統計
+                        📊</button>
+                    <button id="start-peer-review-btn"
+                        class="monitor-btn bg-teal-500 text-white hover:bg-teal-600 shadow-teal-200 hidden">互評
+                        ❤️</button>
+                    <button id="view-questions-btn"
+                        class="monitor-btn bg-indigo-500 text-white hover:bg-indigo-600 shadow-indigo-200 hidden">題目
+                        📝</button>
+                    <button id="view-reading-questions-btn"
+                        class="monitor-btn bg-rose-500 text-white hover:bg-rose-600 shadow-rose-200 hidden">題目
+                        📖</button>
+                    <button id="download-responses-btn"
+                        class="monitor-btn bg-emerald-500 text-white hover:bg-emerald-600 shadow-emerald-200 hidden">下載
+                        📥</button>
+                    <button id="end-interaction-btn"
+                        class="monitor-btn bg-slate-200 text-slate-600 hover:bg-slate-300 font-bold border border-slate-300">結束
+                        🛑</button>
+                </div>
+            </div>
+
+            <!-- @include 04-word-cloud/word-cloud-monitor.html -->
+
+            <!-- @include 09-sticky-note/sticky-note-monitor.html -->
+
+            <!-- @include 10-focus-game/focus-game-monitor.html -->
+            <!-- @include 16-hotspot/hotspot-monitor.html -->
+
+            <!-- Student Responses Control Bar -->
+            <div id="responses-control-bar"
+                class="hidden bg-white p-3 rounded-t-2xl border border-slate-200 border-b-0">
+                <div class="flex justify-center gap-2 flex-wrap">
+                    <button id="responses-sort-by-name"
+                        class="px-3 py-1.5 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 transition-colors font-medium text-xs">
+                        <i class="fas fa-user mr-1"></i>按姓名
+                    </button>
+                    <button id="responses-sort-by-time"
+                        class="px-3 py-1.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium text-xs shadow-sm">
+                        <i class="fas fa-clock mr-1"></i>按時間
+                    </button>
+                    <div class="w-px h-6 bg-slate-300 mx-1"></div>
+                    <button id="responses-toggle-starred-filter"
+                        class="px-3 py-1.5 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 transition-colors font-medium text-xs">
+                        <i class="fas fa-star mr-1"></i>全部
+                    </button>
+                </div>
+            </div>
+
+            <div id="student-responses-container"
+                class="bg-slate-100 p-6 rounded-2xl border border-slate-200 h-[calc(100vh-180px)] overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 content-start">
+                <div class="col-span-full flex flex-col items-center justify-center py-20 text-slate-400">
+                    <i class="fas fa-spinner fa-spin text-4xl mb-4"></i>
+                    <p class="text-lg font-medium">正在等待學生作答...</p>
+                </div>
+            </div>
+
+            <div id="peer-review-stats-container" class="hidden mt-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h3
+                        class="text-xl font-bold text-slate-800 mb-4 text-center flex items-center justify-center gap-2">
+                        <span
+                            class="w-8 h-8 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center text-sm"><i
+                                class="fas fa-chart-simple"></i></span>
+                        即時投票統計
+                    </h3>
+                    <!-- Sorting and filtering buttons for student works -->
+                    <div class="flex justify-center gap-2 mb-4 flex-wrap">
+                        <button id="sort-by-votes"
+                            class="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors font-medium text-sm shadow-sm">
+                            <i class="fas fa-heart mr-1"></i>按票數排序
+                        </button>
+                        <button id="sort-by-name"
+                            class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 transition-colors font-medium text-sm">
+                            <i class="fas fa-user mr-1"></i>按姓名排序
+                        </button>
+                        <button id="sort-by-time"
+                            class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 transition-colors font-medium text-sm">
+                            <i class="fas fa-clock mr-1"></i>按回傳時間排序
+                        </button>
+                        <div class="w-px h-8 bg-slate-300 mx-1"></div>
+                        <button id="toggle-starred-filter"
+                            class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 transition-colors font-medium text-sm">
+                            <i class="fas fa-star mr-1"></i>顯示全部作品
+                        </button>
+                    </div>
+                    <div id="peer-review-stats-grid"
+                        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                        <p class="text-slate-400 text-center col-span-full py-8">尚未開始互評...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="student-name-view" class="hidden text-center w-full max-w-md mx-auto mt-10">
+            <div class="landing-card p-8">
+                <div class="mb-6 inline-block p-4 bg-green-100 text-green-600 rounded-full text-3xl">
+                    <i class="fas fa-user-tag"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-800 mb-6">請輸入教室代碼與您的姓名</h2>
+                <div class="space-y-4">
+                    <input type="text" id="student-classroom-code-input" placeholder="請輸入教室代碼"
+                        class="w-full p-3 border border-slate-200 rounded-xl text-lg focus:ring-2 focus:ring-green-500 outline-none transition bg-slate-50 focus:bg-white text-center font-bold text-slate-700">
+                    <input type="text" id="student-name-input" placeholder="例如：王小明"
+                        class="w-full p-3 border border-slate-200 rounded-xl text-lg focus:ring-2 focus:ring-green-500 outline-none transition bg-slate-50 focus:bg-white text-center font-bold text-slate-700">
+                    <button id="submit-name-btn"
+                        class="w-full py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-bold hover:shadow-lg hover:from-green-600 hover:to-emerald-700 transition transform hover:-translate-y-0.5 shadow-green-200">
+                        進入教室 <i class="fas fa-door-open ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="student-waiting-view" class="hidden text-center w-full max-w-md mx-auto mt-20">
+            <div class="landing-card p-10">
+                <div class="mb-6 inline-block p-4 bg-indigo-50 text-indigo-500 rounded-full text-4xl animate-bounce">
+                    <i class="fas fa-child-reaching"></i>
+                </div>
+                <h2 id="student-welcome-msg" class="text-2xl font-bold text-slate-800 mb-4"></h2>
+                <div
+                    class="flex items-center justify-center space-x-3 text-lg text-slate-500 bg-slate-50 py-3 px-6 rounded-full inline-flex">
+                    <i class="fas fa-spinner fa-spin text-indigo-500"></i>
+                    <p>請等待老師開始互動...</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="student-interaction-view" class="hidden relative w-full h-full min-h-screen">
+            <div id="student-pause-overlay" class="pause-overlay hidden backdrop-blur-sm bg-white/80">
+                <div class="bg-white p-8 rounded-3xl shadow-2xl border-4 border-red-100 text-center animate-bounce">
+                    <i class="fas fa-hand text-6xl text-red-500 mb-4 block"></i>
+                    <p class="text-2xl font-bold text-red-600">老師已暫停回覆</p>
+                </div>
+            </div>
+
+            <!-- @include 01-true-false/true-false-student.html -->
+            <!-- @include 02-choice-sequencing-matching/choice-sequencing-matching-student-multiple-choice.html -->
+            <!-- @include 03-text-input/text-input-student.html -->
+
+            <!-- @include 04-word-cloud/word-cloud-student.html -->
+
+            <!-- @include 09-sticky-note/sticky-note-student.html -->
+
+            <!-- @include 10-focus-game/focus-game-student.html -->
+
+            <!-- @include 05-drawing/drawing-student.html -->
+            <!-- @include 06-url-dispatch/url-dispatch-student.html -->
+            <!-- @include 07-recording/recording-student.html -->
+            <!-- @include 08-reading-comprehension/reading-comprehension-student.html -->
+            <!-- @include 11-quick-answer/quick-answer-student.html -->
+            <!-- @include 02-choice-sequencing-matching/choice-sequencing-matching-student-sequencing-matching.html -->
+
+            <!-- @include 12-quick-poll/quick-poll-student.html -->
+            <!-- @include 15-calc/calc-student.html -->
+            <!-- @include 16-hotspot/hotspot-student.html -->
+        </div>
+
+        <div id="student-peer-review-view" class="hidden w-full h-full min-h-screen flex flex-col">
+            <div class="flex-shrink-0 mb-6 pt-10 px-6">
+                <h2 class="text-3xl font-bold text-slate-800 text-center mb-4 flex items-center justify-center gap-3">
+                    <span class="bg-teal-100 text-teal-600 p-2 rounded-lg"><i class="fas fa-heart"></i></span> 作品觀摩與投票
+                </h2>
+                <p class="text-lg text-slate-500 text-center mb-6">點擊愛心投票，再點擊可取消！</p>
+                <div class="text-center mb-4">
+                    <span
+                        class="inline-flex items-center gap-2 bg-white border border-slate-200 text-slate-700 px-5 py-2 rounded-full text-base font-bold shadow-sm">
+                        已投票：<span id="current-vote-count" class="text-rose-500 text-xl">0</span> <span
+                            class="text-slate-400">/</span> 3
+                    </span>
+                </div>
+            </div>
+
+            <div id="peer-review-works-container"
+                class="flex-1 bg-slate-100 p-6 rounded-t-3xl overflow-y-auto shadow-inner">
+                <div id="peer-review-works-grid"
+                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-7xl mx-auto pb-20">
+                    <p class="text-slate-400 text-center col-span-full py-20">載入作品中...</p>
+                </div>
+            </div>
+
+            <div class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-30">
+                <button id="exit-peer-review-btn"
+                    class="px-8 py-3 bg-slate-800 text-white rounded-full font-bold hover:bg-slate-900 shadow-lg hover:shadow-xl transition flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i> 返回等待
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="message-box"
+        class="fixed top-4 left-1/2 -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg hidden z-50 transition-all duration-300 transform"
+        role="alert">
+        <p id="message-content"></p>
+        <button id="close-message-btn" class="absolute top-1 right-2 text-white text-xl leading-none">×</button>
+    </div>
+
+    <!-- 建置說明 Modal（內容同 README.md「部署到 Cloudflare（用指令，最推薦）」） -->
+    <div id="deploy-guide-modal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 z-[120] flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-xl shadow-2xl p-6 md:p-8 max-w-2xl w-full my-auto max-h-[90vh] overflow-y-auto text-left text-slate-700 leading-relaxed">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                    <i class="fas fa-book-open text-amber-500"></i>部署到 Cloudflare（用指令，最推薦）
+                </h2>
+                <button id="deploy-guide-modal-close-btn"
+                    class="text-gray-400 hover:text-gray-700 text-3xl font-bold leading-none">&times;</button>
+            </div>
+            <p class="text-sm text-slate-500 mb-4">事前準備：註冊 Cloudflare 帳號（<a href="https://dash.cloudflare.com/sign-up" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline">dash.cloudflare.com/sign-up</a>），並安裝 Node.js LTS 版（<a href="https://nodejs.org/" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline">nodejs.org</a>）。</p>
+
+            <h3 class="font-bold text-lg text-slate-800 mt-4 mb-1">步驟 1：在本資料夾打開命令視窗</h3>
+            <ol class="list-decimal pl-6 space-y-1">
+                <li>用檔案總管打開 <code>剛好學-cloudflare版</code> 資料夾（看得到 <code>wrangler.jsonc</code> 那一層）。</li>
+                <li>點一下上方的<strong>網址列</strong>，把內容改成 <code>cmd</code> 後按 Enter，就會在這個資料夾開啟命令提示字元。</li>
+            </ol>
+
+            <h3 class="font-bold text-lg text-slate-800 mt-5 mb-1">步驟 2：登入 Cloudflare</h3>
+            <p>輸入：</p>
+            <code class="block bg-slate-800 text-green-300 font-mono text-sm rounded-lg px-4 py-2 my-2">npx wrangler login</code>
+            <ul class="list-disc pl-6 space-y-1">
+                <li>第一次執行會問 <code>Need to install the following packages ... Ok to proceed? (y)</code>，輸入 <code>y</code> 按 Enter。</li>
+                <li>瀏覽器會自動打開 Cloudflare 授權頁面，按 <strong>Allow（允許）</strong>。</li>
+                <li>看到 <code>Successfully logged in</code> 就完成了，可以關掉該網頁。</li>
+            </ul>
+
+            <h3 class="font-bold text-lg text-slate-800 mt-5 mb-1">步驟 3：部署</h3>
+            <p>輸入：</p>
+            <code class="block bg-slate-800 text-green-300 font-mono text-sm rounded-lg px-4 py-2 my-2">npx wrangler deploy</code>
+            <ul class="list-disc pl-6 space-y-1">
+                <li>如果是第一次使用 Cloudflare Workers，會請你設定一個 <strong>workers.dev 子網域</strong>（例如輸入 <code>mrchang</code>），這會成為網址的一部分，之後不能隨意更改，請取一個好記的英文名稱。</li>
+                <li>完成後會顯示網址，例如：<code>https://classtools.mrchang.workers.dev</code></li>
+            </ul>
+            <p class="mt-2"><strong>這就是你的剛好學網址！</strong>老師和學生都用這個網址進入。</p>
+            <p class="text-sm text-slate-500 mt-2">💡 網址前半段來自 <code>wrangler.jsonc</code> 裡的 <code>"name"</code>，想改名可以在部署前修改這一行（只能用英文小寫、數字和 <code>-</code>）。</p>
+
+            <h3 class="font-bold text-lg text-slate-800 mt-5 mb-1">步驟 4：資料庫設定？——已經自動完成了！</h3>
+            <p><code>wrangler.jsonc</code> 已經寫好資料庫設定，<code>npx wrangler deploy</code> 時 Cloudflare 會<strong>自動建立</strong>資料庫，不需要另外到後台建立或貼任何設定。</p>
+            <p class="mt-2">想確認的話：</p>
+            <ol class="list-decimal pl-6 space-y-1">
+                <li>登入 <a href="https://dash.cloudflare.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline">dash.cloudflare.com</a></li>
+                <li>左側選單點 <strong>Workers &amp; Pages</strong>（運算 → Workers &amp; Pages）</li>
+                <li>點進你的 Worker，在「繫結 / Bindings」區域會看到名為 <code>ROOMS</code> 的 <strong>Durable Object</strong>，這就是資料庫。</li>
+                <li>每開一間教室，就會自動產生一個該教室專用的資料庫；按下「下課」時會清空該教室的資料。</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- 學生加入網址 / QR Code Modal -->
+    <div id="cross-device-url-modal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 z-[120] flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-xl shadow-2xl p-6 md:p-8 max-w-md w-full my-auto max-h-[90vh] overflow-y-auto text-center">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                    <i class="fas fa-qrcode text-blue-500"></i>學生加入網址
+                </h2>
+                <button id="cross-device-url-modal-close-btn"
+                    class="text-gray-400 hover:text-gray-700 text-3xl font-bold leading-none">&times;</button>
+            </div>
+            <p class="text-sm text-gray-600 mb-4">學生掃描 QR Code 或開啟下方網址即可加入。</p>
+
+            <div id="cross-device-qrcode" class="flex justify-center mb-4 min-h-[256px] items-center"></div>
+
+            <!-- V6.2: 短網址／原始網址 切換 -->
+            <div class="flex justify-center gap-2 mb-3">
+                <button id="cross-device-short-url-btn"
+                    class="px-3 py-1.5 text-sm rounded-md bg-blue-500 text-white font-semibold transition">短網址</button>
+                <button id="cross-device-long-url-btn"
+                    class="px-3 py-1.5 text-sm rounded-md bg-gray-200 text-gray-600 hover:bg-gray-300 font-semibold transition">原始網址</button>
+            </div>
+
+            <div class="flex items-center gap-2 mb-2">
+                <input type="text" id="cross-device-url-input" readonly
+                    class="flex-1 px-3 py-2 text-sm bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button id="cross-device-copy-btn"
+                    class="px-3 py-2 bg-blue-500 text-white text-sm rounded-md hover:bg-blue-600 transition"
+                    title="複製網址">
+                    <i class="fas fa-copy"></i>
+                </button>
+            </div>
+
+            <button id="cross-device-download-qrcode-btn"
+                class="w-full px-4 py-2 mt-2 bg-purple-500 text-white font-semibold rounded-lg hover:bg-purple-600 transition duration-300">
+                <i class="fas fa-download mr-2"></i>下載 QR Code
+            </button>
+
+            <p id="cross-device-msg" class="text-center text-sm text-gray-500 mt-3"></p>
+        </div>
+    </div>
+
+    <div id="magnified-image-modal" class="magnified-image-modal hidden">
+        <div class="magnified-image-modal-content">
+            <button id="magnified-image-modal-close-btn" class="magnified-image-modal-close">×</button>
+            <img id="magnified-image" src="" alt="放大繪圖">
+            <!-- @include 05-drawing/drawing-replay-controls.html -->
+        </div>
+    </div>
+
+    <div id="student-list-modal" class="magnified-image-modal hidden">
+        <div id="student-list-modal-content" class="magnified-image-modal-content">
+            <button id="student-list-modal-close-btn" class="magnified-image-modal-close">×</button>
+            <h4 class="text-2xl font-bold mb-4 text-gray-800">目前在線學生</h4>
+            <button id="modal-draw-lottery-btn" class="btn btn-orange !w-auto text-sm mb-4">抽籤 🎲</button>
+            <div id="modal-student-names">
+                <p class="text-gray-500 text-sm">沒有學生在線</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="statistics-modal" class="magnified-image-modal hidden">
+        <div id="statistics-modal-content" class="magnified-image-modal-content">
+            <button id="chart-modal-close-btn" class="magnified-image-modal-close">×</button>
+            <h4 id="chart-title" class="text-2xl font-bold mb-4 text-gray-800">作答統計</h4>
+            <svg id="chart-svg" width="550" height="400"></svg>
+            <div id="modern-stats-container" class="hidden"></div>
+            <div id="students-by-answer-list-container" class="hidden">
+                <h5 id="students-by-answer-list-title"></h5>
+                <p id="students-by-answer-names" class="text-gray-700"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- @include 03-text-input/text-input-ai-summary-modal.html -->
+
+    <!-- @include ai-settings/ai-settings-modals.html -->
+
+    <!-- @include 06-url-dispatch/url-dispatch-settings-modal.html -->
+
+    <div id="unsubmitted-students-modal" class="magnified-image-modal hidden">
+        <div id="unsubmitted-students-modal-content" class="magnified-image-modal-content">
+            <button id="unsubmitted-students-modal-close-btn" class="magnified-image-modal-close">×</button>
+            <h4 class="text-2xl font-bold mb-4 text-gray-800">未作答學生名單</h4>
+            <div id="modal-unsubmitted-student-names">
+                <p class="text-gray-500 text-sm">所有學生皆已作答或無學生在線</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- @include 02-choice-sequencing-matching/choice-sequencing-matching-view-questions-modal.html -->
+
+    <!-- @include 08-reading-comprehension/reading-comprehension-view-questions-modal.html -->
+
+    <!-- @include 02-choice-sequencing-matching/choice-sequencing-matching-settings-modals.html -->
+
+    <!-- @include 10-focus-game/focus-game-settings-modal.html -->
+
+    <!-- @include password/password-modals.html -->
+
+    <!-- @include 08-reading-comprehension/reading-comprehension-settings-modal.html -->
+
+    <!-- @include 12-quick-poll/quick-poll-modals.html -->
+    <!-- @include 15-calc/calc-viewer-modal.html -->
+
+    <!-- 自定義確認對話框 -->
+    <div id="custom-confirm-modal" class="magnified-image-modal hidden">
+        <div class="magnified-image-modal-content" style="max-width: 500px;">
+            <button id="custom-confirm-close-btn" class="magnified-image-modal-close">×</button>
+            <div class="text-center mb-6">
+                <div class="mx-auto mb-4 w-16 h-16 flex items-center justify-center rounded-full bg-yellow-100">
+                    <i class="fas fa-question-circle text-4xl text-yellow-600"></i>
+                </div>
+                <h4 class="text-xl font-bold text-gray-800 mb-3">確認操作</h4>
+                <p id="custom-confirm-message" class="text-gray-700 leading-relaxed"></p>
+            </div>
+            <div class="flex justify-center gap-4">
+                <button id="custom-confirm-cancel-btn" class="btn btn-gray px-8">取消</button>
+                <button id="custom-confirm-ok-btn" class="btn btn-primary px-8">確認</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 自定義提示對話框 -->
+    <div id="custom-alert-modal" class="magnified-image-modal hidden">
+        <div class="magnified-image-modal-content" style="max-width: 500px;">
+            <button id="custom-alert-close-btn" class="magnified-image-modal-close">×</button>
+            <div class="text-center mb-6">
+                <div id="custom-alert-icon-container"
+                    class="mx-auto mb-4 w-16 h-16 flex items-center justify-center rounded-full">
+                    <i id="custom-alert-icon" class="text-4xl"></i>
+                </div>
+                <h4 id="custom-alert-title" class="text-xl font-bold text-gray-800 mb-3">提示</h4>
+                <p id="custom-alert-message" class="text-gray-700 leading-relaxed"></p>
+            </div>
+            <div class="flex justify-center">
+                <button id="custom-alert-ok-btn" class="btn btn-primary px-12">確定</button>
+            </div>
+        </div>
+    </div>
+

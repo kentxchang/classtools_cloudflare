@@ -1,0 +1,52 @@
+        /* 【05 繪圖題 — 樣式】 modules/05-drawing/drawing-tools.css */
+        /* Dropdown styles for drawing tools */
+        .drawing-tool-select {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            border: 1px solid #d1d5db;
+            background-color: white;
+            font-size: 1rem;
+            height: 44px;
+            /* Match button height for alignment */
+            cursor: pointer;
+            min-width: 100px;
+            /* Ensure dropdown has minimum width */
+            appearance: none;
+            /* Remove default dropdown arrow */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='currentColor'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1.25em 1.25em;
+        }
+
+        /* Styles for color swatch in dropdown */
+        .color-option-text {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .color-swatch {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 1px solid #ccc;
+            flex-shrink: 0;
+            /* Prevent shrinking when text is long */
+        }
+
+        /* Hidden select for visual color swatch */
+        #current-color-swatch {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid #2563eb;
+            /* Highlight selected color */
+            margin-right: 8px;
+            display: inline-block;
+            vertical-align: middle;
+            flex-shrink: 0;
+        }
+

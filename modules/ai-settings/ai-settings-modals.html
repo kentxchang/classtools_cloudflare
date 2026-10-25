@@ -1,0 +1,141 @@
+    <div id="ai-settings-modal" class="magnified-image-modal hidden">
+        <div id="ai-settings-modal-content" class="magnified-image-modal-content" style="max-width: 600px; width: 95%;">
+            <button id="ai-settings-modal-close-btn" class="magnified-image-modal-close">×</button>
+            <h4 class="text-2xl font-bold mb-3 text-gray-800 flex items-center">
+                <i class="fas fa-robot text-blue-600 mr-2"></i>AI 服務設定
+            </h4>
+            <div class="space-y-4 text-left">
+                <div>
+                    <label for="ai-source-select" class="block font-semibold text-gray-700 mb-1">AI 模型來源:</label>
+                    <select id="ai-source-select" class="drawing-tool-select w-full px-3 py-2 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="gemini-custom" selected>Google Gemini (雲端 API)</option>
+                        <option value="ollama">本地 Ollama (本機開源模型)</option>
+                        <option value="apple-ai" id="apple-ai-option">🍎 macOS 本地 Apple AI (系統內建模型)</option>
+                    </select>
+                </div>
+
+                <!-- 1. Google Gemini 設定群組 -->
+                <div id="gemini-api-key-group" class="space-y-3">
+                    <div>
+                        <label for="gemini-api-key-input" class="block font-semibold text-gray-700 mb-1">Gemini API Key:</label>
+                        <input type="password" id="gemini-api-key-input" placeholder="請貼上您的 Gemini API Key (可為空使用 Preview 模型)"
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div>
+                        <label for="ai-model-select" class="block font-semibold text-gray-700 mb-1">選擇 Gemini 模型:</label>
+                        <select id="ai-model-select" class="drawing-tool-select w-full px-3 py-2 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="gemini-3-flash-preview" selected>Gemini 3 Flash Preview (最新功能預覽)</option>
+                            <option value="gemini-3-pro-preview">Gemini 3 Pro Preview (高邏輯任務首選)</option>
+                            <option value="gemma-4-31b-it">Gemma 4 31B IT (需 API Key)</option>
+                            <option value="gemma-4-26b-a4b-it">Gemma 4 26B A4B IT (需 API Key)</option>
+                        </select>
+                        <div style="margin-top: 10px; padding: 12px; background-color: #f0f9ff; border-left: 4px solid #3b82f6; border-radius: 4px;">
+                            <p style="font-size: 13px; color: #1e40af; margin: 0; line-height: 1.5;">
+                                <i class="fas fa-info-circle"></i> <strong>Gemini 使用說明：</strong><br>
+                                • 選擇 Preview 預覽模型可免 API Key 直接測試 AI 功能<br>
+                                • 建議填入個人 Gemini API Key 享受更高生成配額與穩定度
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. 本地 Ollama 設定群組 -->
+                <div id="ollama-settings-group" class="hidden space-y-3">
+                    <div>
+                        <label for="ollama-host-input" class="block font-semibold text-gray-700 mb-1">Ollama 服務網址 (Host):</label>
+                        <input type="text" id="ollama-host-input" value="http://localhost:11434" placeholder="http://localhost:11434"
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <p class="text-xs text-gray-500 mt-1">預設為 http://localhost:11434</p>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <label for="ollama-model-select" class="font-semibold text-gray-700">選擇本機已安裝模型:</label>
+                            <button type="button" id="fetch-ollama-models-btn" class="px-2.5 py-1 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded-md flex items-center transition shadow-sm">
+                                <i class="fas fa-sync-alt mr-1"></i> 自動抓取本機模型
+                            </button>
+                        </div>
+                        <select id="ollama-model-select" class="drawing-tool-select w-full px-3 py-2 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">-- 請先點擊「自動抓取」或手動輸入 --</option>
+                        </select>
+                        <p id="ollama-fetch-status" class="text-xs text-gray-500 mt-1"></p>
+                    </div>
+
+                    <div>
+                        <label for="ollama-custom-model-input" class="block text-xs font-medium text-gray-600 mb-1">手動指定模型名稱 (選填，若清單未列出時使用):</label>
+                        <input type="text" id="ollama-custom-model-input" placeholder="例如: llama3.2, qwen2.5:7b, gemma2:9b"
+                            class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-500">
+                    </div>
+
+                    <div style="margin-top: 10px; padding: 12px; background-color: #f0fdf4; border-left: 4px solid #16a34a; border-radius: 4px;">
+                        <p style="font-size: 13px; color: #166534; margin: 0; line-height: 1.5;">
+                            <i class="fas fa-check-circle"></i> <strong>本地 Ollama 提示：</strong><br>
+                            • 請確認電腦終端機已啟動 Ollama (<code>ollama serve</code>)<br>
+                            • 若瀏覽器提示跨網域 (CORS) 阻擋，請設定允許跨來源後啟動：<br>
+                            &nbsp;&nbsp;<code class="bg-white px-1 py-0.5 rounded border border-green-200 text-xs">OLLAMA_ORIGINS="*" ollama serve</code>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 3. macOS 本地 Apple AI 設定群組 -->
+                <div id="apple-ai-settings-group" class="hidden space-y-3">
+                    <div id="apple-ai-detected-banner" class="p-3 bg-purple-50 border border-purple-200 rounded-lg text-sm text-purple-800">
+                        <i class="fab fa-apple mr-1 text-base"></i><strong>macOS 本地 Apple AI：</strong> 支援調用 macOS 最新系統內建下載的 Apple AI 模型 (Apple Intelligence 3B AFM)。
+                    </div>
+
+                    <div>
+                        <label for="apple-ai-host-input" class="block font-semibold text-gray-700 mb-1">Apple AI 服務網址 (Host):</label>
+                        <input type="text" id="apple-ai-host-input" value="http://localhost:11435" placeholder="http://localhost:11435"
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <p class="text-xs text-gray-500 mt-1">afm-Server 預設為 http://localhost:11435；apple-to-openai / maclocal-api 預設為 http://localhost:8000</p>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <label for="apple-ai-model-input" class="font-semibold text-gray-700">模型名稱 / 識別碼:</label>
+                            <button type="button" id="test-apple-ai-btn" class="px-2.5 py-1 text-xs bg-purple-600 hover:bg-purple-700 text-white rounded-md flex items-center transition shadow-sm">
+                                <i class="fas fa-plug mr-1"></i> 測試連線
+                            </button>
+                        </div>
+                        <input type="text" id="apple-ai-model-input" value="apple-intelligence" placeholder="apple-intelligence 或 foundation"
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <p id="apple-ai-test-status" class="text-xs text-gray-500 mt-1"></p>
+                    </div>
+
+                    <div style="margin-top: 10px; padding: 12px; background-color: #faf5ff; border-left: 4px solid #9333ea; border-radius: 4px;">
+                        <p style="font-size: 13px; color: #6b21a8; margin: 0; line-height: 1.5;">
+                            <i class="fas fa-apple-alt"></i> <strong>Apple Intelligence 本地模型說明：</strong><br>
+                            • 適用於 Apple Silicon (M系列晶片) Mac，需在系統設定中開啟 Apple Intelligence 並下載模型<br>
+                            • 配合輕量本地伺服器（如 afm-Server、maclocal-api 或 apple-to-openai）轉接，即可完全離線由 Mac 內建晶片執行生成，免金鑰、零網路延遲！
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="settings-button-group mt-4">
+                <button id="save-ai-settings-btn" class="btn btn-primary">儲存設定 💾</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- API Error Modal -->
+    <div id="api-error-modal" class="magnified-image-modal hidden">
+        <div class="magnified-image-modal-content" style="max-width: 600px;">
+            <button id="api-error-modal-close-btn" class="magnified-image-modal-close">×</button>
+            <h4 class="text-2xl font-bold mb-4 text-red-600">⚠️ API 錯誤</h4>
+            <div class="space-y-4">
+                <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <h5 class="font-bold text-lg mb-2 text-gray-800">錯誤原因：</h5>
+                    <p id="api-error-message" class="text-gray-700 leading-relaxed"></p>
+                </div>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h5 class="font-bold text-lg mb-2 text-gray-800">💡 解決方法：</h5>
+                    <ul id="api-error-solutions" class="list-disc list-inside text-gray-700 space-y-1">
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end">
+                <button id="api-error-modal-ok-btn" class="btn btn-primary px-6 py-2">我知道了</button>
+            </div>
+        </div>
+    </div>

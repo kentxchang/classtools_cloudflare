@@ -1,0 +1,85 @@
+            <!-- 15 計算題（學生端：多頁計算紙，滿版顯示） -->
+            <div id="interaction-calc" class="hidden">
+                <section id="calc-screen" class="calc-screen">
+                    <div class="calc-top">
+                        <button class="calc-qthumb" id="calc-q-btn" title="看題目"><img id="calc-q-img" alt="">題目</button>
+                        <span class="calc-sep"></span>
+                        <button class="calc-tbtn on" data-ctool="thin" title="細筆">✏️<small>細</small></button>
+                        <button class="calc-tbtn" data-ctool="thick" title="粗筆">🖊️<small>粗</small></button>
+                        <button class="calc-tbtn" data-ctool="eraser" title="橡皮擦">🧽</button>
+                        <span class="calc-sep"></span>
+                        <div id="calc-colors" style="display:flex;gap:2px"></div>
+                        <span class="calc-sep"></span>
+                        <button class="calc-tbtn" id="calc-undo" title="復原">↶</button>
+                        <button class="calc-tbtn" id="calc-clear" title="清空">🗑️</button>
+                        <button class="calc-tbtn" id="calc-export" title="下載計算過程圖">⬇️</button>
+                        <button class="calc-tbtn" id="calc-add" title="新增一張計算紙">➕<small>頁</small></button>
+                        <div class="calc-spacer"></div>
+                        <button class="calc-chip calc-pen-chip" id="calc-pen-toggle" title="點一下切換：只用觸控筆 / 手指也能書寫">✍️ 觸控筆模式</button>
+                        <span class="calc-chip"><span class="calc-dot"></span><span id="calc-me-name"></span></span>
+                        <button class="calc-btn primary" id="calc-submit">送出 ✓</button>
+                    </div>
+                    <div class="calc-area" id="calc-area">
+                        <div class="calc-grid" id="calc-grid"></div>
+                        <div class="calc-focus" id="calc-focus">
+                            <div class="calc-fpage" id="calc-fpage"><canvas id="calc-fcanvas"></canvas></div>
+                            <button class="calc-fbtn calc-fback" id="calc-fback">⊞ 回全覽 · 第 1 頁</button>
+                            <button class="calc-fbtn calc-fprev" id="calc-fprev" title="上一頁">◀</button>
+                            <button class="calc-fbtn calc-fnext" id="calc-fnext" title="下一頁">▶</button>
+                            <button class="calc-fbtn calc-fadd" id="calc-fadd">＋ 新增一頁</button>
+                            <button class="calc-fbtn calc-fpeek" id="calc-fpeek-btn">👁 看第 1 頁</button>
+                            <div class="calc-peek" id="calc-peek">
+                                <div class="calc-peek-head" id="calc-peek-head">
+                                    <span id="calc-peek-title">第 1 頁</span>
+                                    <span class="calc-spacer"></span>
+                                    <button id="calc-peek-prev" title="更早的頁">◀</button>
+                                    <button id="calc-peek-next" title="較新的頁">▶</button>
+                                    <button id="calc-peek-size" title="放大 / 縮小">⤢</button>
+                                    <button id="calc-peek-close" title="收起">✕</button>
+                                </div>
+                                <div class="calc-peek-body" id="calc-peek-body"><canvas id="calc-peek-canvas"></canvas></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 已送出 -->
+                    <div class="calc-sent" id="calc-sent">
+                        <div class="calc-card calc-center-card">
+                            <div class="calc-check">✓</div>
+                            <p class="calc-hello">答案已送出！</p>
+                            <p class="calc-sub">老師已經收到囉，等待下一個題目…</p>
+                            <button class="calc-btn" id="calc-edit-btn">✏️ 修改答案</button>
+                        </div>
+                    </div>
+
+                    <!-- 浮層 -->
+                    <div class="calc-paused-bar">⏸ 老師暫停作答中，請稍候…</div>
+                    <div class="calc-toast" id="calc-toast"></div>
+                    <div class="calc-modal" id="calc-confirm-modal">
+                        <div class="calc-card">
+                            <h3 id="calc-confirm-title">確定嗎？</h3>
+                            <p id="calc-confirm-text"></p>
+                            <div class="calc-row">
+                                <button class="calc-btn" id="calc-confirm-no">取消</button>
+                                <button class="calc-btn pink" id="calc-confirm-yes">確定</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="calc-modal" id="calc-clear-modal">
+                        <div class="calc-card">
+                            <h3>要清除哪裡？</h3>
+                            <p>清除後無法復原喔</p>
+                            <div class="calc-col">
+                                <button class="calc-btn pink" id="calc-cc-page">清除第 1 頁</button>
+                                <button class="calc-btn pink" id="calc-cc-all">清除全部 4 頁</button>
+                                <button class="calc-btn" id="calc-cc-del">🗑 刪除第 1 頁</button>
+                                <button class="calc-btn" id="calc-cc-cancel">取消</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="calc-modal calc-viewer" id="calc-viewer">
+                        <img alt="題目放大">
+                        <button class="calc-btn calc-close">✕ 關閉</button>
+                    </div>
+                </section>
+            </div>

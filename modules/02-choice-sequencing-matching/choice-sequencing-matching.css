@@ -1,0 +1,163 @@
+        /* 【02 選擇/排序/配對 — 樣式】 modules/02-choice-sequencing-matching/choice-sequencing-matching.css */
+        /* NEW: Styles for enlarged default multiple-choice buttons */
+        #interaction-multiple-choice.enlarged-buttons #default-mc-options .answer-btn {
+            width: 12rem;
+            /* Double the original 6rem (h-24) */
+            height: 12rem;
+            /* Double the original 6rem (h-24) */
+            font-size: 8rem;
+            /* Double the original 4rem (text-7xl) */
+        }
+
+        /* MODIFIED: MC Settings Modal for AI Question Generation */
+        #multiple-choice-settings-modal {
+            align-items: center;
+            /* Center modal vertically */
+        }
+
+        #multiple-choice-settings-modal-content {
+            max-width: 800px;
+            /* Wider modal for two columns */
+            max-height: 95vh;
+            /* Increase max height */
+            height: auto;
+            /* Allow dynamic height */
+            justify-content: flex-start;
+            /* Align content to top */
+            align-items: stretch;
+            /* Stretch to full width */
+            padding: 1.5rem;
+            /* Increase padding */
+            margin-top: 0;
+            /* Remove top margin */
+        }
+
+        /* Sequencing Question Styles */
+        .sequencing-item {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1rem 1.5rem;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: grab;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.125rem;
+            font-weight: 500;
+        }
+
+        .sequencing-item:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .sequencing-item.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+
+        .sequencing-item.drag-over {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+
+        .sequencing-item-number {
+            background-color: #3b82f6;
+            color: white;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .sequencing-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Matching Question Styles */
+        .matching-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            position: relative;
+        }
+
+        .matching-column {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .matching-item {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 3px solid transparent;
+            font-size: 1.125rem;
+            font-weight: 500;
+            min-height: 4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .matching-item:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .matching-item.selected {
+            border-color: #ec4899;
+            background-color: #fdf2f8;
+            box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.2);
+        }
+
+        .matching-item.matched {
+            border-color: #10b981;
+            background-color: #ecfdf5;
+            cursor: default;
+        }
+
+        .matching-item.matched:hover {
+            transform: none;
+        }
+
+        #matching-svg-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .matching-line {
+            stroke: #ec4899;
+            stroke-width: 3;
+            fill: none;
+            stroke-linecap: round;
+        }
+
+        .matching-line.correct {
+            stroke: #10b981;
+        }
+
+        .matching-line.incorrect {
+            stroke: #ef4444;
+        }
+

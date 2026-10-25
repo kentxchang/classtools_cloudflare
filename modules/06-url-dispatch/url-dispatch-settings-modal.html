@@ -1,0 +1,51 @@
+    <div id="url-dispatch-settings-modal" class="magnified-image-modal hidden">
+        <div id="url-dispatch-settings-modal-content" class="magnified-image-modal-content">
+            <button id="url-dispatch-settings-modal-close-btn" class="magnified-image-modal-close">×</button>
+            <h4>設定派送網址/HTML</h4>
+            <div class="w-full space-y-4">
+                <div class="flex items-center justify-center gap-6 mb-4">
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="dispatchType" value="url" class="form-radio text-blue-600 h-5 w-5"
+                            checked>
+                        <span class="ml-2 text-gray-700 font-medium">派送網址</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="dispatchType" value="html" class="form-radio text-blue-600 h-5 w-5">
+                        <span class="ml-2 text-gray-700 font-medium">派送 HTML</span>
+                    </label>
+                </div>
+
+                <div id="url-dispatch-section">
+                    <div>
+                        <label for="dispatch-url-input">網址:</label>
+                        <input type="text" id="dispatch-url-input" placeholder="請貼上要派送的網址" class="w-full">
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="is-youtube-checkbox">
+                        <label for="is-youtube-checkbox">此連結為 YouTube 影片</label>
+                    </div>
+                </div>
+
+                <div id="html-dispatch-section" class="hidden">
+                    <div class="flex flex-col items-center">
+                        <div class="flex gap-4 mb-4">
+                            <label for="dispatch-html-upload-input"
+                                class="btn bg-yellow-600 !w-auto text-base h-11 px-4 py-2 flex items-center justify-center cursor-pointer">
+                                <i class="fas fa-file-upload mr-2"></i> 上傳 HTML 檔案 ⬆️
+                            </label>
+                            <input type="file" id="dispatch-html-upload-input" accept=".html" class="hidden">
+                            <button id="clear-dispatch-html-btn"
+                                class="btn btn-red !w-auto text-base h-11 px-4 py-2 flex items-center justify-center">
+                                <i class="fas fa-trash mr-2"></i> 清除 HTML 🗑️
+                            </button>
+                        </div>
+                        <p id="dispatch-html-status" class="text-gray-600 text-sm mt-2">目前沒有 HTML 檔案。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="settings-button-group mt-6 w-full">
+                <button id="clear-dispatch-settings-btn" class="btn btn-red">清除設定 🧹</button>
+                <button id="save-dispatch-settings-btn" class="btn btn-primary">儲存設定 💾</button>
+            </div>
+        </div>
+    </div>

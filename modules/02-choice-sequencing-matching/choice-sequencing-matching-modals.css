@@ -1,0 +1,11 @@
+        /* 【02 選擇/排序/配對 — 樣式】 modules/02-choice-sequencing-matching/choice-sequencing-matching-modals.css */
+        /* 排序題和配對題的模態框樣式 */
+        #sequencing-settings-modal-content,
+        #matching-settings-modal-content {
+            max-width: 95%;
+            max-height: 95vh;
+            width: 1200px;
+            justify-content: flex-start;
+            align-items: stretch;
+        }
+

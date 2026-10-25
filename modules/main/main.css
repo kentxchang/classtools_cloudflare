@@ -1,0 +1,978 @@
+        /* 【主畫面配置 — 樣式（各功能的樣式檔由下方 @include 依原順序組合進來）】 modules/main/main.css */
+        /* Animations from 剛好測分享版 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.3s ease-out forwards;
+        }
+
+        /* Scrollbar customization */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Landing Page Card Styles */
+        .landing-card {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 1.5rem;
+            /* rounded-3xl */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            /* shadow-xl */
+            transition: all 0.3s ease;
+            cursor: pointer;
+            /* Cards are clickable in 剛好學最新版 */
+            border: 1px solid #f1f5f9;
+            /* border-slate-100 */
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            /* Make cards use flex for internal alignment */
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .landing-card:hover {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            /* shadow-2xl */
+        }
+
+        /* 互動監看畫面右上角功能按鈕：高度加大為二倍 */
+        .monitor-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 1.1rem;
+            /* 垂直 padding 由原本約 0.5rem 加倍為 1rem */
+            min-height: 4rem;
+            /* 約為一般按鈕的兩倍高 */
+            font-size: 0.95rem;
+            font-weight: 700;
+            line-height: 1.2;
+            border-radius: 0.75rem;
+            white-space: nowrap;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .monitor-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* 功能圖卡右上角的 AI 文字提示徽章 */
+        .ai-badge {
+            position: absolute;
+            top: 0.55rem;
+            right: 0.55rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.2rem;
+            padding: 0.1rem 0.45rem;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.03em;
+            color: #fff;
+            background: linear-gradient(135deg, #7c3aed, #4f46e5);
+            border-radius: 9999px;
+            box-shadow: 0 2px 4px rgba(79, 70, 229, 0.35);
+            pointer-events: none;
+        }
+
+        /* 自訂樣式 */
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f0f4f8;
+            /* 柔和的背景色 */
+        }
+
+        /* 隱藏元素的通用 class */
+        .hidden {
+            display: none !important;
+        }
+
+        /* 按鈕樣式 (直接在 HTML 中使用 Tailwind class，不使用 @apply) */
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 1rem 1.5rem;
+            font-size: 1.25rem;
+            line-height: 1.75rem;
+            font-weight: 700;
+            color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-primary {
+            background-color: #2563eb;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-green {
+            background-color: #16a34a;
+        }
+
+        .btn-green:hover {
+            background-color: #15803d;
+        }
+
+        .btn-orange {
+            background-color: #ea580c;
+        }
+
+        .btn-orange:hover {
+            background-color: #c2410c;
+        }
+
+        .btn-purple {
+            background-color: #9333ea;
+        }
+
+        .btn-purple:hover {
+            background-color: #7e22ce;
+        }
+
+        .btn-red {
+            background-color: #dc2626;
+        }
+
+        .btn-red:hover {
+            background-color: #b91c1c;
+        }
+
+        .btn-teal {
+            background-color: #0d9488;
+        }
+
+        /* New Teal color */
+        .btn-teal:hover {
+            background-color: #0f766e;
+        }
+
+        .btn-gray {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+
+        /* @include 11-quick-answer/quick-answer.css */
+        /* @include 05-drawing/drawing-canvas.css */
+        /* 學生作答結果卡片 */
+        .student-card {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            margin-bottom: 0.75rem;
+            word-break: break-all;
+        }
+
+        /* 新增：用於學生作答列表的卡片樣式 */
+        .student-response-item {
+            background-color: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            /* 將內容向左對齊 */
+            justify-content: flex-start;
+            /* 將內容向上對齊 */
+            text-align: left;
+            /* 將文本向左對齊 */
+            transition: border 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            /* Add transition for smooth border change */
+            position: relative;
+            /* Allow absolute positioning of star button */
+        }
+
+        .student-response-item .name-box {
+            background-color: #d1e7dd;
+            /* Light green for name */
+            color: #0f5132;
+            /* Dark green text */
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            width: 100%;
+            /* Take full width within its grid column */
+            max-width: 150px;
+            /* Max width for name box */
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            text-align: center;
+            /* 讓姓名在框內置中 */
+        }
+
+        .student-response-item .answer-box {
+            background-color: white;
+            /* Changed to white */
+            color: #0e7490;
+            /* Dark blue text */
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            width: 100%;
+            /* Take full width within its grid column */
+            word-break: break-word;
+            flex-grow: 1;
+            /* Allow answer box to take available space */
+            min-height: 48px;
+            /* Ensure a consistent height regardless of content */
+            display: flex;
+            /* To vertically center content */
+            align-items: center;
+            justify-content: center;
+        }
+
+        .student-response-item .answer-box img {
+            max-width: 100%;
+            /* Make images responsive within the answer box */
+            height: auto;
+            max-height: 120px;
+            /* Limit image height to prevent large images */
+            object-fit: contain;
+            /* Ensure image fits without cropping */
+            display: block;
+            /* Remove extra space below image */
+            margin: 0 auto;
+            /* Center image if it's smaller than max-width */
+        }
+
+        .student-response-item .answer-box audio {
+            width: 100%;
+            max-width: 200px;
+            /* Limit audio player width */
+        }
+
+        /* New: Styles for custom multiple choice answers in teacher monitor */
+        .student-response-item .mc-question-answer {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+            color: #334155;
+        }
+
+        .student-response-item .mc-question-answer .icon {
+            font-size: 1.1rem;
+        }
+
+        .student-response-item .mc-question-answer .correct-icon {
+            color: #16a34a;
+            /* Green */
+        }
+
+        .student-response-item .mc-question-answer .incorrect-icon {
+            color: #dc2626;
+            /* Red */
+        }
+
+        .student-response-item .mc-question-answer .question-text {
+            font-weight: 500;
+        }
+
+        .student-response-item .mc-question-answer .student-choice {
+            font-weight: bold;
+            color: #2563eb;
+            /* Blue */
+        }
+
+        /* 互評投票相關樣式 */
+        .peer-review-work-item {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .peer-review-work-item:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .peer-review-work-item .work-author {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
+            font-weight: bold;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .peer-review-work-item .work-content {
+            flex-grow: 1;
+            margin-bottom: 0.75rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .peer-review-work-item .work-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .peer-review-work-item .work-content p {
+            padding: 0.5rem;
+            background-color: #f8fafc;
+            border-radius: 0.5rem;
+            color: #374151;
+            line-height: 1.5;
+        }
+
+        .peer-review-work-item .vote-section {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .peer-review-work-item .vote-btn {
+            background: none;
+            border: 2px solid transparent;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 3rem;
+            height: 3rem;
+            position: relative;
+        }
+
+        .peer-review-work-item .vote-btn:hover {
+            background-color: #fef7f7;
+            transform: scale(1.1);
+            border-color: #fca5a5;
+        }
+
+        .peer-review-work-item .vote-btn.voted {
+            color: #dc2626;
+            background-color: #fef2f2;
+            border-color: #dc2626;
+            animation: pulse 2s infinite;
+        }
+
+        .peer-review-work-item .vote-btn:not(.voted) {
+            color: #9ca3af;
+            border-color: #e5e7eb;
+        }
+
+        .peer-review-work-item .vote-btn:not(.voted):hover {
+            color: #dc2626;
+            background-color: #fef7f7;
+        }
+
+        /* Pulse animation for voted buttons */
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        /* Tooltip for vote buttons */
+        .peer-review-work-item .vote-btn::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: -2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #374151;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+        }
+
+        .peer-review-work-item .vote-btn:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .peer-review-work-item .vote-count {
+            font-weight: bold;
+            color: #dc2626;
+            font-size: 1.1rem;
+        }
+
+        .peer-review-work-item .vote-count.zero {
+            color: #9ca3af;
+        }
+
+        /* 教師端投票統計樣式 */
+        .vote-stats-item {
+            background-color: #f8fafc;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            position: relative;
+        }
+
+        .vote-stats-item .stats-author {
+            background-color: #dbeafe;
+            color: #1e40af;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.75rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .vote-stats-item .stats-content {
+            flex-grow: 1;
+            margin-bottom: 0.5rem;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .vote-stats-item .stats-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.375rem;
+            max-height: 120px;
+            object-fit: contain;
+        }
+
+        .vote-stats-item .stats-content p {
+            padding: 0.375rem;
+            background-color: white;
+            border-radius: 0.375rem;
+            color: #374151;
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+        .vote-stats-item .stats-votes {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.5rem;
+            background-color: #fef2f2;
+            border-radius: 0.5rem;
+            border: 1px solid #fecaca;
+        }
+
+        .vote-stats-item .stats-votes .vote-icon {
+            color: #dc2626;
+            font-size: 1.2rem;
+        }
+
+        .vote-stats-item .stats-votes .vote-count {
+            font-weight: bold;
+            color: #dc2626;
+            font-size: 1.1rem;
+        }
+
+        .vote-stats-item .stats-votes .vote-count.zero {
+            color: #9ca3af;
+        }
+
+
+        /* 放大繪圖 Modal 樣式 */
+        .magnified-image-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+        }
+
+        /* @include ai-settings/ai-settings-api-error.css */
+        /* @include 02-choice-sequencing-matching/choice-sequencing-matching-modals.css */
+        /* @include 10-focus-game/focus-game.css */
+        /* @include 02-choice-sequencing-matching/choice-sequencing-matching-view-questions.css */
+        /* @include 05-drawing/drawing-tools.css */
+        /* Made by link styling */
+        .made-by-text {
+            background-color: #e0f7fa;
+            /* Light blue background */
+            color: #007bff;
+            /* Blue text */
+            padding: 8px 15px;
+            border-radius: 12px;
+            /* Rounded corners */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            /* Remove underline */
+            transition: background-color 0.3s ease;
+        }
+
+        .made-by-text:hover {
+            background-color: #cceeff;
+            /* Lighter blue on hover */
+            color: #0056b3;
+        }
+
+        /* Modal for student list */
+        #student-list-modal-content {
+            padding: 1rem;
+            max-width: 700px;
+            /* Adjusted max-width for 5 columns */
+            width: 100%;
+        }
+
+        /* Applying grid to modal-student-names */
+        #modal-student-names {
+            display: grid;
+            /* Changed to fixed 5 columns on larger screens, responsive down to 100px min width */
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 0.5rem;
+            /* Gap between grid items */
+            padding: 0.5rem;
+            /* Padding for the grid container */
+            max-height: 64vh;
+            /* Adjusted to fit more height */
+            overflow-y: auto;
+            background-color: #f8fafc;
+            /* Light background */
+            border-radius: 0.5rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        @media (min-width: 768px) {
+
+            /* md breakpoint */
+            #modal-student-names {
+                grid-template-columns: repeat(5, 1fr);
+                /* Fixed 5 columns for md and larger */
+            }
+        }
+
+        #modal-student-names p {
+            background-color: #e0f2f7;
+            /* Light blue background for each name */
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #0e7490;
+            font-weight: 500;
+            overflow: hidden;
+            /* Hide overflow text */
+            text-overflow: ellipsis;
+            /* Add ellipsis for overflow */
+            white-space: nowrap;
+            /* Prevent text wrapping */
+            border-bottom: none;
+            /* Remove individual border-bottom, handled by grid gap */
+            margin: 0;
+            /* Remove default paragraph margin */
+            transition: all 0.2s ease-in-out;
+            /* Add transition for smooth highlight */
+        }
+
+        /* No specific styling for the last-child within the grid items, as gap handles spacing */
+
+        /* NEW: Styles for Unsubmitted Students Modal */
+        #modal-unsubmitted-student-names {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 0.5rem;
+            padding: 0.5rem;
+            max-height: 64vh;
+            overflow-y: auto;
+            background-color: #fef2f2;
+            /* Light red background */
+            border-radius: 0.5rem;
+            border: 1px solid #fca5a5;
+            /* Red border */
+        }
+
+        #modal-unsubmitted-student-names p {
+            background-color: #fee2e2;
+            /* Lighter red background for each name */
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #b91c1c;
+            /* Darker red text */
+            font-weight: 500;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin: 0;
+        }
+
+        @media (min-width: 768px) {
+
+            /* md breakpoint */
+            #modal-unsubmitted-student-names {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+
+
+        /* Styles for Chart Modal */
+        #statistics-modal-content {
+            /* Changed ID to match HTML */
+            padding: 1rem;
+            max-width: 680px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        /* Modern horizontal bar chart for 選擇題 / 閱讀測驗 statistics */
+        #modern-stats-container {
+            width: 100%;
+            max-height: 65vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            padding: 0.25rem;
+        }
+
+        .ms-row {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.6rem;
+            padding: 0.6rem 0.75rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+        }
+
+        .ms-row-head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 0.5rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .ms-q-label {
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 0.95rem;
+        }
+
+        .ms-q-tag {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #fff;
+            padding: 0.05rem 0.45rem;
+            border-radius: 999px;
+            margin-left: 0.4rem;
+        }
+
+        .ms-q-meta {
+            font-size: 0.8rem;
+            color: #64748b;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .ms-bar-track {
+            position: relative;
+            width: 100%;
+            height: 22px;
+            background: #f1f5f9;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .ms-bar-fill {
+            height: 100%;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            transition: width 0.6s ease;
+            min-width: 2px;
+        }
+
+        .ms-bar-pct {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #fff;
+            padding-right: 0.5rem;
+            white-space: nowrap;
+        }
+
+        .ms-bar-pct-outside {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #475569;
+            padding-left: 0.4rem;
+        }
+
+        .ms-wrong {
+            margin-top: 0.5rem;
+            font-size: 0.78rem;
+            line-height: 1.5;
+            color: #475569;
+        }
+
+        .ms-wrong-label {
+            font-weight: 700;
+            color: #dc2626;
+            margin-right: 0.25rem;
+        }
+
+        .ms-wrong-name {
+            display: inline-block;
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+            border-radius: 0.4rem;
+            padding: 0.05rem 0.4rem;
+            margin: 0.1rem 0.2rem 0.1rem 0;
+            font-weight: 600;
+        }
+
+        .ms-wrong-none {
+            color: #16a34a;
+            font-weight: 600;
+        }
+
+        .ms-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 1rem;
+            padding: 0.4rem 0.25rem 0;
+            font-size: 0.75rem;
+            color: #475569;
+        }
+
+        .ms-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .ms-legend-swatch {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+
+        #chart-svg {
+            display: block;
+            margin: 0 auto;
+            background-color: #fff;
+            /* Ensure chart background is white */
+            border-radius: 0.5rem;
+            flex-shrink: 0;
+            /* Prevent shrinking */
+        }
+
+        #students-by-answer-list-container {
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            background-color: #f8fafc;
+        }
+
+        #students-by-answer-list-container h5 {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #334155;
+        }
+
+        /* New style for the paragraph containing names */
+        #students-by-answer-names {
+            word-wrap: break-word;
+            /* Allow long names to wrap */
+            color: #475569;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        /* New CSS for selected student border */
+        .selected-student-border {
+            border: 4px solid #ef4444;
+            /* Tailwind red-500 */
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
+            /* Optional: add a glow effect */
+        }
+
+        /* NEW CSS for selected student border in the modal */
+        .modal-selected-student-border {
+            border: 2px solid #ef4444;
+            /* Red border */
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+            /* Optional: add a glow effect */
+            background-color: #fef2f2;
+            /* Light red background */
+        }
+
+
+        /* @include 03-text-input/text-input-ai-summary.css */
+        /* @include ai-settings/ai-settings.css */
+        /* @include 06-url-dispatch/url-dispatch.css */
+        /* NEW: Pause Overlay for Student */
+        .pause-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            /* Semi-transparent white */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            /* Below modals */
+            border-radius: 0.5rem;
+            /* Match container border-radius */
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .pause-overlay p {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #dc2626;
+            /* Red text */
+            margin-bottom: 1rem;
+        }
+
+        .pause-overlay i {
+            font-size: 4rem;
+            color: #ef4444;
+            /* Lighter red icon */
+        }
+
+        /* @include 06-url-dispatch/url-dispatch-html.css */
+        /* @include 02-choice-sequencing-matching/choice-sequencing-matching.css */
+        /* @include 08-reading-comprehension/reading-comprehension.css */
+        /* Disable pull-to-refresh on iOS/iPadOS */
+        body {
+            overscroll-behavior-y: none;
+        }
+
+        #interaction-reading-comprehension {
+            overscroll-behavior: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* @include 05-drawing/drawing-floating-paste.css */
+        /* Floating button: 學生加入網址 / QR Code (教師端右上角) */
+        #floating-qr-btn {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0ea5e9, #2563eb);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        #floating-qr-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.5);
+        }
+
+        #floating-qr-btn:active {
+            transform: scale(0.95);
+        }
+
+        #floating-qr-btn .qr-tooltip {
+            position: absolute;
+            right: 66px;
+            background-color: #374151;
+            color: white;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        #floating-qr-btn:hover .qr-tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+        /* @include 15-calc/calc.css */
+        /* @include 16-hotspot/hotspot.css */

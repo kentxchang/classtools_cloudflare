@@ -1,0 +1,20 @@
+        /* 【05 繪圖題 — 樣式】 modules/05-drawing/drawing-canvas.css */
+        /* 繪圖板 Canvas 樣式 */
+        #drawing-canvas {
+            border: 2px solid #cbd5e1;
+            border-radius: 0.5rem;
+            cursor: crosshair;
+            touch-action: none;
+            /* 防止在 canvas 上繪圖時觸發頁面滾動 */
+            display: block;
+            /* Ensures it takes up its own line and respects margins */
+            margin: 0 auto;
+            /* Center the canvas */
+            background-color: white;
+            /* 繪圖畫布背景色 */
+            flex-grow: 1;
+            /* Allow canvas to take available vertical space */
+            width: 100%;
+            /* Ensure canvas takes full width within its container */
+        }
+

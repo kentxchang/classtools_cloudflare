@@ -3,8 +3,32 @@
   "name": "classtools",          // 網站名稱，會成為網址 https://<name>.<你的子網域>.workers.dev
   "main": "src/worker.js",
   "compatibility_date": "2025-09-01",
+  "build": {
+    // 部署 / 本機測試前，先把 modules/ 內的各功能模組組合成 public/index.html
+    "command": "node build.js",
+    "watch_dir": "modules"               // 本機測試時，修改 modules/ 內的檔案會自動重新組合
+  },
   "assets": {
     "directory": "./public"              // 網頁檔案所在資料夾
+  },
+  "vars": {
+    // 教師密碼的 SHA-256 雜湊值（由後端 src/worker.js 驗證，網頁程式碼與瀏覽器都看不到）。
+    // 目前存的是原本預設密碼的雜湊值。
+    //
+    // 【手把手教學：如何修改教師密碼】
+    //  步驟 1：決定新密碼，例如 abc123（可用英文、數字、符號或中文；前後的空白會被忽略）。
+    //  步驟 2：把新密碼轉成 SHA-256 雜湊值：
+    //    1. 用 Chrome 或 Edge 開啟任一 https 網站（例如 https://www.google.com），按 F12 開啟「開發人員工具」。
+    //    2. 點上方的「Console（主控台）」分頁。
+    //    3. 貼上下面這一行（把 abc123 換成你的新密碼，引號要保留），按 Enter：
+    //         crypto.subtle.digest('SHA-256', new TextEncoder().encode('abc123')).then(b => console.log([...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('')))
+    //       （若出現警告要求輸入 allow pasting，請先輸入 allow pasting 按 Enter 再貼上。）
+    //    4. 畫面會顯示一串 64 個字元的英數字（abc123 會得到 6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090），
+    //       這就是新密碼的雜湊值。
+    //  步驟 3：把下一行引號內的雜湊值換成步驟 2 得到的結果（引號要保留）。
+    //  步驟 4：存檔後在本資料夾執行 npx wrangler deploy 重新部署，新密碼就會生效。
+    //  （想先在自己電腦測試，可執行 npx wrangler dev，用新密碼登入看看。）
+    "TEACHER_PASSWORD_SHA256": "36448a762f5c74aad7ef2bbfa5dd0ea57026e9605291da7aedfb66e9cb8c1663"
   },
   "durable_objects": {
     "bindings": [{ "name": "ROOMS", "class_name": "Room" }]

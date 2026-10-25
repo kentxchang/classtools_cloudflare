@@ -1,0 +1,27 @@
+    <!-- 查看閱讀測驗題目模態框 -->
+    <div id="view-reading-questions-modal" class="magnified-image-modal hidden">
+        <div id="view-reading-questions-modal-content" class="magnified-image-modal-content" style="max-width: 900px;">
+            <button id="view-reading-questions-modal-close-btn" class="magnified-image-modal-close">×</button>
+            <h4 class="text-2xl font-bold mb-4 text-gray-800">📖 閱讀測驗題目</h4>
+
+            <!-- 閱讀文本顯示 -->
+            <div class="mb-6">
+                <h5 class="text-lg font-bold text-gray-700 mb-2">閱讀文本：</h5>
+                <div id="view-reading-text-display"
+                    class="bg-gray-50 p-4 rounded-lg border text-base leading-relaxed whitespace-pre-wrap max-h-64 overflow-y-auto">
+                </div>
+            </div>
+
+            <!-- 題目顯示 -->
+            <div>
+                <h5 class="text-lg font-bold text-gray-700 mb-2">題目：</h5>
+                <div id="view-reading-questions-display" class="space-y-4 max-h-96 overflow-y-auto">
+                    <!-- 題目內容將動態填入 -->
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-4 mt-6">
+                <button id="close-reading-questions-view-btn" class="btn btn-primary !w-auto px-6">關閉</button>
+            </div>
+        </div>
+    </div>

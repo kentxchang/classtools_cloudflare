@@ -1,0 +1,21 @@
+        /* 【10 專注力遊戲 — 樣式】 modules/10-focus-game/focus-game.css */
+        /* 專注力遊戲設定模態框樣式 */
+        #focus-game-settings-modal-content {
+            max-width: 600px;
+            width: 90%;
+        }
+
+        /* 專注力遊戲數字選項的選中狀態 */
+        .focus-game-number-option.selected {
+            background-color: #06b6d4 !important;
+            border-color: #0891b2 !important;
+        }
+
+        .focus-game-number-option.selected .text-cyan-700 {
+            color: white !important;
+        }
+
+        .focus-game-number-option.selected .text-gray-600 {
+            color: #e0f2fe !important;
+        }
+

@@ -1,0 +1,396 @@
+    <div id="multiple-choice-settings-modal" class="magnified-image-modal hidden">
+        <div id="multiple-choice-settings-modal-content" class="magnified-image-modal-content">
+            <button id="multiple-choice-settings-modal-close-btn" class="magnified-image-modal-close">×</button>
+            <h4 class="text-2xl font-bold mb-4 text-gray-800">選擇題設定</h4>
+            <div class="w-full space-y-4">
+                <div class="flex items-center justify-center gap-6 mb-4">
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="mcQuestionType" value="none" class="form-radio text-blue-600 h-5 w-5"
+                            checked>
+                        <span class="ml-2 text-gray-700 font-medium">無題目出題 (預設 1-4 選項)</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="mcQuestionType" value="custom"
+                            class="form-radio text-blue-600 h-5 w-5">
+                        <span class="ml-2 text-gray-700 font-medium">自訂題目出題</span>
+                    </label>
+                </div>
+
+                <div id="custom-mc-questions-section" class="hidden w-full">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                        <div class="flex flex-col space-y-2">
+                            <label for="custom-mc-questions-textarea" class="block text-gray-700 text-sm font-bold">
+                                請輸入題目 (或由 AI 生成)
+                            </label>
+                            <p class="text-gray-600 text-xs">格式: 題目,正確答案(1-4或A-D),選項1,選項2,選項3,選項4 (每行一題)</p>
+                            <textarea id="custom-mc-questions-textarea" rows="6"
+                                class="w-full p-3 border rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500 flex-grow"
+                                placeholder="例如：
+台灣的首都在哪裡?,1,台北,台中,台南,高雄
+2+2=?,B,3,4,5,6"></textarea>
+                            <p id="custom-mc-questions-status" class="text-red-500 text-sm mt-2 hidden">格式錯誤或題目為空，請檢查輸入。
+                            </p>
+                        </div>
+
+                        <div class="flex flex-col space-y-4 bg-gray-50 p-4 rounded-lg border">
+                            <h5 class="text-lg font-bold text-gray-800 text-center">🤖 AI 智能出題</h5>
+                            <div>
+                                <label for="ai-mc-topic-textarea"
+                                    class="block text-gray-700 text-sm font-bold mb-2">出題主題、範圍或要求:</label>
+                                <textarea id="ai-mc-topic-textarea" rows="3"
+                                    class="w-full p-2 border rounded-md text-base focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    placeholder="例如：
+- 關於台灣歷史的選擇題
+- 關於光合作用的國中程度是非題
+- 請出有關聖誕節的英文單字選擇題"></textarea>
+                            </div>
+                            <div>
+                                <label for="ai-mc-count-input" class="block text-gray-700 text-sm font-bold mb-2">出題數量
+                                    (1-10):</label>
+                                <input type="number" id="ai-mc-count-input" min="1" max="10" value="5"
+                                    class="w-full p-2 border rounded-md text-base focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            </div>
+                            <div class="text-center">
+                                <button id="ai-generate-mc-btn"
+                                    class="btn btn-purple !w-auto text-base h-11 px-4 py-2 flex items-center justify-center mx-auto">
+                                    <i id="ai-mc-btn-icon" class="fas fa-magic mr-2"></i>
+                                    <span id="ai-mc-btn-text">AI 開始出題</span>
+                                </button>
+                                <div class="mt-2 flex items-center justify-center">
+                                    <span
+                                        class="inline-flex items-center px-3 py-1 bg-purple-50 rounded-full text-xs font-medium text-purple-700">
+                                        <i class="fas fa-robot mr-1.5"></i>
+                                        <span id="ai-mc-model-name">使用模型: Gemini 3 Flash Preview</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div id="ai-mc-loading-spinner"
+                                class="hidden flex items-center justify-center text-purple-600 pt-2">
+                                <i class="fas fa-spinner fa-spin mr-2"></i>
+                                <span>AI 思考中，請稍候...</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- 題庫管理區塊 -->
+                <div id="question-bank-management-section" class="hidden w-full mt-6 bg-blue-50 p-4 rounded-lg border">
+                    <h5 class="text-lg font-bold text-gray-800 text-center mb-4">📚 題庫管理</h5>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- 題庫載入區 -->
+                        <div class="flex flex-col space-y-2">
+                            <label class="block text-gray-700 text-sm font-bold">從檔案載入題庫</label>
+                            <input type="file" id="question-bank-file-input" accept=".txt"
+                                class="w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <button id="load-question-bank-btn"
+                                class="btn bg-blue-600 hover:bg-blue-700 text-white text-sm h-8 px-3 py-1">載入題庫</button>
+                        </div>
+
+                        <!-- 題庫儲存區 -->
+                        <div class="flex flex-col space-y-2">
+                            <label class="block text-gray-700 text-sm font-bold">儲存目前題目為題庫</label>
+                            <input type="text" id="question-bank-name-input" placeholder="輸入題庫名稱"
+                                class="w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <button id="save-question-bank-btn"
+                                class="btn bg-green-600 hover:bg-green-700 text-white text-sm h-8 px-3 py-1">儲存題庫</button>
+                        </div>
+                    </div>
+
+                    <!-- 題庫列表 -->
+                    <div class="mt-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">已儲存的題庫</label>
+                        <div id="question-bank-list"
+                            class="space-y-2 max-h-32 overflow-y-auto border rounded-md p-2 bg-white">
+                            <div class="text-gray-500 text-sm italic text-center">目前沒有儲存的題庫</div>
+                        </div>
+                    </div>
+
+                    <!-- 跨課堂本地題庫 -->
+                    <div class="mt-3 pt-3 border-t border-blue-200">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">📂 本地題庫（跨課堂共用）</label>
+                        <div class="flex gap-2">
+                            <select id="mc-global-bank-select" class="flex-1 p-2 border rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="">-- 選擇本地題庫 --</option>
+                            </select>
+                            <button type="button" onclick="importGlobalBank('mc')" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white text-xs rounded whitespace-nowrap">匯入此課堂</button>
+                            <button type="button" onclick="deleteGlobalBank('mc')" class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-xs rounded whitespace-nowrap">刪除</button>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">同一台電腦上儲存過的題庫，可在任一課堂代碼匯入後派送。</p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="settings-button-group mt-6 w-full">
+                <button id="start-mc-interaction-btn" class="btn btn-primary">確認並開始互動 🚀</button>
+                <button id="cancel-mc-settings-btn" class="btn btn-gray">取消 ↩️</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- B. 選擇/排序/配對題選單模態框 -->
+    <div id="choice-sequencing-matching-menu-modal" class="magnified-image-modal hidden">
+        <div class="magnified-image-modal-content" style="max-width: 400px;">
+            <button id="choice-sequencing-matching-menu-close-btn" class="magnified-image-modal-close">×</button>
+            <h4 class="text-2xl font-bold mb-6 text-gray-800 text-center">B. 請選擇題型</h4>
+            <div class="space-y-4">
+                <button id="open-multiple-choice-settings-btn" class="btn btn-green w-full text-xl py-4">✓ 選擇題</button>
+                <button id="open-sequencing-settings-btn"
+                    class="btn bg-cyan-500 hover:bg-cyan-600 w-full text-xl py-4">📋 排序題</button>
+                <button id="open-matching-settings-btn" class="btn bg-pink-500 hover:bg-pink-600 w-full text-xl py-4">🔗
+                    配對題</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 排序/配對題選單模態框 -->
+    <div id="sequencing-matching-menu-modal" class="magnified-image-modal hidden">
+        <div class="magnified-image-modal-content" style="max-width: 400px;">
+            <button id="sequencing-matching-menu-close-btn" class="magnified-image-modal-close">×</button>
+            <h4 class="text-2xl font-bold mb-6 text-gray-800 text-center">請選擇題型</h4>
+            <div class="space-y-4">
+                <button id="sequencing-settings-btn" class="btn bg-cyan-500 hover:bg-cyan-600 w-full text-xl py-4">📋
+                    排序題</button>
+                <button id="matching-settings-btn" class="btn bg-pink-500 hover:bg-pink-600 w-full text-xl py-4">🔗
+                    配對題</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 排序題設定模態框 -->
+    <div id="sequencing-settings-modal" class="magnified-image-modal hidden">
+        <div id="sequencing-settings-modal-content" class="magnified-image-modal-content">
+            <button id="sequencing-settings-modal-close-btn" class="magnified-image-modal-close">×</button>
+            <div class="w-full">
+                <!-- 題型切換按鈕 -->
+                <div class="flex justify-center mb-4 gap-2">
+                    <button id="switch-to-matching-btn"
+                        class="btn bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 text-sm">
+                        🔗 切換到配對題
+                    </button>
+                </div>
+                <h4 class="text-2xl font-bold mb-4 text-gray-800">排序題設定</h4>
+
+                <!-- 上方：左右兩欄布局 -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+                    <!-- 左欄：題目輸入 -->
+                    <div class="bg-gray-50 p-4 rounded-lg border">
+                        <label for="sequencing-items-textarea" class="block text-gray-700 text-sm font-bold mb-2">📝
+                            排序項目（每行一個，按正確順序輸入）</label>
+                        <textarea id="sequencing-items-textarea" rows="6"
+                            class="w-full p-3 border rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                            placeholder="例如：
+打開檔案
+編輯內容
+儲存檔案
+關閉檔案"></textarea>
+                        <p class="text-gray-600 text-xs mt-1">💡 提示：請依照正確順序輸入項目，系統會自動打亂給學生作答</p>
+                    </div>
+
+                    <!-- 右欄：AI智能出題 -->
+                    <div class="bg-purple-50 p-4 rounded-lg border">
+                        <h5 class="text-lg font-bold text-gray-800 mb-3">🤖 AI 智能出題</h5>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2">出題主題或要求：</label>
+                                <textarea id="ai-seq-topic-textarea" rows="2"
+                                    class="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    placeholder="例如：請生成光合作用的步驟排序"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2">項目數量 (3-10):</label>
+                                <input type="number" id="ai-seq-count-input" min="3" max="10" value="5"
+                                    class="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            </div>
+                            <div class="text-center">
+                                <button id="ai-generate-seq-btn"
+                                    class="btn btn-purple w-full text-base h-11 px-4 py-2 flex items-center justify-center">
+                                    <i id="ai-seq-btn-icon" class="fas fa-magic mr-2"></i>
+                                    <span id="ai-seq-btn-text">AI 開始出題</span>
+                                </button>
+                                <div class="mt-2 flex items-center justify-center">
+                                    <span
+                                        class="inline-flex items-center px-3 py-1 bg-purple-50 rounded-full text-xs font-medium text-purple-700">
+                                        <i class="fas fa-robot mr-1.5"></i>
+                                        <span id="ai-seq-model-name">使用模型: Gemini 3 Flash Preview</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div id="ai-seq-loading-spinner"
+                                class="hidden flex items-center justify-center text-purple-600 pt-2">
+                                <i class="fas fa-spinner fa-spin mr-2"></i>
+                                <span>AI 思考中，請稍候...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 下方：題庫管理區塊（全寬） -->
+                <div class="w-full bg-blue-50 p-4 rounded-lg border">
+                    <h5 class="text-lg font-bold text-gray-800 mb-3">📚 題庫管理</h5>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col space-y-2">
+                            <label class="block text-gray-700 text-sm font-bold">從檔案載入題庫</label>
+                            <input type="file" id="seq-bank-file-input" accept=".txt"
+                                class="w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <button id="load-seq-bank-btn"
+                                class="btn bg-blue-600 hover:bg-blue-700 text-white text-sm h-8 px-3 py-1">載入題庫</button>
+                        </div>
+                        <div class="flex flex-col space-y-2">
+                            <label class="block text-gray-700 text-sm font-bold">儲存目前題目為題庫</label>
+                            <input type="text" id="seq-bank-name-input" placeholder="輸入題庫名稱"
+                                class="w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <button id="save-seq-bank-btn"
+                                class="btn bg-green-600 hover:bg-green-700 text-white text-sm h-8 px-3 py-1">儲存題庫</button>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">已儲存的題庫</label>
+                        <div id="seq-bank-list"
+                            class="space-y-2 max-h-20 overflow-y-auto border rounded-md p-2 bg-white">
+                            <div class="text-gray-500 text-sm italic text-center">目前沒有儲存的題庫</div>
+                        </div>
+                    </div>
+
+                    <!-- 跨課堂本地題庫 -->
+                    <div class="mt-3 pt-3 border-t border-cyan-200">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">📂 本地題庫（跨課堂共用）</label>
+                        <div class="flex gap-2">
+                            <select id="seq-global-bank-select" class="flex-1 p-2 border rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="">-- 選擇本地題庫 --</option>
+                            </select>
+                            <button type="button" onclick="importGlobalBank('seq')" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white text-xs rounded whitespace-nowrap">匯入此課堂</button>
+                            <button type="button" onclick="deleteGlobalBank('seq')" class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-xs rounded whitespace-nowrap">刪除</button>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">同一台電腦上儲存過的題庫，可在任一課堂代碼匯入後派送。</p>
+                    </div>
+                </div>
+
+                <div class="settings-button-group mt-4">
+                    <button id="start-sequencing-interaction-btn" class="btn bg-cyan-500 hover:bg-cyan-600">確認並開始互動
+                        🚀</button>
+                    <button id="cancel-sequencing-settings-btn" class="btn btn-gray">取消 ↩️</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 配對題設定模態框 -->
+    <div id="matching-settings-modal" class="magnified-image-modal hidden">
+        <div id="matching-settings-modal-content" class="magnified-image-modal-content">
+            <button id="matching-settings-modal-close-btn" class="magnified-image-modal-close">×</button>
+            <div class="w-full">
+                <!-- 題型切換按鈕 -->
+                <div class="flex justify-center mb-4 gap-2">
+                    <button id="switch-to-sequencing-btn"
+                        class="btn bg-cyan-500 hover:bg-cyan-600 text-white px-6 py-2 text-sm">
+                        📋 切換到排序題
+                    </button>
+                </div>
+                <h4 class="text-2xl font-bold mb-4 text-gray-800">配對題設定</h4>
+
+                <!-- 上方：左右兩欄布局 -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+                    <!-- 左欄：題目輸入 -->
+                    <div class="bg-gray-50 p-4 rounded-lg border">
+                        <label for="matching-pairs-textarea" class="block text-gray-700 text-sm font-bold mb-2">📝
+                            配對項目（每行一對，用逗號或Tab分隔）</label>
+                        <textarea id="matching-pairs-textarea" rows="6"
+                            class="w-full p-3 border rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-pink-500"
+                            placeholder="例如：
+台北,台灣首都
+東京,日本首都
+首爾,韓國首都
+北京,中國首都"></textarea>
+                        <p class="text-gray-600 text-xs mt-1">💡 提示：每行一對配對項目，用逗號（,）或Tab鍵分隔左右兩側</p>
+                    </div>
+
+                    <!-- 右欄：AI智能出題 -->
+                    <div class="bg-purple-50 p-4 rounded-lg border">
+                        <h5 class="text-lg font-bold text-gray-800 mb-3">🤖 AI 智能出題</h5>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2">出題主題或要求：</label>
+                                <textarea id="ai-match-topic-textarea" rows="2"
+                                    class="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    placeholder="例如：國家與首都的配對"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2">配對數量 (3-10):</label>
+                                <input type="number" id="ai-match-count-input" min="3" max="10" value="5"
+                                    class="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            </div>
+                            <div class="text-center">
+                                <button id="ai-generate-match-btn"
+                                    class="btn btn-purple w-full text-base h-11 px-4 py-2 flex items-center justify-center">
+                                    <i id="ai-match-btn-icon" class="fas fa-magic mr-2"></i>
+                                    <span id="ai-match-btn-text">AI 開始出題</span>
+                                </button>
+                                <div class="mt-2 flex items-center justify-center">
+                                    <span
+                                        class="inline-flex items-center px-3 py-1 bg-purple-50 rounded-full text-xs font-medium text-purple-700">
+                                        <i class="fas fa-robot mr-1.5"></i>
+                                        <span id="ai-match-model-name">使用模型: Gemini 3 Flash Preview</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div id="ai-match-loading-spinner"
+                                class="hidden flex items-center justify-center text-purple-600 pt-2">
+                                <i class="fas fa-spinner fa-spin mr-2"></i>
+                                <span>AI 思考中，請稍候...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 下方：題庫管理區塊（全寬） -->
+                <div class="w-full bg-blue-50 p-4 rounded-lg border">
+                    <h5 class="text-lg font-bold text-gray-800 mb-3">📚 題庫管理</h5>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col space-y-2">
+                            <label class="block text-gray-700 text-sm font-bold">從檔案載入題庫</label>
+                            <input type="file" id="match-bank-file-input" accept=".txt"
+                                class="w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <button id="load-match-bank-btn"
+                                class="btn bg-blue-600 hover:bg-blue-700 text-white text-sm h-8 px-3 py-1">載入題庫</button>
+                        </div>
+                        <div class="flex flex-col space-y-2">
+                            <label class="block text-gray-700 text-sm font-bold">儲存目前題目為題庫</label>
+                            <input type="text" id="match-bank-name-input" placeholder="輸入題庫名稱"
+                                class="w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <button id="save-match-bank-btn"
+                                class="btn bg-green-600 hover:bg-green-700 text-white text-sm h-8 px-3 py-1">儲存題庫</button>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">已儲存的題庫</label>
+                        <div id="match-bank-list"
+                            class="space-y-2 max-h-20 overflow-y-auto border rounded-md p-2 bg-white">
+                            <div class="text-gray-500 text-sm italic text-center">目前沒有儲存的題庫</div>
+                        </div>
+                    </div>
+
+                    <!-- 跨課堂本地題庫 -->
+                    <div class="mt-3 pt-3 border-t border-pink-200">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">📂 本地題庫（跨課堂共用）</label>
+                        <div class="flex gap-2">
+                            <select id="match-global-bank-select" class="flex-1 p-2 border rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="">-- 選擇本地題庫 --</option>
+                            </select>
+                            <button type="button" onclick="importGlobalBank('match')" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white text-xs rounded whitespace-nowrap">匯入此課堂</button>
+                            <button type="button" onclick="deleteGlobalBank('match')" class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-xs rounded whitespace-nowrap">刪除</button>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">同一台電腦上儲存過的題庫，可在任一課堂代碼匯入後派送。</p>
+                    </div>
+                </div>
+
+                <div class="settings-button-group mt-4">
+                    <button id="start-matching-interaction-btn" class="btn bg-pink-500 hover:bg-pink-600">確認並開始互動
+                        🚀</button>
+                    <button id="cancel-matching-settings-btn" class="btn btn-gray">取消 ↩️</button>
+                </div>
+            </div>
+        </div>
+    </div>

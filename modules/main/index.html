@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+    <!-- public/index.html 由 build.js 依本檔（modules/main/index.html）把 modules/ 內各檔組合產生；
+         要修改程式請改 modules/ 內的檔案，不要直接改 public/index.html（下次組合時會被覆蓋）。 -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>剛好學：課堂互動so easy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-cloud@1.2.7/build/d3.layout.cloud.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- 同步白板 / 同步簡報（CTP 子系統）匯出用：jsPDF；pdf.js 由 PdfUtil 於需要時動態載入 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        /* @include main/main.css */
+    </style>
+    <!-- CTP-CSS:START -->
+    <style>
+/* @include sync-common/ctp.css */
+    </style>
+    <!-- CTP-CSS:END -->
+</head>
+
+<body class="bg-indigo-50 text-slate-800">
+<!-- @include main/main.html -->
+    <script type="module">
+        // @include main/core.js
+        // @include main/interaction.js
+        // @include main/monitor.js
+        // @include main/classroom.js
+        // @include main/events.js
+        // @include 01-true-false/true-false.js
+        // @include 02-choice-sequencing-matching/choice-sequencing-matching.js
+        // @include 03-text-input/text-input.js
+        // @include 04-word-cloud/word-cloud.js
+        // @include 05-drawing/drawing.js
+        // @include 06-url-dispatch/url-dispatch.js
+        // @include 07-recording/recording.js
+        // @include 08-reading-comprehension/reading-comprehension.js
+        // @include 09-sticky-note/sticky-note.js
+        // @include 10-focus-game/focus-game.js
+        // @include 11-quick-answer/quick-answer.js
+        // @include 12-quick-poll/quick-poll.js
+        // @include 15-calc/calc.js
+        // @include 16-hotspot/hotspot.js
+        // @include ai-settings/ai-settings.js
+        // @include password/password.js
+        // @include main/start.js
+    </script>
+    <!-- CTP-OVERLAY:START -->
+    <!-- @include sync-common/ctp-overlay.html -->
+    <!-- CTP-OVERLAY:END -->
+    <!-- CTP-SUBSYSTEM:START -->
+    <script type="module">
+// @include sync-common/ctp-core.js
+// @include 13-whiteboard/whiteboard.js
+// @include 14-presentation/presentation.js
+// @include sync-common/ctp-start.js
+    </script>
+    <!-- CTP-SUBSYSTEM:END -->
+</body>
+
+</html>

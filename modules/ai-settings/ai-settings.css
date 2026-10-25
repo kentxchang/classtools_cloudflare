@@ -1,0 +1,66 @@
+        /* 【AI 設定 — 樣式】 modules/ai-settings/ai-settings.css */
+        /* AI Settings Modal Styles */
+        #ai-settings-modal-content {
+            padding: 1.5rem;
+            max-width: 400px;
+            width: 90%;
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: relative;
+        }
+
+        #ai-settings-modal-content h4 {
+            font-size: 1.75rem;
+            font-weight: bold;
+            color: #334155;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        #ai-settings-modal-content label {
+            font-weight: 500;
+            color: #475569;
+            margin-bottom: 0.25rem;
+            display: block;
+        }
+
+        #ai-settings-modal-content select,
+        #ai-settings-modal-content input[type="password"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            background-color: white;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='currentColor'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1.25em 1.25em;
+        }
+
+        #ai-settings-modal-content input[type="password"] {
+            background-image: none;
+            /* Remove dropdown arrow for password field */
+        }
+
+        .settings-button-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .settings-button-group .btn {
+            width: auto;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+

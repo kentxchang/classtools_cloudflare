@@ -1,0 +1,152 @@
+    <!-- 閱讀測驗設定模態框 -->
+    <div id="reading-comprehension-settings-modal" class="magnified-image-modal hidden">
+        <div id="reading-comprehension-settings-modal-content" class="magnified-image-modal-content"
+            style="max-width: 900px;">
+            <button id="reading-comprehension-settings-modal-close-btn" class="magnified-image-modal-close">×</button>
+            <h4 class="text-2xl font-bold mb-4 text-gray-800">閱讀測驗設定</h4>
+            <div class="w-full space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <!-- 左側：文本與題目輸入 -->
+                    <div class="flex flex-col space-y-4">
+                        <!-- 文本輸入框 -->
+                        <div>
+                            <label for="reading-text-textarea" class="block text-gray-700 text-sm font-bold mb-2">
+                                閱讀文本：
+                            </label>
+                            <textarea id="reading-text-textarea" rows="8"
+                                class="w-full p-3 border rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-red-500"
+                                placeholder="請輸入閱讀文本內容..."></textarea>
+                        </div>
+
+                        <!-- 題目輸入框 -->
+                        <div>
+                            <label for="reading-questions-textarea" class="block text-gray-700 text-sm font-bold mb-2">
+                                題目設定：
+                            </label>
+                            <p class="text-gray-600 text-xs mb-2">格式: 題目,正確答案(1-4或A-D),選項1,選項2,選項3,選項4<span
+                                    class="text-gray-500">,[層次(1-4)選填]</span><br>
+                                <span class="text-gray-500">支援逗號(,)或Tab分隔，每行一題</span>
+                            </p>
+                            <textarea id="reading-questions-textarea" rows="8"
+                                class="w-full p-3 border rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-red-500"
+                                placeholder="例如：
+主角的名字是什麼?,2,小明,小華,小美,小強,1
+本文的主旨是?,A,友誼的重要,競爭的意義,學習的價值,家庭的溫暖
+故事發生的地點在哪裡?,3,學校,公園,圖書館,家裡"></textarea>
+                            <p id="reading-questions-status" class="text-red-500 text-sm mt-2 hidden">格式錯誤或題目為空，請檢查輸入。
+                            </p>
+                        </div>
+
+                        <!-- 下載題庫按鈕 -->
+                        <div>
+                            <button id="download-reading-zip-btn"
+                                class="btn bg-teal-600 hover:bg-teal-700 text-white text-sm h-10 px-4 py-2 w-full flex items-center justify-center gap-2">
+                                <i class="fas fa-download"></i>
+                                <span>下載文本及題目 (ZIP)</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 右側：AI生成與題庫管理 -->
+                    <div class="flex flex-col space-y-4">
+                        <!-- AI 生成區塊 -->
+                        <div class="bg-purple-50 p-4 rounded-lg border flex-1">
+                            <h5 class="text-lg font-bold text-gray-800 text-center mb-4">🤖 PIRLS AI 出題</h5>
+                            <div class="space-y-3">
+                                <div>
+                                    <label for="ai-reading-topic-textarea"
+                                        class="block text-gray-700 text-sm font-bold mb-2">出題要求：</label>
+                                    <textarea id="ai-reading-topic-textarea" rows="3"
+                                        class="w-full p-2 border rounded-md text-base focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                        placeholder="例如：
+- 根據左方文本生成 PIRLS 閱讀理解題
+- 或直接描述主題，AI 會生成文本+題目"></textarea>
+                                </div>
+                                <div class="text-sm text-gray-600 bg-white p-2 rounded border">
+                                    <p class="font-bold mb-1">PIRLS 四層次配置：</p>
+                                    <ul class="list-disc list-inside text-xs space-y-1">
+                                        <li>層次1 (直接提取)：3題</li>
+                                        <li>層次2 (直接推論)：3題</li>
+                                        <li>層次3 (詮釋整合)：2題</li>
+                                        <li>層次4 (比較評估)：2題</li>
+                                    </ul>
+                                </div>
+                                <button id="ai-generate-reading-btn"
+                                    class="btn btn-purple !w-full text-base h-11 px-4 py-2 flex items-center justify-center">
+                                    <i id="ai-reading-btn-icon" class="fas fa-magic mr-2"></i>
+                                    <span id="ai-reading-btn-text">AI 開始出題</span>
+                                </button>
+                                <div id="ai-reading-loading-spinner"
+                                    class="hidden flex items-center justify-center text-purple-600 pt-2">
+                                    <i class="fas fa-spinner fa-spin mr-2"></i>
+                                    <span>AI 思考中，請稍候...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 題庫管理區塊 -->
+                        <div class="bg-blue-50 p-4 rounded-lg border">
+                            <h5 class="text-lg font-bold text-gray-800 text-center mb-4">📚 題庫管理</h5>
+                            <div class="space-y-3">
+                                <!-- 載入題庫 -->
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-bold mb-2">從檔案載入題庫</label>
+                                    <div class="space-y-2">
+                                        <div>
+                                            <label class="block text-gray-600 text-xs mb-1">上傳文本 (.txt)</label>
+                                            <input type="file" id="reading-text-file-input" accept=".txt"
+                                                class="w-full p-1 border rounded-md text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        </div>
+                                        <div>
+                                            <label class="block text-gray-600 text-xs mb-1">上傳題目 (.txt)</label>
+                                            <input type="file" id="reading-questions-file-input" accept=".txt"
+                                                class="w-full p-1 border rounded-md text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        </div>
+                                        <button id="load-reading-files-btn"
+                                            class="btn bg-blue-600 hover:bg-blue-700 text-white text-sm h-8 px-3 py-1 w-full">載入檔案</button>
+                                    </div>
+                                </div>
+
+                                <!-- 儲存題庫 -->
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-bold mb-2">儲存目前題目為題庫</label>
+                                    <input type="text" id="reading-question-bank-name-input" placeholder="輸入題庫名稱"
+                                        class="w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2">
+                                    <button id="save-reading-question-bank-btn"
+                                        class="btn bg-green-600 hover:bg-green-700 text-white text-sm h-8 px-3 py-1 w-full">儲存題庫</button>
+                                </div>
+
+                                <!-- 題庫列表 -->
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-bold mb-2">已儲存的題庫</label>
+                                    <div id="reading-question-bank-list"
+                                        class="space-y-2 max-h-32 overflow-y-auto border rounded-md p-2 bg-white">
+                                        <div class="text-gray-500 text-sm italic text-center">目前沒有儲存的題庫</div>
+                                    </div>
+                                </div>
+
+                                <!-- 跨課堂本地題庫 -->
+                                <div class="mt-3 pt-3 border-t border-gray-200">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2">📂 本地題庫（跨課堂共用）</label>
+                                    <div class="flex gap-2">
+                                        <select id="reading-global-bank-select" class="flex-1 p-2 border rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                            <option value="">-- 選擇本地題庫 --</option>
+                                        </select>
+                                        <button type="button" onclick="importGlobalBank('reading')" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white text-xs rounded whitespace-nowrap">匯入此課堂</button>
+                                        <button type="button" onclick="deleteGlobalBank('reading')" class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-xs rounded whitespace-nowrap">刪除</button>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">同一台電腦上儲存過的題庫，可在任一課堂代碼匯入後派送。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="settings-button-group mt-6 w-full">
+                <button id="start-reading-interaction-btn" class="btn btn-primary">確認並開始互動 🚀</button>
+                <button id="cancel-reading-settings-btn" class="btn btn-gray">取消 ↩️</button>
+            </div>
+        </div>
+    </div>

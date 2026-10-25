@@ -1,0 +1,677 @@
+        /* 【15 計算題 — 樣式】 modules/15-calc/calc.css */
+        /* 學生端多頁計算紙（移植自「區網版桌面截圖互動工具」計算題）；所有樣式以 calc- 為前綴，避免影響其他模組 */
+        .calc-screen {
+            --c-bg: #FBF7F4;
+            --c-surface: #FFFFFF;
+            --c-surface-2: #F6F1F8;
+            --c-line: #ECE4EF;
+            --c-ink: #4A4358;
+            --c-muted: #8F879C;
+            --c-pink: #F9D3DF;
+            --c-pink-d: #E88AAB;
+            --c-mint: #CDEFE2;
+            --c-mint-d: #5FBF9C;
+            --c-lav: #E2D8F6;
+            --c-lav-d: #9C84DB;
+            --c-lemon: #FFF1BF;
+            --c-lemon-d: #E3BD45;
+            --c-radius: 22px;
+            --c-shadow: 0 10px 30px rgba(120, 100, 150, .14), 0 2px 6px rgba(120, 100, 150, .08);
+            --c-sat: env(safe-area-inset-top, 0px);
+            --c-sab: env(safe-area-inset-bottom, 0px);
+            --c-sal: env(safe-area-inset-left, 0px);
+            --c-sar: env(safe-area-inset-right, 0px);
+            position: fixed;
+            inset: 0;
+            z-index: 45;
+            display: flex;
+            flex-direction: column;
+            padding: var(--c-sat) var(--c-sar) var(--c-sab) var(--c-sal);
+            background: var(--c-bg);
+            color: var(--c-ink);
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            overscroll-behavior: none;
+        }
+
+        .calc-screen *,
+        .calc-screen *::before,
+        .calc-screen *::after {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .calc-screen button {
+            font: inherit;
+            color: inherit;
+            border: none;
+            background: none;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        .calc-screen .calc-card {
+            background: var(--c-surface);
+            border: 1px solid var(--c-line);
+            border-radius: var(--c-radius);
+            box-shadow: var(--c-shadow);
+        }
+
+        .calc-screen .calc-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 56px;
+            padding: 0 26px;
+            border-radius: 18px;
+            font-size: 19px;
+            font-weight: 700;
+            background: var(--c-surface);
+            border: 1px solid var(--c-line);
+            white-space: nowrap;
+            transition: transform .12s ease, filter .12s ease, background .2s;
+        }
+
+        .calc-screen .calc-btn:active {
+            transform: scale(.97);
+            filter: brightness(.97);
+        }
+
+        .calc-screen .calc-btn:disabled {
+            opacity: .5;
+        }
+
+        .calc-screen .calc-btn.pink {
+            background: var(--c-pink);
+            border-color: var(--c-pink);
+        }
+
+        .calc-screen .calc-btn.primary {
+            background: linear-gradient(135deg, #D9CBF7, #F6CFE0);
+            border: none;
+            box-shadow: 0 6px 16px rgba(156, 132, 219, .28);
+        }
+
+        .calc-screen .calc-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            height: 36px;
+            padding: 0 14px;
+            border-radius: 999px;
+            background: var(--c-surface);
+            border: 1px solid var(--c-line);
+            font-weight: 700;
+            font-size: 15px;
+            white-space: nowrap;
+        }
+
+        .calc-screen .calc-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--c-mint-d);
+            box-shadow: 0 0 0 4px rgba(95, 191, 156, .2);
+        }
+
+        .calc-screen .calc-spacer {
+            flex: 1;
+        }
+
+        .calc-screen .calc-sep {
+            flex: none;
+            width: 1px;
+            height: 32px;
+            background: var(--c-line);
+            margin: 0 3px;
+        }
+
+        .calc-screen .calc-tbtn {
+            flex: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            display: grid;
+            place-items: center;
+            font-size: 23px;
+            transition: background .15s, transform .12s;
+        }
+
+        .calc-screen .calc-tbtn:active {
+            transform: scale(.92);
+        }
+
+        .calc-screen .calc-tbtn.on {
+            background: var(--c-lav);
+            box-shadow: inset 0 0 0 2px var(--c-lav-d);
+        }
+
+        .calc-screen .calc-tbtn:disabled {
+            opacity: .35;
+        }
+
+        .calc-screen .calc-swatch {
+            flex: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+        }
+
+        .calc-screen .calc-swatch i {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .1);
+        }
+
+        .calc-screen .calc-swatch.on {
+            box-shadow: 0 0 0 3px var(--c-ink);
+        }
+
+        /* ---------- 計算題：四格計算紙 ---------- */
+        .calc-top {
+            flex: none;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 10px;
+        }
+
+        .calc-screen .calc-qthumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            height: 52px;
+            padding: 3px 12px 3px 3px;
+            border-radius: 14px;
+            background: var(--c-surface);
+            border: 1px solid var(--c-line);
+            font-weight: 800;
+            font-size: 15px;
+        }
+
+        .calc-qthumb img {
+            height: 44px;
+            width: 64px;
+            object-fit: cover;
+            border-radius: 10px;
+            background: var(--c-surface-2);
+        }
+
+        .calc-screen .calc-tbtn small {
+            font-size: 11px;
+            font-weight: 800;
+            margin-left: -4px;
+            align-self: end;
+        }
+
+        .calc-top .calc-tbtn {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .calc-top .calc-btn {
+            min-height: 50px;
+            padding: 0 20px;
+        }
+
+        /* 觸控筆模式切換鈕：偵測到 Apple Pencil 後出現，可手動切回手指書寫 */
+        .calc-screen .calc-pen-chip {
+            display: none;
+            height: 44px;
+            cursor: pointer;
+            touch-action: manipulation;
+            background: var(--c-surface);
+            border: 1px solid var(--c-line);
+            transition: background .2s, border-color .2s;
+        }
+
+        .calc-screen.pen-seen .calc-pen-chip {
+            display: inline-flex;
+        }
+
+        .calc-screen.penmode .calc-pen-chip {
+            background: var(--c-mint);
+            border-color: var(--c-mint-d);
+        }
+
+        .calc-area {
+            position: relative;
+            flex: 1;
+            min-height: 0;
+            margin: 0 10px 10px;
+        }
+
+        .calc-grid {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-auto-rows: var(--rowh, calc(50% - 4px));
+            align-content: start;
+            gap: 8px;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .calc-grid::-webkit-scrollbar {
+            display: none;
+        }
+
+        .calc-screen .calc-fadd {
+            right: 10px;
+            bottom: 10px;
+            background: var(--c-mint);
+            border-color: var(--c-mint-d);
+        }
+
+        .calc-cpanel,
+        .calc-fpage {
+            position: relative;
+            background-color: #fff;
+            background-image:
+                linear-gradient(#EEE8F3 1px, transparent 1px),
+                linear-gradient(90deg, #EEE8F3 1px, transparent 1px);
+            background-size: var(--g, 40px) var(--g, 40px);
+            background-position: var(--gx, 0) var(--gy, 0);
+            border-radius: 14px;
+            box-shadow: 0 4px 14px rgba(120, 100, 150, .12), 0 1px 3px rgba(120, 100, 150, .08);
+            overflow: hidden;
+        }
+
+        .calc-cpanel {
+            cursor: pointer;
+            transition: transform .12s;
+        }
+
+        .calc-cpanel:active {
+            transform: scale(.985);
+        }
+
+        .calc-cpanel canvas,
+        .calc-fpage canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .calc-pbadge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: rgba(143, 135, 156, .42);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 800;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .calc-focus {
+            position: absolute;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 6;
+            background: rgba(251, 247, 244, 0);
+            transition: background .3s;
+        }
+
+        .calc-focus.show {
+            display: flex;
+        }
+
+        .calc-focus.on {
+            background: rgba(251, 247, 244, .96);
+        }
+
+        .calc-fpage {
+            transform-origin: 0 0;
+            touch-action: none;
+            border-radius: 18px;
+        }
+
+        .calc-fpage canvas {
+            touch-action: none;
+        }
+
+        .calc-screen .calc-fbtn {
+            position: absolute;
+            z-index: 7;
+            height: 54px;
+            padding: 0 18px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .94);
+            border: 1px solid var(--c-line);
+            box-shadow: var(--c-shadow);
+            font-size: 17px;
+            font-weight: 800;
+            opacity: 0;
+            transition: opacity .25s;
+        }
+
+        .calc-focus.on .calc-fbtn {
+            opacity: 1;
+        }
+
+        .calc-screen .calc-fback {
+            top: 10px;
+            left: 10px;
+        }
+
+        .calc-screen .calc-fprev,
+        .calc-screen .calc-fnext {
+            top: 50%;
+            transform: translateY(-50%);
+            width: 60px;
+            height: 76px;
+            padding: 0;
+            font-size: 24px;
+            border-radius: 22px;
+        }
+
+        .calc-screen .calc-fprev {
+            left: 6px;
+        }
+
+        .calc-screen .calc-fnext {
+            right: 6px;
+        }
+
+        /* 查看前一頁（浮動預覽，可拖曳、放大、翻看更早的頁） */
+        .calc-screen .calc-fpeek {
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--c-lemon);
+            border-color: var(--c-lemon-d);
+        }
+
+        .calc-screen .calc-fpeek.on {
+            background: var(--c-surface);
+            border-color: var(--c-line);
+        }
+
+        .calc-peek {
+            position: absolute;
+            top: 74px;
+            right: 76px;
+            width: 38%;
+            display: none;
+            flex-direction: column;
+            z-index: 8;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, .98);
+            border: 2px solid var(--c-lemon-d);
+            box-shadow: 0 16px 40px rgba(74, 67, 88, .25);
+            overflow: hidden;
+        }
+
+        .calc-peek.show {
+            display: flex;
+        }
+
+        .calc-peek.big {
+            width: 62%;
+        }
+
+        .calc-peek-head {
+            flex: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 6px 6px 14px;
+            background: var(--c-lemon);
+            font-weight: 800;
+            font-size: 16px;
+            touch-action: none;
+            cursor: move;
+        }
+
+        .calc-screen .calc-peek-head button {
+            width: 42px;
+            height: 38px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, .75);
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .calc-screen .calc-peek-head button:disabled {
+            opacity: .3;
+        }
+
+        .calc-peek-body {
+            position: relative;
+            margin: 6px;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #fff;
+            background-image:
+                linear-gradient(#EEE8F3 1px, transparent 1px),
+                linear-gradient(90deg, #EEE8F3 1px, transparent 1px);
+            background-size: var(--g, 20px) var(--g, 20px);
+        }
+
+        .calc-peek-body canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* ---------- 浮層 ---------- */
+        .calc-toast {
+            position: fixed;
+            left: 50%;
+            top: calc(16px + var(--c-sat));
+            transform: translate(-50%, -30px);
+            opacity: 0;
+            pointer-events: none;
+            padding: 14px 24px;
+            border-radius: 999px;
+            background: rgba(74, 67, 88, .92);
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+            transition: all .25s ease;
+            z-index: 100;
+            max-width: calc(100vw - 40px);
+            text-align: center;
+        }
+
+        .calc-toast.show {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+
+        .calc-paused-bar {
+            position: fixed;
+            top: calc(12px + var(--c-sat));
+            left: 50%;
+            transform: translateX(-50%);
+            display: none;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            border-radius: 999px;
+            background: var(--c-lemon);
+            border: 2px solid var(--c-lemon-d);
+            font-size: 18px;
+            font-weight: 800;
+            z-index: 91;
+            box-shadow: var(--c-shadow);
+            pointer-events: none;
+        }
+
+        .calc-screen.paused .calc-paused-bar {
+            display: flex;
+        }
+
+        /* 同參考程式：暫停時只顯示上方提示並停用送出，學生仍可繼續書寫（不顯示剛好學的全畫面暫停遮罩） */
+        #student-interaction-view:has(#interaction-calc:not(.hidden)) #student-pause-overlay {
+            display: none;
+        }
+
+        .calc-modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(74, 67, 88, .28);
+            -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(6px);
+            z-index: 80;
+        }
+
+        .calc-modal.show {
+            display: flex;
+        }
+
+        .calc-modal .calc-card {
+            width: min(420px, calc(100vw - 48px));
+            padding: 32px 28px 24px;
+            text-align: center;
+        }
+
+        .calc-modal h3 {
+            margin: 0 0 8px;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .calc-modal p {
+            margin: 0 0 24px;
+            color: var(--c-muted);
+            font-size: 17px;
+        }
+
+        .calc-modal .calc-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .calc-modal .calc-row .calc-btn {
+            flex: 1;
+        }
+
+        .calc-modal .calc-col {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .calc-viewer {
+            background: rgba(251, 247, 244, .98);
+            padding: calc(10px + var(--c-sat)) 10px calc(10px + var(--c-sab));
+        }
+
+        .calc-viewer img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .calc-screen .calc-viewer .calc-close {
+            position: fixed;
+            top: calc(12px + var(--c-sat));
+            right: 14px;
+        }
+
+        /* ---------- 已送出 ---------- */
+        .calc-sent {
+            position: absolute;
+            inset: 0;
+            z-index: 20;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: var(--c-bg);
+        }
+
+        .calc-sent.show {
+            display: flex;
+        }
+
+        .calc-center-card {
+            width: min(520px, calc(100vw - 48px));
+            padding: 44px 40px 36px;
+            text-align: center;
+        }
+
+        .calc-check {
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 22px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 56px;
+            background: var(--c-mint);
+            color: #3E8F72;
+            animation: calcPop .45s cubic-bezier(.2, 1.4, .4, 1);
+        }
+
+        @keyframes calcPop {
+            from { transform: scale(.4); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .calc-hello {
+            font-size: 28px;
+            font-weight: 800;
+            margin: 0 0 10px;
+        }
+
+        .calc-sub {
+            margin: 0;
+            color: var(--c-muted);
+            font-size: 17px;
+            line-height: 1.6;
+        }
+
+        .calc-screen .calc-center-card .calc-btn {
+            width: 100%;
+            margin-top: 18px;
+            min-height: 64px;
+            font-size: 21px;
+        }
+
+        /* ---------- 教師端：計算過程檢視 ---------- */
+        .calc-viewer-tile canvas,
+        .calc-viewer-single canvas {
+            display: block;
+            background: #fff;
+        }
+
+        .calc-viewer-tile canvas {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .calc-viewer-single canvas {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(120, 100, 150, .15);
+        }

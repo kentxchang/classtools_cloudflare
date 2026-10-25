@@ -1,0 +1,69 @@
+        /* 【03 文字題 — 樣式】 modules/03-text-input/text-input-ai-summary.css */
+        /* AI Text Summary Modal Styles */
+        #ai-summary-modal-content {
+            padding: 1.5rem;
+            max-width: 500px;
+            width: 90%;
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: relative;
+            /* Needed for close button positioning */
+        }
+
+        #ai-summary-modal-content h4 {
+            font-size: 1.75rem;
+            font-weight: bold;
+            color: #334155;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        #ai-summary-result-list {
+            list-style-type: none;
+            /* Removed decimal numbering */
+            padding-left: 0;
+            /* Removed default padding for list */
+            font-size: 1rem;
+        }
+
+        /* Default style for list items (successful results) */
+        #ai-summary-result-list li {
+            margin-bottom: 0.4rem;
+            padding: 0.2rem 0;
+            border-bottom: 1px dashed #e2e8f0;
+            color: black;
+            /* Changed to black */
+            font-weight: bold;
+            /* Added bold */
+        }
+
+        #ai-summary-result-list li:last-child {
+            border-bottom: none;
+        }
+
+        /* Style for error messages within the list */
+        #ai-summary-result-list li.error-message {
+            color: white;
+            /* White color for error messages */
+            background-color: #dc2626;
+            /* A red background for visual emphasis (optional, but good for error) */
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            text-align: center;
+        }
+
+        #ai-loading-spinner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100px;
+            /* Ensure some height for spinner */
+            color: #2563eb;
+            font-size: 1.1rem;
+        }
+

@@ -1,0 +1,28 @@
+            <div id="interaction-quick-answer"
+                class="hidden text-center flex flex-col items-center justify-center h-full min-h-screen p-4 relative">
+                <h3 class="text-3xl font-bold text-slate-800 mb-8 flex items-center gap-3">
+                    <span class="bg-amber-100 text-amber-600 p-2 rounded-lg"><i class="fas fa-bolt"></i></span> 搶答題
+                </h3>
+                <p id="quick-answer-status-text"
+                    class="text-xl text-slate-500 mb-8 font-medium bg-white px-6 py-2 rounded-full shadow-sm">等待搶答開始...
+                </p>
+                <div id="quick-answer-button-container" class="absolute inset-0 pointer-events-none">
+                    <!-- 搶答按鈕將會動態生成在這裡 -->
+                </div>
+                <div id="quick-answer-result" class="hidden animate-fade-in-up">
+                    <div
+                        class="bg-green-100 text-green-700 p-10 rounded-full w-80 h-80 flex flex-col items-center justify-center shadow-2xl border-8 border-green-200 mx-auto">
+                        <i class="fas fa-trophy text-6xl mb-4"></i>
+                        <h2 class="text-3xl font-bold mb-2">搶答成功！</h2>
+                        <p class="text-lg opacity-90">你是第一名！</p>
+                    </div>
+                </div>
+                <div id="quick-answer-locked" class="hidden animate-fade-in-up">
+                    <div
+                        class="bg-slate-100 text-slate-500 p-10 rounded-full w-64 h-64 flex flex-col items-center justify-center border-8 border-slate-200 mx-auto">
+                        <i class="fas fa-lock text-5xl mb-4"></i>
+                        <h2 class="text-2xl font-bold mb-2">搶答結束</h2>
+                        <p class="text-sm opacity-80">下次再加油！</p>
+                    </div>
+                </div>
+            </div>

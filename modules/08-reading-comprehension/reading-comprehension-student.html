@@ -1,0 +1,73 @@
+            <div id="interaction-reading-comprehension" class="hidden flex flex-col"
+                style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #f8fafc; overflow: hidden; z-index: 50; padding: 1.5rem 0;">
+                <!-- 標題與送出按鈕 -->
+                <div class="flex items-center justify-center mb-4 relative flex-shrink-0 px-6">
+                    <h3 class="text-2xl font-bold text-slate-800 flex items-center gap-2">
+                        <span class="bg-rose-100 text-rose-600 p-1.5 rounded-lg text-xl"><i
+                                class="fas fa-book-open"></i></span> 閱讀測驗
+                    </h3>
+                    <button id="submit-reading-btn"
+                        class="absolute right-6 px-6 py-2 bg-gradient-to-r from-rose-500 to-pink-600 text-white rounded-xl font-bold hover:shadow-lg transition flex items-center">
+                        送出 <i class="fas fa-paper-plane ml-2"></i>
+                    </button>
+                </div>
+
+                <!-- 左右二欄佈局 -->
+                <div class="flex flex-col lg:flex-row gap-6 mx-auto flex-1 w-[96%] min-h-0 pb-4">
+                    <!-- 左欄：閱讀文本 -->
+                    <div class="w-full lg:w-1/2 flex flex-col min-h-0">
+                        <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6 flex flex-col h-full">
+                            <div class="flex items-center justify-between mb-4 flex-shrink-0">
+                                <h4 class="text-lg font-bold text-slate-700">
+                                    <i class="fas fa-align-left text-slate-400 mr-2"></i>文章內容
+                                </h4>
+                                <!-- 螢光筆工具列 -->
+                                <div
+                                    class="flex gap-2 items-center bg-slate-50 p-1.5 rounded-xl border border-slate-100">
+                                    <button class="highlighter-btn w-8 h-8 rounded-lg border border-slate-200"
+                                        data-color="yellow" style="background-color: #fef08a;" title="黃色螢光筆"></button>
+                                    <button class="highlighter-btn w-8 h-8 rounded-lg border border-slate-200"
+                                        data-color="green" style="background-color: #86efac;" title="綠色螢光筆"></button>
+                                    <button class="highlighter-btn w-8 h-8 rounded-lg border border-slate-200"
+                                        data-color="pink" style="background-color: #fda4af;" title="粉色螢光筆"></button>
+                                    <button class="highlighter-btn w-8 h-8 rounded-lg border border-slate-200"
+                                        data-color="blue" style="background-color: #93c5fd;" title="藍色螢光筆"></button>
+                                    <div class="w-px h-6 bg-slate-300 mx-1"></div>
+                                    <button id="reading-eraser-btn"
+                                        class="w-8 h-8 rounded-lg border border-slate-200 bg-white flex items-center justify-center text-slate-500 hover:bg-slate-100"
+                                        title="橡皮擦">
+                                        <i class="fas fa-eraser"></i>
+                                    </button>
+                                    <button id="reading-mouse-btn"
+                                        class="w-8 h-8 rounded-lg border border-slate-200 bg-white flex items-center justify-center text-slate-500 hover:bg-slate-100"
+                                        title="滑鼠模式">
+                                        <i class="fas fa-mouse-pointer"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div style="position: relative; flex: 1; min-height: 0; overflow-x: hidden;"
+                                class="bg-orange-50/50 rounded-xl border border-orange-100">
+                                <div id="reading-text-display"
+                                    class="p-6 text-left text-base leading-loose whitespace-pre-wrap overflow-y-auto h-full text-slate-800"
+                                    style="overflow-x: hidden; width: 100%;"></div>
+                                <canvas id="reading-highlight-canvas"
+                                    style="position: absolute; top: 0; left: 0; pointer-events: none; border-radius: 0.75rem; display: none;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 右欄：題目 -->
+                    <div class="w-full lg:w-1/2 flex flex-col min-h-0">
+                        <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6 flex flex-col h-full">
+                            <h4
+                                class="text-lg font-bold text-slate-700 mb-4 flex-shrink-0 border-b border-slate-100 pb-3">
+                                <i class="fas fa-clipboard-question text-slate-400 mr-2"></i>作答區
+                            </h4>
+                            <div id="reading-questions-container" class="space-y-6 overflow-y-auto flex-1 pr-2"
+                                style="min-height: 0; overflow-x: hidden; width: 100%;">
+                                <!-- 題目將動態生成在這裡 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>

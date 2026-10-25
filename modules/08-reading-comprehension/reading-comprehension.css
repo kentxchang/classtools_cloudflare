@@ -1,0 +1,235 @@
+        /* 【08 閱讀測驗 — 樣式】 modules/08-reading-comprehension/reading-comprehension.css */
+        /* Reading Comprehension - Highlighter Styles */
+        .highlighter-btn {
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .highlighter-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .highlighter-btn.active {
+            border-color: #374151 !important;
+            border-width: 3px;
+            box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
+        }
+
+        .highlighter-btn.active::after {
+            content: '✓';
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            background-color: #374151;
+            color: white;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        #eraser-btn:hover,
+        #reading-eraser-btn:hover,
+        #reading-mouse-btn:hover {
+            background-color: #f3f4f6;
+            transform: scale(1.1);
+        }
+
+        #eraser-btn.active,
+        #reading-eraser-btn.active,
+        #reading-mouse-btn.active {
+            background-color: #374151;
+            border-color: #374151;
+            border-width: 3px;
+            position: relative;
+        }
+
+        #eraser-btn.active i,
+        #reading-eraser-btn.active i,
+        #reading-mouse-btn.active i {
+            color: white;
+        }
+
+        #eraser-btn.active::after,
+        #reading-eraser-btn.active::after,
+        #reading-mouse-btn.active::after {
+            content: '✓';
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            background-color: #374151;
+            color: white;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            font-size: 10px;
+            line-height: 16px;
+            text-align: center;
+        }
+
+        /* Highlighted text spans */
+        .highlight {
+            padding: 2px 4px;
+            border-radius: 3px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+            border: 1px solid #000;
+            display: inline;
+        }
+
+        .highlight:hover {
+            opacity: 0.8;
+        }
+
+        .highlight.yellow {
+            background-color: rgba(254, 240, 138, 0.8);
+        }
+
+        .highlight.green {
+            background-color: rgba(134, 239, 172, 0.8);
+        }
+
+        .highlight.pink {
+            background-color: rgba(253, 164, 175, 0.8);
+        }
+
+        .highlight.blue {
+            background-color: rgba(147, 197, 253, 0.8);
+        }
+
+        /* Eraser mode cursor and hover effect */
+        #reading-text-display.eraser-mode {
+            cursor: pointer;
+        }
+
+        #reading-text-display.eraser-mode .highlight {
+            cursor: pointer;
+        }
+
+        #reading-text-display.eraser-mode .highlight:hover {
+            opacity: 0.5;
+            text-decoration: line-through;
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+        }
+
+        /* Reading comprehension question cards */
+        #reading-questions-container .question-card {
+            background: linear-gradient(to right, #f0fdf4, #ecfdf5);
+            border-left: 4px solid #10b981;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        #reading-questions-container .question-card:hover {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transform: translateX(4px);
+        }
+
+        /* Touch device optimizations */
+        #reading-text-display {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+            -webkit-touch-callout: default;
+        }
+
+        /* Larger touch targets for highlighter buttons on mobile */
+        @media (hover: none) and (pointer: coarse) {
+
+            .highlighter-btn,
+            #reading-eraser-btn,
+            #reading-mouse-btn {
+                min-width: 44px;
+                min-height: 44px;
+                touch-action: manipulation;
+            }
+
+            /* Improve touch feedback */
+            .highlighter-btn:active,
+            #reading-eraser-btn:active,
+            #reading-mouse-btn:active {
+                transform: scale(0.95);
+                transition: transform 0.1s;
+            }
+
+            /* Make highlights easier to tap on touch devices */
+            .highlight {
+                padding: 4px 2px;
+                min-height: 24px;
+                display: inline-block;
+            }
+        }
+
+        /* Fix reading comprehension layout on mobile */
+        @media (max-width: 1023px) {
+
+            /* Reduce padding on main container */
+            #interaction-reading-comprehension {
+                padding: 0.75rem 0 !important;
+            }
+
+            /* Reduce header margin */
+            #interaction-reading-comprehension>div:first-child {
+                margin-bottom: 0.75rem !important;
+            }
+
+            /* Force proper height distribution on mobile */
+            #interaction-reading-comprehension>div:nth-child(2) {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 0.75rem !important;
+            }
+
+            /* Text content section - fixed height */
+            #interaction-reading-comprehension>div:nth-child(2)>div:first-child {
+                flex: 0 0 auto !important;
+                height: 42vh !important;
+                min-height: 42vh !important;
+                max-height: 42vh !important;
+            }
+
+            /* Questions section - take remaining space */
+            #interaction-reading-comprehension>div:nth-child(2)>div:last-child {
+                flex: 1 1 auto !important;
+                min-height: 0 !important;
+            }
+
+            /* Reduce padding on white cards */
+            #interaction-reading-comprehension .bg-white.rounded-2xl {
+                padding: 1rem !important;
+                height: 100% !important;
+            }
+
+            /* Reduce title margin */
+            #interaction-reading-comprehension h4 {
+                margin-bottom: 0.5rem !important;
+                font-size: 1rem !important;
+            }
+
+            /* Ensure text display fills its container */
+            #reading-text-display {
+                height: 100% !important;
+                overflow-y: auto !important;
+                padding: 1rem !important;
+                font-size: 0.875rem !important;
+                line-height: 1.6 !important;
+            }
+
+            /* Smaller highlighter tools on mobile */
+            .highlighter-btn,
+            #reading-eraser-btn,
+            #reading-mouse-btn {
+                width: 2rem !important;
+                height: 2rem !important;
+            }
+        }
+

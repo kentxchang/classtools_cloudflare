@@ -1,0 +1,53 @@
+            <!-- Sticky Note Interaction (Student) -->
+            <div id="interaction-sticky-note" class="hidden text-center w-full max-w-3xl mx-auto pt-10 px-4">
+                <h3 class="text-3xl font-bold text-slate-800 mb-8 flex items-center justify-center gap-3">
+                    <span class="bg-amber-100 text-amber-600 p-2 rounded-lg"><i class="fas fa-note-sticky"></i></span>
+                    便利貼牆
+                </h3>
+
+                <!-- Tab selection -->
+                <div class="flex gap-2 mb-6 justify-center">
+                    <button id="sticky-text-tab"
+                        class="px-6 py-3 rounded-xl font-bold bg-amber-500 text-white transition">
+                        <i class="fas fa-font mr-2"></i>文字
+                    </button>
+                    <button id="sticky-image-tab"
+                        class="px-6 py-3 rounded-xl font-bold bg-slate-200 text-slate-600 transition hover:bg-slate-300">
+                        <i class="fas fa-image mr-2"></i>圖片
+                    </button>
+                </div>
+
+                <!-- Text input section -->
+                <div id="sticky-text-section" class="bg-white p-6 rounded-2xl shadow-lg border border-slate-100">
+                    <p class="text-slate-600 mb-4 text-sm">請輸入您的想法或意見（單行文字）</p>
+                    <input type="text" id="sticky-note-text"
+                        class="w-full p-4 border border-slate-200 rounded-xl text-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-slate-50 focus:bg-white transition"
+                        placeholder="在此輸入文字...">
+                    <p class="text-xs text-slate-400 mt-2">已輸入：<span id="sticky-text-char-count">0</span> 字</p>
+                </div>
+
+                <!-- Image upload section -->
+                <div id="sticky-image-section"
+                    class="hidden bg-white p-6 rounded-2xl shadow-lg border border-slate-100">
+                    <p class="text-slate-600 mb-4 text-sm">請選擇或拍攝圖片</p>
+                    <div class="flex flex-col gap-3">
+                        <input type="file" id="sticky-image-input" accept="image/*" class="hidden">
+                        <button id="sticky-select-image-btn"
+                            class="btn bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 rounded-xl shadow-lg">
+                            <i class="fas fa-folder-open mr-2"></i>選擇圖片
+                        </button>
+                        <button id="sticky-capture-image-btn"
+                            class="btn bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 rounded-xl shadow-lg">
+                            <i class="fas fa-camera mr-2"></i>拍攝照片
+                        </button>
+                    </div>
+                    <div id="sticky-image-preview" class="hidden mt-4">
+                        <img id="sticky-preview-img"
+                            class="max-w-full max-h-64 mx-auto rounded-xl border-2 border-amber-300">
+                    </div>
+                </div>
+
+                <button id="submit-sticky-note-btn"
+                    class="btn bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 mt-6 max-w-xs mx-auto rounded-xl shadow-lg shadow-amber-200 text-lg py-3">送出便利貼
+                    <i class="fas fa-paper-plane ml-2"></i></button>
+            </div>
