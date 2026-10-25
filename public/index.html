@@ -3383,7 +3383,7 @@
                 <button id="deploy-guide-btn" type="button"
                     class="inline-flex items-center px-4 py-2 bg-amber-100 hover:bg-amber-200 text-amber-700 text-sm font-medium rounded-xl shadow-sm border border-amber-200 transition-all duration-200">
                     <i class="fas fa-book-open mr-2"></i>
-                    建置說明
+                    建置及操作說明
                 </button>
             </div>
 
@@ -4713,22 +4713,45 @@
         <button id="close-message-btn" class="absolute top-1 right-2 text-white text-xl leading-none">×</button>
     </div>
 
-    <!-- 建置說明 Modal（內容同 README.md「部署到 Cloudflare（用指令，最推薦）」） -->
+    <!-- 建置及操作說明 Modal（建置說明分頁內容同 README.md「部署到 Cloudflare（用指令，最推薦）」） -->
     <div id="deploy-guide-modal"
         class="hidden fixed inset-0 bg-black bg-opacity-50 z-[120] flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-white rounded-xl shadow-2xl p-6 md:p-8 max-w-2xl w-full my-auto max-h-[90vh] overflow-y-auto text-left text-slate-700 leading-relaxed">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
-                    <i class="fas fa-book-open text-amber-500"></i>部署到 Cloudflare（用指令，最推薦）
+                    <i class="fas fa-book-open text-amber-500"></i>建置及操作說明
                 </h2>
                 <button id="deploy-guide-modal-close-btn"
                     class="text-gray-400 hover:text-gray-700 text-3xl font-bold leading-none">&times;</button>
             </div>
+            <div class="flex gap-2 mb-5 border-b border-slate-200">
+                <button type="button" data-guide-tab="deploy-guide-tab-build"
+                    class="deploy-guide-tab-btn px-4 py-2 -mb-px border-b-2 border-amber-500 text-amber-700 font-bold">建置說明</button>
+                <button type="button" data-guide-tab="deploy-guide-tab-usage"
+                    class="deploy-guide-tab-btn px-4 py-2 -mb-px border-b-2 border-transparent text-slate-500 font-bold">功能操作說明</button>
+            </div>
+
+            <!-- 第一分頁：建置說明 -->
+            <div id="deploy-guide-tab-build" class="deploy-guide-tab-panel">
+            <h3 class="font-bold text-lg text-slate-800 mb-2">示範說明影片</h3>
+            <div class="aspect-video w-full rounded-lg overflow-hidden bg-black mb-4">
+                <iframe class="w-full h-full" src="https://www.youtube.com/embed/17KpmuaieLU" title="建置示範說明影片" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+
+            <h3 class="font-bold text-lg text-slate-800 mt-4 mb-1">下載原始碼</h3>
+            <p>原始碼網址：<a href="https://github.com/kentxchang/classtools_cloudflare" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline break-all">https://github.com/kentxchang/classtools_cloudflare</a></p>
+            <ol class="list-decimal pl-6 space-y-1 mt-1">
+                <li>點上方網址進入 GitHub 頁面。</li>
+                <li>按右上方綠色的 <strong>&lt;&gt; Code</strong> 按鈕，再點選 <strong>Download ZIP</strong> 下載壓縮檔。</li>
+                <li>在下載的 ZIP 檔上按右鍵，選「<strong>解壓縮全部</strong>」，解壓縮後會得到 <code>classtools_cloudflare-main</code> 資料夾，接著依照以下步驟部署。</li>
+            </ol>
+
+            <h3 class="font-bold text-lg text-slate-800 mt-5 mb-1">部署到 Cloudflare（用指令，最推薦）</h3>
             <p class="text-sm text-slate-500 mb-4">事前準備：註冊 Cloudflare 帳號（<a href="https://dash.cloudflare.com/sign-up" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline">dash.cloudflare.com/sign-up</a>），並安裝 Node.js LTS 版（<a href="https://nodejs.org/" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline">nodejs.org</a>）。</p>
 
             <h3 class="font-bold text-lg text-slate-800 mt-4 mb-1">步驟 1：在本資料夾打開命令視窗</h3>
             <ol class="list-decimal pl-6 space-y-1">
-                <li>用檔案總管打開 <code>剛好學-cloudflare版</code> 資料夾（看得到 <code>wrangler.jsonc</code> 那一層）。</li>
+                <li>用檔案總管打開解壓縮後的 <code>classtools_cloudflare-main</code> 資料夾（看得到 <code>wrangler.jsonc</code> 那一層）。</li>
                 <li>點一下上方的<strong>網址列</strong>，把內容改成 <code>cmd</code> 後按 Enter，就會在這個資料夾開啟命令提示字元。</li>
             </ol>
 
@@ -4760,6 +4783,27 @@
                 <li>點進你的 Worker，在「繫結 / Bindings」區域會看到名為 <code>ROOMS</code> 的 <strong>Durable Object</strong>，這就是資料庫。</li>
                 <li>每開一間教室，就會自動產生一個該教室專用的資料庫；按下「下課」時會清空該教室的資料。</li>
             </ol>
+            </div>
+
+            <!-- 第二分頁：功能操作說明 -->
+            <div id="deploy-guide-tab-usage" class="deploy-guide-tab-panel hidden -mt-3">
+                <h3 class="font-bold text-lg text-slate-800 mt-5 mb-2">🎬【EP1】智慧教學篇（AI 設定與出題互動）</h3>
+                <div class="aspect-video w-full rounded-lg overflow-hidden bg-black">
+                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/Zf2kRVrSlZw" title="【EP1】智慧教學篇（AI 設定與出題互動）" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+                </div>
+                <h3 class="font-bold text-lg text-slate-800 mt-5 mb-2">🎬【EP2】課堂快問篇（是非/文字雲/搶答/投票）</h3>
+                <div class="aspect-video w-full rounded-lg overflow-hidden bg-black">
+                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/kkDAN0NL074" title="【EP2】課堂快問篇（是非/文字雲/搶答/投票）" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+                </div>
+                <h3 class="font-bold text-lg text-slate-800 mt-5 mb-2">🎬【EP3】多元表達篇（繪圖/錄音/多頁計算/熱點）</h3>
+                <div class="aspect-video w-full rounded-lg overflow-hidden bg-black">
+                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/gRARci3Sm2s" title="【EP3】多元表達篇（繪圖/錄音/多頁計算/熱點）" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+                </div>
+                <h3 class="font-bold text-lg text-slate-800 mt-5 mb-2">🎬【EP4】互動共學篇（派送/便利貼/白板/簡報）</h3>
+                <div class="aspect-video w-full rounded-lg overflow-hidden bg-black">
+                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/t3Nt-w1FzTM" title="【EP4】互動共學篇（派送/便利貼/白板/簡報）" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -10598,12 +10642,28 @@
 
             // Floating QR button: 學生加入網址 / QR Code
             document.getElementById('floating-qr-btn').addEventListener('click', showCrossDeviceUrlModal);
-            // 建置說明 Modal
+            // 建置及操作說明 Modal
             const deployGuideModal = document.getElementById('deploy-guide-modal');
+            // 重設 iframe 網址讓影片停止播放（關閉視窗或切換分頁時）
+            const stopDeployGuideVideos = () => deployGuideModal.querySelectorAll('iframe').forEach(f => { f.src = f.src; });
+            const hideDeployGuideModal = () => { deployGuideModal.classList.add('hidden'); stopDeployGuideVideos(); };
             document.getElementById('deploy-guide-btn').addEventListener('click', () => deployGuideModal.classList.remove('hidden'));
-            document.getElementById('deploy-guide-modal-close-btn').addEventListener('click', () => deployGuideModal.classList.add('hidden'));
+            document.getElementById('deploy-guide-modal-close-btn').addEventListener('click', hideDeployGuideModal);
             deployGuideModal.addEventListener('click', (e) => {
-                if (e.target === deployGuideModal) deployGuideModal.classList.add('hidden');
+                if (e.target === deployGuideModal) hideDeployGuideModal();
+            });
+            deployGuideModal.querySelectorAll('.deploy-guide-tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    deployGuideModal.querySelectorAll('.deploy-guide-tab-btn').forEach(b => {
+                        const active = b === btn;
+                        b.classList.toggle('border-amber-500', active);
+                        b.classList.toggle('text-amber-700', active);
+                        b.classList.toggle('border-transparent', !active);
+                        b.classList.toggle('text-slate-500', !active);
+                    });
+                    deployGuideModal.querySelectorAll('.deploy-guide-tab-panel').forEach(p => p.classList.toggle('hidden', p.id !== btn.dataset.guideTab));
+                    stopDeployGuideVideos();
+                });
             });
 
             document.getElementById('cross-device-url-modal-close-btn').addEventListener('click', hideCrossDeviceUrlModal);

@@ -222,12 +222,28 @@
 
             // Floating QR button: 學生加入網址 / QR Code
             document.getElementById('floating-qr-btn').addEventListener('click', showCrossDeviceUrlModal);
-            // 建置說明 Modal
+            // 建置及操作說明 Modal
             const deployGuideModal = document.getElementById('deploy-guide-modal');
+            // 重設 iframe 網址讓影片停止播放（關閉視窗或切換分頁時）
+            const stopDeployGuideVideos = () => deployGuideModal.querySelectorAll('iframe').forEach(f => { f.src = f.src; });
+            const hideDeployGuideModal = () => { deployGuideModal.classList.add('hidden'); stopDeployGuideVideos(); };
             document.getElementById('deploy-guide-btn').addEventListener('click', () => deployGuideModal.classList.remove('hidden'));
-            document.getElementById('deploy-guide-modal-close-btn').addEventListener('click', () => deployGuideModal.classList.add('hidden'));
+            document.getElementById('deploy-guide-modal-close-btn').addEventListener('click', hideDeployGuideModal);
             deployGuideModal.addEventListener('click', (e) => {
-                if (e.target === deployGuideModal) deployGuideModal.classList.add('hidden');
+                if (e.target === deployGuideModal) hideDeployGuideModal();
+            });
+            deployGuideModal.querySelectorAll('.deploy-guide-tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    deployGuideModal.querySelectorAll('.deploy-guide-tab-btn').forEach(b => {
+                        const active = b === btn;
+                        b.classList.toggle('border-amber-500', active);
+                        b.classList.toggle('text-amber-700', active);
+                        b.classList.toggle('border-transparent', !active);
+                        b.classList.toggle('text-slate-500', !active);
+                    });
+                    deployGuideModal.querySelectorAll('.deploy-guide-tab-panel').forEach(p => p.classList.toggle('hidden', p.id !== btn.dataset.guideTab));
+                    stopDeployGuideVideos();
+                });
             });
 
             document.getElementById('cross-device-url-modal-close-btn').addEventListener('click', hideCrossDeviceUrlModal);
