@@ -147,11 +147,25 @@
             // Update HTML status
             dispatchHtmlStatus.textContent = dispatchSettings.htmlContent ? '已上傳 HTML 檔案。' : '目前沒有 HTML 檔案。';
 
-            urlDispatchModal.classList.remove('hidden');
+            clearTimeout(urlDispatchDrawerTimer);
+            urlDispatchModal.classList.add('open');
         }
 
         function hideUrlDispatchSettingsModal() {
-            urlDispatchModal.classList.add('hidden');
+            clearTimeout(urlDispatchDrawerTimer);
+            urlDispatchModal.classList.remove('open');
+        }
+
+        // V2：在教師面板直接貼上網址 → 自動滑出設定圖層、填入並儲存該網址，5 秒後自動收合
+        let urlDispatchDrawerTimer = null;
+        function handlePastedDispatchUrl(url) {
+            dispatchSettings.type = 'url';
+            dispatchSettings.url = url;
+            dispatchSettings.isYoutube = !!getYouTubeVideoId(url);
+            showUrlDispatchSettingsModal(); // 把網址填入表單
+            saveDispatchSettings();         // 依表單儲存（儲存後會收合）
+            showUrlDispatchSettingsModal(); // 再滑出讓老師看到填入結果
+            urlDispatchDrawerTimer = setTimeout(hideUrlDispatchSettingsModal, 5000);
         }
 
         function saveDispatchSettings() { // Renamed from saveUrlDispatchSettings
@@ -255,7 +269,16 @@
             const html2canvas = await loadHtml2canvas();
             const win = iframe.contentWindow;
             const docEl = win.document.documentElement;
-            const options = { backgroundColor: '#ffffff', useCORS: true, logging: false, scale: 1 };
+            const options = {
+                backgroundColor: '#ffffff', useCORS: true, logging: false, scale: 1,
+                // html2canvas 會複製一份頁面來繪製，複製品中的進場動畫（淡入等）會從頭開始，
+                // 截到的是透明度很低的起始畫面（顏色變淡、文字消失）；讓動畫直接跳到結束狀態再截圖
+                onclone: (clonedDoc) => {
+                    const style = clonedDoc.createElement('style');
+                    style.textContent = '*, *::before, *::after { animation-duration: 0s !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition: none !important; }';
+                    clonedDoc.head.appendChild(style);
+                }
+            };
             if (full) {
                 const w = Math.max(docEl.scrollWidth, win.innerWidth), h = Math.max(docEl.scrollHeight, win.document.body ? win.document.body.scrollHeight : 0, win.innerHeight);
                 Object.assign(options, { x: 0, y: 0, width: w, height: h, windowWidth: win.innerWidth, windowHeight: h, scrollX: 0, scrollY: 0 });
@@ -444,8 +467,23 @@
         function setupUrlDispatchEventListeners() {
 
             // New: URL/HTML Dispatch Settings Modal listeners.
-            document.getElementById('url-dispatch-settings-btn').addEventListener('click', showUrlDispatchSettingsModal);
+            document.getElementById('url-dispatch-drawer-tab').addEventListener('click', () => {
+                if (urlDispatchModal.classList.contains('open')) hideUrlDispatchSettingsModal();
+                else showUrlDispatchSettingsModal();
+            });
             urlDispatchModalCloseBtn.addEventListener('click', hideUrlDispatchSettingsModal);
+
+            // V2：教師面板中直接貼上網址（剪貼簿沒有圖片時；圖片仍交給背景圖片設定處理）
+            document.addEventListener('paste', e => {
+                if (views.teacherMenu.classList.contains('hidden')) return;
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+                const clipboard = e.clipboardData || window.clipboardData;
+                if ([...clipboard.items].some(item => item.kind === 'file' && item.type.startsWith('image/'))) return;
+                const text = clipboard.getData('text').trim();
+                if (!/^https?:\/\/\S+$/i.test(text)) return;
+                e.preventDefault();
+                handlePastedDispatchUrl(text);
+            });
             document.getElementById('save-dispatch-settings-btn').addEventListener('click', saveDispatchSettings); // Renamed
             document.getElementById('clear-dispatch-settings-btn').addEventListener('click', clearDispatchSettings); // Renamed
 

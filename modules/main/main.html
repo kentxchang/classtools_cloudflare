@@ -82,7 +82,7 @@
                     <div class="mt-2 text-slate-400 text-sm">
                         Made with <i class="fas fa-heart text-pink-400 mx-1"></i> by <a
                             href="https://kentxchang.blogspot.tw" target="_blank" rel="noopener noreferrer"
-                            class="text-indigo-500 hover:text-indigo-600 font-bold hover:underline">阿剛老師 cloudflare V1.5</a>
+                            class="text-indigo-500 hover:text-indigo-600 font-bold hover:underline">阿剛老師 cloudflare V2</a>
                     </div>
                     <div class="mt-4 text-slate-500 text-xs max-w-2xl mx-auto px-4">
                         <p class="mb-2">
@@ -320,6 +320,7 @@
             </div>
 
             <!-- @include 05-drawing/drawing-teacher-background.html -->
+            <!-- @include 06-url-dispatch/url-dispatch-settings-modal.html -->
 
             <div class="flex justify-between items-center mt-8 px-4">
                 <button id="leave-classroom-btn"
@@ -332,11 +333,6 @@
                         class="w-10 h-10 rounded-full bg-slate-100 text-slate-500 hover:bg-blue-100 hover:text-blue-600 transition flex items-center justify-center text-lg shadow-sm"
                         title="AI 設定">
                         <i class="fas fa-robot"></i>
-                    </button>
-                    <button id="url-dispatch-settings-btn"
-                        class="w-10 h-10 rounded-full bg-slate-100 text-slate-500 hover:bg-teal-100 hover:text-teal-600 transition flex items-center justify-center text-lg shadow-sm"
-                        title="設定派送網址/HTML">
-                        <i class="fas fa-link"></i>
                     </button>
                 </div>
             </div>
@@ -353,11 +349,6 @@
             <div
                 class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 mb-6 flex flex-col lg:flex-row justify-between items-center gap-4 sticky top-4 z-20 backdrop-blur-sm bg-white/90">
                 <div class="flex items-center gap-4">
-                    <button id="download-history-monitor-btn"
-                        class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 transition shadow-md shadow-indigo-200 flex items-center"
-                        title="下載本堂課的互動歷程紀錄">
-                        <i class="fas fa-download mr-2"></i> 歷程 💾
-                    </button>
                     <button id="end-class-session-monitor-btn"
                         class="px-4 py-2 bg-red-500 text-white rounded-xl text-sm font-bold hover:bg-red-600 transition shadow-md shadow-red-200 flex items-center"
                         title="下課並清空資料">
@@ -704,8 +695,6 @@
     <!-- @include 03-text-input/text-input-ai-summary-modal.html -->
 
     <!-- @include ai-settings/ai-settings-modals.html -->
-
-    <!-- @include 06-url-dispatch/url-dispatch-settings-modal.html -->
 
     <div id="unsubmitted-students-modal" class="magnified-image-modal hidden">
         <div id="unsubmitted-students-modal-content" class="magnified-image-modal-content">

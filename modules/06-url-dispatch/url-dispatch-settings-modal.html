@@ -1,5 +1,6 @@
-    <div id="url-dispatch-settings-modal" class="magnified-image-modal hidden">
-        <div id="url-dispatch-settings-modal-content" class="magnified-image-modal-content">
+    <!-- 設定派送網址/HTML：教師面板左側可收合的滑動圖層（在教師面板直接貼上網址時自動滑出並填入，5 秒後自動收合） -->
+    <div id="url-dispatch-settings-modal" class="side-drawer">
+        <div id="url-dispatch-settings-modal-content" class="magnified-image-modal-content side-drawer-panel">
             <button id="url-dispatch-settings-modal-close-btn" class="magnified-image-modal-close">×</button>
             <h4>設定派送網址/HTML</h4>
             <div class="w-full space-y-4">
@@ -48,4 +49,8 @@
                 <button id="save-dispatch-settings-btn" class="btn btn-primary">儲存設定 💾</button>
             </div>
         </div>
+        <button id="url-dispatch-drawer-tab" type="button" class="side-drawer-tab" title="設定派送網址/HTML（點擊展開/收合）">
+            <i class="fas fa-link"></i>
+            <span>派送網址</span>
+        </button>
     </div>

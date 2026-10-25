@@ -16,7 +16,6 @@
                 showMessage('歷程下載成功。', 'success');
             };
             document.getElementById('download-history-menu-btn')?.addEventListener('click', handleDownloadHistory);
-            document.getElementById('download-history-monitor-btn')?.addEventListener('click', handleDownloadHistory);
 
             // 清空題庫按鈕事件綁定
             document.getElementById('clear-all-banks-menu-btn')?.addEventListener('click', manualClearAllQuestionBanks);

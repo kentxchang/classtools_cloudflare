@@ -838,4 +838,19 @@
                     showMessage('無法讀取剪貼簿，請確認已允許剪貼簿存取權限。', 'error');
                 }
             });
+
+            // V2：背景圖片設定改為左側滑動圖層 — 點擊把手可展開/收合；有圖片設定進來時自動滑出，5 秒後自動收合
+            const teacherBgDrawer = document.getElementById('teacher-bg-drawer');
+            const teacherImagePreview = document.getElementById('teacher-image-preview');
+            let teacherBgDrawerTimer = null;
+            document.getElementById('teacher-bg-drawer-tab').addEventListener('click', () => {
+                clearTimeout(teacherBgDrawerTimer);
+                teacherBgDrawer.classList.toggle('open');
+            });
+            new MutationObserver(() => {
+                if (!teacherImagePreview.getAttribute('src')) return; // 清除背景時不自動滑出
+                teacherBgDrawer.classList.add('open');
+                clearTimeout(teacherBgDrawerTimer);
+                teacherBgDrawerTimer = setTimeout(() => teacherBgDrawer.classList.remove('open'), 5000);
+            }).observe(teacherImagePreview, { attributes: true, attributeFilter: ['src'] });
         }

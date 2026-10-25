@@ -2932,6 +2932,345 @@
             color: #b91c1c;
             box-shadow: inset 0 0 0 2px #fca5a5;
         }
+        /* 【V2 馬卡龍配色 — 主畫面與教師端外觀】 modules/main/macaron-theme.css
+           只改外觀，不動任何功能：在主畫面、教師登入、教師面板、互動監看四個畫面內，
+           把 Tailwind 原本的顏色 class 對應成馬卡龍色（JS 切換的顏色 class 也會自動套用）。學生端畫面不受影響。 */
+        :root {
+            --mac-text: #5b4a58;
+            --mac-pink-soft: #ffedf4;  --mac-pink: #ffc8dd;  --mac-pink-deep: #ffb3cf;  --mac-pink-ink: #a8406f;
+            --mac-sky-soft: #eaf5ff;   --mac-sky: #bde0fe;   --mac-sky-deep: #a6d3fb;   --mac-sky-ink: #2c6493;
+            --mac-lav-soft: #f3edff;   --mac-lav: #d9c9f8;   --mac-lav-deep: #c9b4f3;   --mac-lav-ink: #5e44a6;
+            --mac-mint-soft: #e8f9f0;  --mac-mint: #bcebd4;  --mac-mint-deep: #a3e1c3;  --mac-mint-ink: #1f7353;
+            --mac-lemon-soft: #fff8dc; --mac-lemon: #ffe9a6; --mac-lemon-deep: #ffdf85; --mac-lemon-ink: #876200;
+            --mac-peach-soft: #fff1e7; --mac-peach: #ffd3b5; --mac-peach-deep: #ffc39b; --mac-peach-ink: #a65424;
+            --mac-berry-soft: #ffefef; --mac-berry: #ffc4c4; --mac-berry-deep: #ffadad; --mac-berry-ink: #a83636;
+            --mac-milk: #f4ede6;       --mac-milk-deep: #eadfd4; --mac-milk-ink: #6b5b52;
+            --mac-taro: #e2d9f0;       --mac-taro-deep: #d4c8e8; --mac-taro-ink: #4e4366;
+        }
+
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) .text-slate-800 {
+            color: var(--mac-text);
+        }
+
+        /* ---- 顏色對應：淺底(50/100)、邊框(100/200)、文字(500~800)、實心(400~700，改為粉彩底＋深色字) ---- */
+        /* 粉紅：pink / rose */
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.bg-pink-50, .bg-pink-100, .bg-rose-50, .bg-rose-100) { background-color: var(--mac-pink-soft); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.border-pink-100, .border-pink-200, .border-rose-100, .border-rose-200) { border-color: var(--mac-pink); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.text-pink-400, .text-pink-500, .text-pink-600, .text-pink-700, .text-rose-500, .text-rose-600, .text-rose-700) { color: var(--mac-pink-ink); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.bg-pink-500, .bg-pink-600, .bg-rose-500, .bg-rose-600) { background-color: var(--mac-pink); color: var(--mac-pink-ink); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.hover\:bg-pink-100, .hover\:bg-pink-600, .hover\:bg-rose-100, .hover\:bg-rose-600):hover { background-color: var(--mac-pink-deep); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) .group:hover :is(.group-hover\:bg-pink-600, .group-hover\:bg-rose-600) { background-color: var(--mac-pink-ink); }
+
+        /* 天空藍：sky / blue / cyan */
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.bg-sky-50, .bg-sky-100, .bg-blue-50, .bg-blue-100, .bg-cyan-50, .bg-cyan-100) { background-color: var(--mac-sky-soft); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.border-sky-100, .border-sky-200, .border-blue-100, .border-blue-200, .border-cyan-100, .border-cyan-200) { border-color: var(--mac-sky); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.text-sky-500, .text-sky-600, .text-blue-500, .text-blue-600, .text-blue-700, .text-cyan-600) { color: var(--mac-sky-ink); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.bg-sky-500, .bg-sky-600, .bg-blue-500, .bg-blue-600, .bg-cyan-500, .bg-cyan-600) { background-color: var(--mac-sky); color: var(--mac-sky-ink); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.hover\:bg-sky-600, .hover\:bg-blue-100, .hover\:bg-blue-600):hover { background-color: var(--mac-sky-deep); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) .group:hover :is(.group-hover\:bg-sky-600, .group-hover\:bg-blue-600, .group-hover\:bg-cyan-600) { background-color: var(--mac-sky-ink); }
+
+        /* 薰衣草紫：indigo / violet / purple */
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.bg-indigo-50, .bg-indigo-100, .bg-violet-50, .bg-violet-100, .bg-purple-50, .bg-purple-100) { background-color: var(--mac-lav-soft); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.border-indigo-100, .border-indigo-200, .border-violet-200, .border-purple-100, .border-purple-200) { border-color: var(--mac-lav); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.text-indigo-500, .text-indigo-600, .text-violet-600, .text-purple-500, .text-purple-600, .text-purple-700) { color: var(--mac-lav-ink); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.bg-indigo-500, .bg-indigo-600, .bg-violet-500, .bg-violet-600, .bg-purple-500, .bg-purple-600) { background-color: var(--mac-lav); color: var(--mac-lav-ink); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.hover\:bg-indigo-100, .hover\:bg-indigo-600, .hover\:bg-indigo-700, .hover\:bg-violet-700, .hover\:bg-purple-100, .hover\:bg-purple-600):hover { background-color: var(--mac-lav-deep); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) .group:hover :is(.group-hover\:bg-indigo-600, .group-hover\:bg-purple-600) { background-color: var(--mac-lav-ink); }
+
+        /* 薄荷綠：green / emerald / teal / lime */
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.bg-green-50, .bg-green-100, .bg-emerald-50, .bg-emerald-100, .bg-teal-50, .bg-teal-100, .bg-lime-100) { background-color: var(--mac-mint-soft); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.border-green-200, .border-emerald-200, .border-teal-200) { border-color: var(--mac-mint); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.text-green-600, .text-green-700, .text-emerald-600, .text-teal-600, .text-lime-600) { color: var(--mac-mint-ink); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.bg-green-500, .bg-green-600, .bg-emerald-500, .bg-emerald-600, .bg-teal-500, .bg-teal-600) { background-color: var(--mac-mint); color: var(--mac-mint-ink); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.hover\:bg-green-600, .hover\:bg-emerald-600, .hover\:bg-teal-100, .hover\:bg-teal-600):hover { background-color: var(--mac-mint-deep); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) .group:hover :is(.group-hover\:bg-green-600, .group-hover\:bg-emerald-600, .group-hover\:bg-teal-600, .group-hover\:bg-lime-600) { background-color: var(--mac-mint-ink); }
+
+        /* 檸檬黃：amber / yellow */
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.bg-amber-50, .bg-amber-100, .bg-yellow-50, .bg-yellow-100) { background-color: var(--mac-lemon-soft); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.border-amber-100, .border-amber-200, .border-yellow-200) { border-color: var(--mac-lemon); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.text-amber-500, .text-amber-600, .text-amber-700, .text-yellow-600) { color: var(--mac-lemon-ink); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.bg-amber-500, .bg-amber-600, .bg-yellow-400, .bg-yellow-500) { background-color: var(--mac-lemon); color: var(--mac-lemon-ink); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.hover\:bg-amber-100, .hover\:bg-amber-200, .hover\:bg-amber-600, .hover\:bg-yellow-500):hover { background-color: var(--mac-lemon-deep); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) .group:hover .group-hover\:bg-amber-600 { background-color: var(--mac-lemon-ink); }
+
+        /* 蜜桃橘：orange */
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.bg-orange-50, .bg-orange-100) { background-color: var(--mac-peach-soft); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.text-orange-500, .text-orange-600) { color: var(--mac-peach-ink); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.bg-orange-500, .bg-orange-600) { background-color: var(--mac-peach); color: var(--mac-peach-ink); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) .hover\:bg-orange-600:hover { background-color: var(--mac-peach-deep); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) .group:hover .group-hover\:bg-orange-600 { background-color: var(--mac-peach-ink); }
+
+        /* 莓果紅：red */
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.bg-red-50, .bg-red-100) { background-color: var(--mac-berry-soft); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.border-red-100, .border-red-200) { border-color: var(--mac-berry); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.text-red-500, .text-red-600) { color: var(--mac-berry-ink); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.bg-red-500, .bg-red-600) { background-color: var(--mac-berry); color: var(--mac-berry-ink); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) :is(.hover\:bg-red-100, .hover\:bg-red-600):hover { background-color: var(--mac-berry-deep); }
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view, #teacher-monitor-view) .group:hover .group-hover\:bg-red-600 { background-color: var(--mac-berry-ink); }
+
+        /* 圖示在滑鼠移上卡片時反白（深色底＋白字） */
+        :is(#entry-view, #teacher-menu-view) .group:hover .group-hover\:text-white { color: #fff; }
+
+        /* 中性色：灰色按鈕改為奶茶色，暫停鈕改為芋頭紫 */
+        :is(#teacher-menu-view, #teacher-monitor-view) :is(.bg-slate-200, .bg-slate-100, .bg-slate-50) { background-color: var(--mac-milk); }
+        :is(#teacher-menu-view, #teacher-monitor-view) :is(.hover\:bg-slate-300, .hover\:bg-slate-200):hover { background-color: var(--mac-milk-deep); }
+        :is(#teacher-menu-view, #teacher-monitor-view) :is(.border-slate-200, .border-slate-300) { border-color: var(--mac-milk-deep); }
+        #teacher-monitor-view :is(.bg-slate-700, .bg-gray-500) { background-color: var(--mac-taro); color: var(--mac-taro-ink); }
+        #teacher-monitor-view :is(.hover\:bg-slate-800, .hover\:bg-gray-600):hover { background-color: var(--mac-taro-deep); }
+
+        /* 漸層（Logo、進入教室按鈕） */
+        :is(#entry-view, #teacher-classroom-code-view) :is(.bg-gradient-to-br, .bg-gradient-to-r) {
+            background-image: linear-gradient(135deg, var(--mac-pink), var(--mac-lav) 55%, var(--mac-sky));
+            color: var(--mac-lav-ink);
+        }
+
+        /* ---- 卡片與面板 ---- */
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view) .landing-card {
+            background: linear-gradient(180deg, #ffffff 0%, #fffaf6 100%);
+            border: 2px solid #fff;
+            border-radius: 1.75rem;
+            box-shadow: 0 10px 30px -12px rgba(168, 64, 111, 0.25), 0 0 0 1px rgba(255, 200, 221, 0.6);
+        }
+
+        :is(#entry-view, #teacher-classroom-code-view, #teacher-menu-view) .landing-card:hover {
+            box-shadow: 0 18px 40px -14px rgba(94, 68, 166, 0.35), 0 0 0 2px var(--mac-lav);
+        }
+
+        /* 教師面板功能圖卡的圖示：圓潤馬卡龍造型 */
+        #teacher-menu-view .landing-card > .rounded-2xl {
+            border-radius: 1.25rem;
+            box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.06), 0 4px 10px -4px rgba(91, 74, 88, 0.25);
+        }
+
+        /* 頂端工具列 */
+        #teacher-menu-view > div:first-child,
+        #teacher-monitor-view > div:first-child {
+            background-color: rgba(255, 255, 255, 0.85);
+            border: 2px solid #fff;
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 24px -14px rgba(168, 64, 111, 0.35), 0 0 0 1px rgba(255, 200, 221, 0.6);
+        }
+
+        #teacher-monitor-view #student-responses-container,
+        #teacher-monitor-view #responses-control-bar {
+            background-color: rgba(255, 255, 255, 0.6);
+            border-color: var(--mac-pink);
+        }
+
+        #teacher-monitor-view .student-response-item {
+            border-radius: 1rem;
+            box-shadow: 0 6px 16px -10px rgba(91, 74, 88, 0.35), 0 0 0 1px rgba(255, 200, 221, 0.5);
+        }
+
+        #teacher-monitor-view .student-response-item .name-box {
+            background-color: var(--mac-mint);
+            color: var(--mac-mint-ink);
+            border-radius: 9999px;
+        }
+
+        /* ---- 教師端按鈕：馬卡龍造型（圓潤、白色描邊、底部立體陰影） ---- */
+        #teacher-monitor-view .monitor-btn,
+        #teacher-monitor-view > div:first-child button,
+        #responses-control-bar button,
+        #peer-review-stats-container button,
+        #teacher-menu-view > div:first-child button:not(#refresh-student-count-btn),
+        #teacher-bg-drawer-panel :is(label, button),
+        :is(#entry-view, #teacher-classroom-code-view) :is(#teacher-entry-btn, #student-entry-btn, #teacher-classroom-code-submit-btn, .enter-classroom-btn, .end-classroom-btn) {
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            border-radius: 9999px;
+            font-weight: 700;
+            box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.07), 0 6px 14px -8px rgba(91, 74, 88, 0.45);
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.2s ease;
+        }
+
+        #teacher-monitor-view .monitor-btn:hover,
+        #teacher-monitor-view > div:first-child button:hover,
+        #responses-control-bar button:hover,
+        #peer-review-stats-container button:hover,
+        #teacher-menu-view > div:first-child button:not(#refresh-student-count-btn):hover,
+        #teacher-bg-drawer-panel :is(label, button):hover,
+        :is(#entry-view, #teacher-classroom-code-view) :is(#teacher-entry-btn, #student-entry-btn, #teacher-classroom-code-submit-btn, .enter-classroom-btn, .end-classroom-btn):hover {
+            transform: translateY(-2px);
+            box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.07), 0 10px 18px -8px rgba(91, 74, 88, 0.5);
+        }
+
+        #teacher-monitor-view .monitor-btn:active,
+        #teacher-monitor-view > div:first-child button:active,
+        #responses-control-bar button:active,
+        #peer-review-stats-container button:active,
+        #teacher-menu-view > div:first-child button:not(#refresh-student-count-btn):active,
+        #teacher-bg-drawer-panel :is(label, button):active,
+        :is(#entry-view, #teacher-classroom-code-view) :is(#teacher-entry-btn, #student-entry-btn, #teacher-classroom-code-submit-btn, .enter-classroom-btn, .end-classroom-btn):active {
+            transform: translateY(1px);
+            box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.07), 0 2px 6px -4px rgba(91, 74, 88, 0.5);
+        }
+
+        #teacher-monitor-view .monitor-btn {
+            border-radius: 1.25rem;
+            padding: 1rem 1.25rem;
+        }
+
+        /* 線上人數膠囊 */
+        #teacher-menu-view > div:first-child .rounded-lg:not(button) {
+            border-radius: 9999px;
+        }
+
+        /* 底部 AI 設定圓鈕 */
+        #ai-settings-btn {
+            border: 2px solid #fff;
+            box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.06), 0 4px 10px -4px rgba(91, 74, 88, 0.35);
+        }
+
+        /* AI 徽章 */
+        :is(#teacher-menu-view) .ai-badge {
+            color: var(--mac-lav-ink);
+            background: linear-gradient(135deg, var(--mac-pink), var(--mac-lav));
+            border: 1px solid #fff;
+            box-shadow: 0 2px 6px rgba(94, 68, 166, 0.25);
+        }
+
+        /* 輸入框 */
+        #teacher-classroom-code-view input {
+            border-radius: 9999px;
+            border: 2px solid var(--mac-pink-soft);
+            background-color: #fffdfb;
+        }
+
+        #teacher-classroom-code-view input:focus {
+            border-color: var(--mac-lav);
+            --tw-ring-color: rgba(217, 201, 248, 0.8);
+        }
+
+        /* 浮動按鈕（QR Code / 貼上圖片） */
+        #floating-qr-btn,
+        #floating-paste-btn {
+            border: 3px solid #fff;
+            box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.07), 0 8px 20px -8px rgba(91, 74, 88, 0.5);
+        }
+
+        #floating-qr-btn {
+            background: linear-gradient(135deg, var(--mac-sky), var(--mac-mint));
+            color: var(--mac-sky-ink);
+        }
+
+        #floating-paste-btn {
+            background: linear-gradient(135deg, var(--mac-pink), var(--mac-lav));
+            color: var(--mac-lav-ink);
+        }
+
+        #floating-qr-btn:hover,
+        #floating-paste-btn:hover {
+            box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.07), 0 12px 24px -8px rgba(91, 74, 88, 0.55);
+        }
+
+        :is(#floating-qr-btn .qr-tooltip, #floating-paste-btn .paste-tooltip) {
+            background-color: var(--mac-text);
+        }
+
+        /* ---- 左側可收合滑動圖層（背景圖片設定、設定派送網址/HTML） ---- */
+        .side-drawer {
+            --drawer-w: min(400px, 85vw);
+            position: fixed;
+            left: 0;
+            top: 15vh;
+            z-index: 110;
+            display: flex;
+            align-items: flex-start;
+            transform: translateX(calc(-1 * var(--drawer-w)));
+            transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .side-drawer.open {
+            z-index: 111;
+            transform: translateX(0);
+        }
+
+        .side-drawer-panel {
+            width: var(--drawer-w);
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 2px solid #fff;
+            border-left: none;
+            box-shadow: 0 16px 40px -14px rgba(94, 68, 166, 0.45), 0 0 0 1px rgba(217, 201, 248, 0.7);
+        }
+
+        .side-drawer:not(.open) .side-drawer-panel {
+            box-shadow: none;
+        }
+
+        .side-drawer-tab {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            padding: 1rem 0.55rem;
+            margin-left: -2px;
+            background: linear-gradient(180deg, var(--mac-pink), var(--mac-lav));
+            color: var(--mac-lav-ink);
+            font-weight: 700;
+            font-size: 0.95rem;
+            border: 2px solid #fff;
+            border-left: none;
+            border-radius: 0 1.25rem 1.25rem 0;
+            box-shadow: 6px 6px 16px -8px rgba(94, 68, 166, 0.5);
+            cursor: pointer;
+            transition: padding 0.2s ease;
+        }
+
+        .side-drawer-tab:hover {
+            padding-left: 0.85rem;
+        }
+
+        .side-drawer-tab span {
+            writing-mode: vertical-rl;
+            letter-spacing: 0.2em;
+        }
+
+        #teacher-bg-drawer-panel h3 {
+            text-align: center;
+            justify-content: center;
+        }
+
+        /* 派送網址把手排在背景圖片把手下方，改用薄荷/天空藍 */
+        #url-dispatch-drawer-tab {
+            margin-top: 11.5rem;
+            background: linear-gradient(180deg, var(--mac-mint), var(--mac-sky));
+            color: var(--mac-sky-ink);
+        }
+
+        /* 派送網址圖層較寬，讓「上傳 HTML 檔案」「清除 HTML」按鈕文字維持一行 */
+        #url-dispatch-settings-modal {
+            --drawer-w: min(500px, 92vw);
+        }
+
+        #html-dispatch-section .btn {
+            white-space: nowrap;
+        }
+
+        #url-dispatch-settings-modal-content.side-drawer-panel {
+            width: var(--drawer-w);
+            max-width: none;
+            padding: 1.5rem;
+            border-radius: 0 1.5rem 1.5rem 0;
+        }
+
+        #url-dispatch-settings-modal-content h4 {
+            font-size: 1.4rem;
+            color: var(--mac-text);
+        }
+
+        #url-dispatch-settings-modal-content .btn {
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            border-radius: 9999px;
+            box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.07), 0 6px 14px -8px rgba(91, 74, 88, 0.45);
+        }
+
+        #url-dispatch-settings-modal-content .btn-primary { background-color: var(--mac-sky); color: var(--mac-sky-ink); }
+        #url-dispatch-settings-modal-content .btn-red { background-color: var(--mac-berry); color: var(--mac-berry-ink); }
+        #url-dispatch-settings-modal-content .bg-yellow-600 { background-color: var(--mac-lemon); color: var(--mac-lemon-ink); }
+        #url-dispatch-settings-modal-content .btn-primary:hover { background-color: var(--mac-sky-deep); }
+        #url-dispatch-settings-modal-content .btn-red:hover { background-color: var(--mac-berry-deep); }
     </style>
     <!-- CTP-CSS:START -->
     <style>
@@ -3117,7 +3456,7 @@
                     <div class="mt-2 text-slate-400 text-sm">
                         Made with <i class="fas fa-heart text-pink-400 mx-1"></i> by <a
                             href="https://kentxchang.blogspot.tw" target="_blank" rel="noopener noreferrer"
-                            class="text-indigo-500 hover:text-indigo-600 font-bold hover:underline">阿剛老師 cloudflare V1.5</a>
+                            class="text-indigo-500 hover:text-indigo-600 font-bold hover:underline">阿剛老師 cloudflare V2</a>
                     </div>
                     <div class="mt-4 text-slate-500 text-xs max-w-2xl mx-auto px-4">
                         <p class="mb-2">
@@ -3354,28 +3693,91 @@
                 </button>
             </div>
 
-            <div
-                class="mt-8 flex flex-col items-center bg-white p-6 rounded-2xl shadow-sm border border-slate-100 max-w-2xl mx-auto">
-                <h3 class="text-lg font-bold text-slate-700 mb-4 flex items-center"><i
-                        class="fas fa-image mr-2 text-purple-500"></i> 背景圖片設定 (繪圖題、計算題、圖片點選題用)</h3>
-                <div class="flex flex-wrap justify-center gap-4 mb-4 w-full">
-                    <label for="teacher-image-upload-input"
-                        class="flex-1 min-w-[160px] py-3 px-4 bg-purple-50 text-purple-700 rounded-xl font-bold hover:bg-purple-100 transition border border-purple-200 flex items-center justify-center cursor-pointer">
-                        <i class="fas fa-cloud-arrow-up mr-2"></i> 上傳圖片
-                    </label>
-                    <input type="file" id="teacher-image-upload-input" accept="image/*" class="hidden">
-                    <button id="clear-teacher-background-btn"
-                        class="flex-1 min-w-[160px] py-3 px-4 bg-red-50 text-red-600 rounded-xl font-bold hover:bg-red-100 transition border border-red-200 flex items-center justify-center">
-                        <i class="fas fa-trash-can mr-2"></i> 清除背景
-                    </button>
+            <!-- 背景圖片設定：教師面板左側可收合的滑動圖層（有圖片貼上時自動滑出，5 秒後自動收合） -->
+            <div id="teacher-bg-drawer" class="side-drawer">
+                <div id="teacher-bg-drawer-panel"
+                    class="side-drawer-panel flex flex-col items-center bg-white p-5 rounded-r-3xl">
+                    <h3 class="text-lg font-bold text-slate-700 mb-4 flex items-center"><i
+                            class="fas fa-image mr-2 text-purple-500"></i> 背景圖片設定 (繪圖題、計算題、圖片點選題用)</h3>
+                    <div class="flex flex-wrap justify-center gap-4 mb-4 w-full">
+                        <label for="teacher-image-upload-input"
+                            class="flex-1 min-w-[140px] py-3 px-4 bg-purple-50 text-purple-700 rounded-xl font-bold hover:bg-purple-100 transition border border-purple-200 flex items-center justify-center cursor-pointer">
+                            <i class="fas fa-cloud-arrow-up mr-2"></i> 上傳圖片
+                        </label>
+                        <input type="file" id="teacher-image-upload-input" accept="image/*" class="hidden">
+                        <button id="clear-teacher-background-btn"
+                            class="flex-1 min-w-[140px] py-3 px-4 bg-red-50 text-red-600 rounded-xl font-bold hover:bg-red-100 transition border border-red-200 flex items-center justify-center">
+                            <i class="fas fa-trash-can mr-2"></i> 清除背景
+                        </button>
+                    </div>
+                    <p id="teacher-image-status" class="text-slate-400 text-sm">目前沒有背景圖片。可選擇檔案或直接貼上(Ctrl+V)。</p>
+                    <div id="teacher-image-preview-container"
+                        class="mt-4 hidden border border-slate-200 rounded-xl p-2 max-w-xs bg-slate-50">
+                        <img id="teacher-image-preview" src="" alt="背景圖片預覽"
+                            class="w-full h-auto rounded-lg object-contain shadow-sm">
+                    </div>
                 </div>
-                <p id="teacher-image-status" class="text-slate-400 text-sm">目前沒有背景圖片。可選擇檔案或直接貼上(Ctrl+V)。</p>
-                <div id="teacher-image-preview-container"
-                    class="mt-4 hidden border border-slate-200 rounded-xl p-2 max-w-xs bg-slate-50">
-                    <img id="teacher-image-preview" src="" alt="背景圖片預覽"
-                        class="w-full h-auto rounded-lg object-contain shadow-sm">
+                <button id="teacher-bg-drawer-tab" type="button" class="side-drawer-tab" title="背景圖片設定（點擊展開/收合）">
+                    <i class="fas fa-image"></i>
+                    <span>背景圖片</span>
+                </button>
+            </div>
+    <!-- 設定派送網址/HTML：教師面板左側可收合的滑動圖層（在教師面板直接貼上網址時自動滑出並填入，5 秒後自動收合） -->
+    <div id="url-dispatch-settings-modal" class="side-drawer">
+        <div id="url-dispatch-settings-modal-content" class="magnified-image-modal-content side-drawer-panel">
+            <button id="url-dispatch-settings-modal-close-btn" class="magnified-image-modal-close">×</button>
+            <h4>設定派送網址/HTML</h4>
+            <div class="w-full space-y-4">
+                <div class="flex items-center justify-center gap-6 mb-4">
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="dispatchType" value="url" class="form-radio text-blue-600 h-5 w-5"
+                            checked>
+                        <span class="ml-2 text-gray-700 font-medium">派送網址</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="dispatchType" value="html" class="form-radio text-blue-600 h-5 w-5">
+                        <span class="ml-2 text-gray-700 font-medium">派送 HTML</span>
+                    </label>
+                </div>
+
+                <div id="url-dispatch-section">
+                    <div>
+                        <label for="dispatch-url-input">網址:</label>
+                        <input type="text" id="dispatch-url-input" placeholder="請貼上要派送的網址" class="w-full">
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="is-youtube-checkbox">
+                        <label for="is-youtube-checkbox">此連結為 YouTube 影片</label>
+                    </div>
+                </div>
+
+                <div id="html-dispatch-section" class="hidden">
+                    <div class="flex flex-col items-center">
+                        <div class="flex gap-4 mb-4">
+                            <label for="dispatch-html-upload-input"
+                                class="btn bg-yellow-600 !w-auto text-base h-11 px-4 py-2 flex items-center justify-center cursor-pointer">
+                                <i class="fas fa-file-upload mr-2"></i> 上傳 HTML 檔案 ⬆️
+                            </label>
+                            <input type="file" id="dispatch-html-upload-input" accept=".html" class="hidden">
+                            <button id="clear-dispatch-html-btn"
+                                class="btn btn-red !w-auto text-base h-11 px-4 py-2 flex items-center justify-center">
+                                <i class="fas fa-trash mr-2"></i> 清除 HTML 🗑️
+                            </button>
+                        </div>
+                        <p id="dispatch-html-status" class="text-gray-600 text-sm mt-2">目前沒有 HTML 檔案。</p>
+                    </div>
                 </div>
             </div>
+            <div class="settings-button-group mt-6 w-full">
+                <button id="clear-dispatch-settings-btn" class="btn btn-red">清除設定 🧹</button>
+                <button id="save-dispatch-settings-btn" class="btn btn-primary">儲存設定 💾</button>
+            </div>
+        </div>
+        <button id="url-dispatch-drawer-tab" type="button" class="side-drawer-tab" title="設定派送網址/HTML（點擊展開/收合）">
+            <i class="fas fa-link"></i>
+            <span>派送網址</span>
+        </button>
+    </div>
 
             <div class="flex justify-between items-center mt-8 px-4">
                 <button id="leave-classroom-btn"
@@ -3388,11 +3790,6 @@
                         class="w-10 h-10 rounded-full bg-slate-100 text-slate-500 hover:bg-blue-100 hover:text-blue-600 transition flex items-center justify-center text-lg shadow-sm"
                         title="AI 設定">
                         <i class="fas fa-robot"></i>
-                    </button>
-                    <button id="url-dispatch-settings-btn"
-                        class="w-10 h-10 rounded-full bg-slate-100 text-slate-500 hover:bg-teal-100 hover:text-teal-600 transition flex items-center justify-center text-lg shadow-sm"
-                        title="設定派送網址/HTML">
-                        <i class="fas fa-link"></i>
                     </button>
                 </div>
             </div>
@@ -3413,11 +3810,6 @@
             <div
                 class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 mb-6 flex flex-col lg:flex-row justify-between items-center gap-4 sticky top-4 z-20 backdrop-blur-sm bg-white/90">
                 <div class="flex items-center gap-4">
-                    <button id="download-history-monitor-btn"
-                        class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 transition shadow-md shadow-indigo-200 flex items-center"
-                        title="下載本堂課的互動歷程紀錄">
-                        <i class="fas fa-download mr-2"></i> 歷程 💾
-                    </button>
                     <button id="end-class-session-monitor-btn"
                         class="px-4 py-2 bg-red-500 text-white rounded-xl text-sm font-bold hover:bg-red-600 transition shadow-md shadow-red-200 flex items-center"
                         title="下課並清空資料">
@@ -4605,58 +4997,6 @@
             </div>
             <div class="mt-6 flex justify-end">
                 <button id="api-error-modal-ok-btn" class="btn btn-primary px-6 py-2">我知道了</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="url-dispatch-settings-modal" class="magnified-image-modal hidden">
-        <div id="url-dispatch-settings-modal-content" class="magnified-image-modal-content">
-            <button id="url-dispatch-settings-modal-close-btn" class="magnified-image-modal-close">×</button>
-            <h4>設定派送網址/HTML</h4>
-            <div class="w-full space-y-4">
-                <div class="flex items-center justify-center gap-6 mb-4">
-                    <label class="inline-flex items-center">
-                        <input type="radio" name="dispatchType" value="url" class="form-radio text-blue-600 h-5 w-5"
-                            checked>
-                        <span class="ml-2 text-gray-700 font-medium">派送網址</span>
-                    </label>
-                    <label class="inline-flex items-center">
-                        <input type="radio" name="dispatchType" value="html" class="form-radio text-blue-600 h-5 w-5">
-                        <span class="ml-2 text-gray-700 font-medium">派送 HTML</span>
-                    </label>
-                </div>
-
-                <div id="url-dispatch-section">
-                    <div>
-                        <label for="dispatch-url-input">網址:</label>
-                        <input type="text" id="dispatch-url-input" placeholder="請貼上要派送的網址" class="w-full">
-                    </div>
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="is-youtube-checkbox">
-                        <label for="is-youtube-checkbox">此連結為 YouTube 影片</label>
-                    </div>
-                </div>
-
-                <div id="html-dispatch-section" class="hidden">
-                    <div class="flex flex-col items-center">
-                        <div class="flex gap-4 mb-4">
-                            <label for="dispatch-html-upload-input"
-                                class="btn bg-yellow-600 !w-auto text-base h-11 px-4 py-2 flex items-center justify-center cursor-pointer">
-                                <i class="fas fa-file-upload mr-2"></i> 上傳 HTML 檔案 ⬆️
-                            </label>
-                            <input type="file" id="dispatch-html-upload-input" accept=".html" class="hidden">
-                            <button id="clear-dispatch-html-btn"
-                                class="btn btn-red !w-auto text-base h-11 px-4 py-2 flex items-center justify-center">
-                                <i class="fas fa-trash mr-2"></i> 清除 HTML 🗑️
-                            </button>
-                        </div>
-                        <p id="dispatch-html-status" class="text-gray-600 text-sm mt-2">目前沒有 HTML 檔案。</p>
-                    </div>
-                </div>
-            </div>
-            <div class="settings-button-group mt-6 w-full">
-                <button id="clear-dispatch-settings-btn" class="btn btn-red">清除設定 🧹</button>
-                <button id="save-dispatch-settings-btn" class="btn btn-primary">儲存設定 💾</button>
             </div>
         </div>
     </div>
@@ -10052,7 +10392,6 @@
                 showMessage('歷程下載成功。', 'success');
             };
             document.getElementById('download-history-menu-btn')?.addEventListener('click', handleDownloadHistory);
-            document.getElementById('download-history-monitor-btn')?.addEventListener('click', handleDownloadHistory);
 
             // 清空題庫按鈕事件綁定
             document.getElementById('clear-all-banks-menu-btn')?.addEventListener('click', manualClearAllQuestionBanks);
@@ -13241,6 +13580,21 @@ ${textResponses.join('\n\n')}`;
                     showMessage('無法讀取剪貼簿，請確認已允許剪貼簿存取權限。', 'error');
                 }
             });
+
+            // V2：背景圖片設定改為左側滑動圖層 — 點擊把手可展開/收合；有圖片設定進來時自動滑出，5 秒後自動收合
+            const teacherBgDrawer = document.getElementById('teacher-bg-drawer');
+            const teacherImagePreview = document.getElementById('teacher-image-preview');
+            let teacherBgDrawerTimer = null;
+            document.getElementById('teacher-bg-drawer-tab').addEventListener('click', () => {
+                clearTimeout(teacherBgDrawerTimer);
+                teacherBgDrawer.classList.toggle('open');
+            });
+            new MutationObserver(() => {
+                if (!teacherImagePreview.getAttribute('src')) return; // 清除背景時不自動滑出
+                teacherBgDrawer.classList.add('open');
+                clearTimeout(teacherBgDrawerTimer);
+                teacherBgDrawerTimer = setTimeout(() => teacherBgDrawer.classList.remove('open'), 5000);
+            }).observe(teacherImagePreview, { attributes: true, attributeFilter: ['src'] });
         }
         // =====================================================================
         // 【06 派送網址/HTML】 modules/06-url-dispatch/url-dispatch.js
@@ -13391,11 +13745,25 @@ ${textResponses.join('\n\n')}`;
             // Update HTML status
             dispatchHtmlStatus.textContent = dispatchSettings.htmlContent ? '已上傳 HTML 檔案。' : '目前沒有 HTML 檔案。';
 
-            urlDispatchModal.classList.remove('hidden');
+            clearTimeout(urlDispatchDrawerTimer);
+            urlDispatchModal.classList.add('open');
         }
 
         function hideUrlDispatchSettingsModal() {
-            urlDispatchModal.classList.add('hidden');
+            clearTimeout(urlDispatchDrawerTimer);
+            urlDispatchModal.classList.remove('open');
+        }
+
+        // V2：在教師面板直接貼上網址 → 自動滑出設定圖層、填入並儲存該網址，5 秒後自動收合
+        let urlDispatchDrawerTimer = null;
+        function handlePastedDispatchUrl(url) {
+            dispatchSettings.type = 'url';
+            dispatchSettings.url = url;
+            dispatchSettings.isYoutube = !!getYouTubeVideoId(url);
+            showUrlDispatchSettingsModal(); // 把網址填入表單
+            saveDispatchSettings();         // 依表單儲存（儲存後會收合）
+            showUrlDispatchSettingsModal(); // 再滑出讓老師看到填入結果
+            urlDispatchDrawerTimer = setTimeout(hideUrlDispatchSettingsModal, 5000);
         }
 
         function saveDispatchSettings() { // Renamed from saveUrlDispatchSettings
@@ -13499,7 +13867,16 @@ ${textResponses.join('\n\n')}`;
             const html2canvas = await loadHtml2canvas();
             const win = iframe.contentWindow;
             const docEl = win.document.documentElement;
-            const options = { backgroundColor: '#ffffff', useCORS: true, logging: false, scale: 1 };
+            const options = {
+                backgroundColor: '#ffffff', useCORS: true, logging: false, scale: 1,
+                // html2canvas 會複製一份頁面來繪製，複製品中的進場動畫（淡入等）會從頭開始，
+                // 截到的是透明度很低的起始畫面（顏色變淡、文字消失）；讓動畫直接跳到結束狀態再截圖
+                onclone: (clonedDoc) => {
+                    const style = clonedDoc.createElement('style');
+                    style.textContent = '*, *::before, *::after { animation-duration: 0s !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition: none !important; }';
+                    clonedDoc.head.appendChild(style);
+                }
+            };
             if (full) {
                 const w = Math.max(docEl.scrollWidth, win.innerWidth), h = Math.max(docEl.scrollHeight, win.document.body ? win.document.body.scrollHeight : 0, win.innerHeight);
                 Object.assign(options, { x: 0, y: 0, width: w, height: h, windowWidth: win.innerWidth, windowHeight: h, scrollX: 0, scrollY: 0 });
@@ -13688,8 +14065,23 @@ ${textResponses.join('\n\n')}`;
         function setupUrlDispatchEventListeners() {
 
             // New: URL/HTML Dispatch Settings Modal listeners.
-            document.getElementById('url-dispatch-settings-btn').addEventListener('click', showUrlDispatchSettingsModal);
+            document.getElementById('url-dispatch-drawer-tab').addEventListener('click', () => {
+                if (urlDispatchModal.classList.contains('open')) hideUrlDispatchSettingsModal();
+                else showUrlDispatchSettingsModal();
+            });
             urlDispatchModalCloseBtn.addEventListener('click', hideUrlDispatchSettingsModal);
+
+            // V2：教師面板中直接貼上網址（剪貼簿沒有圖片時；圖片仍交給背景圖片設定處理）
+            document.addEventListener('paste', e => {
+                if (views.teacherMenu.classList.contains('hidden')) return;
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+                const clipboard = e.clipboardData || window.clipboardData;
+                if ([...clipboard.items].some(item => item.kind === 'file' && item.type.startsWith('image/'))) return;
+                const text = clipboard.getData('text').trim();
+                if (!/^https?:\/\/\S+$/i.test(text)) return;
+                e.preventDefault();
+                handlePastedDispatchUrl(text);
+            });
             document.getElementById('save-dispatch-settings-btn').addEventListener('click', saveDispatchSettings); // Renamed
             document.getElementById('clear-dispatch-settings-btn').addEventListener('click', clearDispatchSettings); // Renamed
 
