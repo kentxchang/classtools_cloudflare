@@ -16,7 +16,7 @@
 剛好學-cloudflare版/
 ├─ modules/            ← 主程式原始檔（依功能拆成獨立模組，要改程式就改這裡）
 │   ├─ main/           ← 主畫面配置（index.html 頁面骨架、共用樣式與共用程式）
-│   ├─ ai-settings/    ← AI 設定
+│   ├─ ai-settings/    ← AI 設定（Google Gemini / 本地 Ollama / macOS 本地 Apple AI）
 │   ├─ password/       ← 密碼畫面（教師密碼、班級密碼）；教師密碼本身設定在 wrangler.jsonc，由後端驗證
 │   ├─ 01-true-false/  ← 是非題
 │   ├─ 02-choice-sequencing-matching/ ← 選擇/排序/配對
@@ -28,11 +28,13 @@
 │   ├─ 13-whiteboard/  ← 同步白板　　　　14-presentation/ ← 同步簡報
 │   ├─ 15-calc/        ← 計算題（多頁計算紙，題目使用繪圖題的背景圖）
 │   ├─ 16-hotspot/     ← 圖片點選題（在題目圖上點選位置，教師端熱點圖）
+│   ├─ bank-transfer/  ← 本機題庫匯出 / 匯入（教師面板左下角浮動按鈕，Cloudflare V2.1 新增）
 │   └─ sync-common/    ← 同步白板 / 同步簡報共用的核心
 ├─ build.js            ← 組合程式：把 modules/ 組合成 public/index.html
 ├─ public/
 │   ├─ index.html      ← 主程式（由 build.js 自動產生，請勿直接修改）
-│   └─ cfdb.js         ← 資料存取程式（取代 Firebase）
+│   ├─ cfdb.js         ← 資料存取程式（取代 Firebase）
+│   └─ fm-cors-proxy.py ← （選用）Mac 本機 Apple AI 轉接站，見第十四節
 ├─ src/
 │   └─ worker.js       ← 後端程式（資料庫與即時同步）
 ├─ wrangler.jsonc      ← Cloudflare 部署設定檔（部署前會自動執行 build.js）
@@ -217,6 +219,9 @@ A：依畫面提示輸入一個英文子網域名稱即可；或到 Cloudflare �
 **Q：可以用自己的網域嗎？**
 A：可以。到 Cloudflare 後台該 Worker 的 **設定 → 網域和路由（Domains & Routes）** 新增自訂網域（該網域需已託管在 Cloudflare）。
 
+**Q：AI 設定選了 Apple AI，測試連線卻出現 403？**
+A：`fm serve` 只接受 localhost 網頁的請求。請改用 `http://localhost` 開啟本站，或依第十四節執行 `fm-cors-proxy.py` 轉接站，並把服務網址改成 `http://127.0.0.1:1977`。
+
 **Q：如何修改教師密碼？**
 A：教師密碼由後端驗證，網頁程式碼中不含密碼。請依 `wrangler.jsonc` 中 `TEACHER_PASSWORD_SHA256` 旁的中文步驟，把新密碼轉成 SHA-256 雜湊值後填入，再執行 `npx wrangler deploy` 即可生效。
 
@@ -239,7 +244,7 @@ A：教師密碼由後端驗證，網頁程式碼中不含密碼。請依 `wrang
 * ☁️ **Serverless 輕量雲端架構（Cloudflare 全免費方案）**：
   * 伺服器建置於 Cloudflare 全球邊緣網路（Workers + Durable Objects + SQLite），無伺服器維護成本、無連線人數瓶頸，每日免費額度充裕，學校零負擔。
 * 🤖 **深植 AI 智能出題與質性分析**：
-  * 支援 Google Gemini 等大型語言模型，一鍵自動產生符合 PIRLS 閱讀理解架構之題組，並能在學生繳交文字簡答後，由 AI 秒速歸納全班論點摘要。
+  * 支援 Google Gemini 雲端 API、本地 Ollama，以及 **macOS 內建 Apple AI（免 API 金鑰、資料不離開自己的 Mac）**，一鍵自動產生符合 PIRLS 閱讀理解架構之題組，並能在學生繳交文字簡答後，由 AI 秒速歸納全班論點摘要。
 * 🎨 **14 種超多元互動模組**：
   * 涵蓋「形成性評量、思維視覺化、口語表達、美感創作、專注收心、同儕協作」等全方位課堂需求。
 * 💾 **完整學習歷程封存**：
@@ -418,6 +423,7 @@ A：教師密碼由後端驗證，網頁程式碼中不含密碼。請依 `wrang
 3. 🤖 **AI 智慧分析與出題**：
    * **AI 出題**：老師只需給予關鍵詞或教材文本，AI 自動生成標準選擇題、排序題、連線配對題與 PIRLS 閱讀理解測驗。
    * **AI 答題質性摘要**：瞬間歸納數十則文字簡答，梳理出主要論點聚類，輔助教師進行結構化課堂總結。
+   * **AI 模型來源可選**：Google Gemini（雲端 API）、本地 Ollama、🍎 macOS 本地 Apple AI（Apple Intelligence 系統內建模型，詳見第十四節）。
 4. ⏸️ **作答暫停控制 (Pause & Lock)**：
    * 當老師需要講解或制止學生盲目亂猜時，可一鍵按下「暫停」，全體學生畫面即刻鎖定並跳出「老師已暫停回覆」提示，收回課堂主控權。
 5. 👥 **在線狀態與未作答名單追蹤**：
@@ -426,10 +432,48 @@ A：教師密碼由後端驗證，網頁程式碼中不含密碼。請依 `wrang
    * 課堂結束前，點擊「歷程 💾」即可將當堂課所有活動記錄、作答明細與統計數據匯出下載。
    * 可作為平時成績考核依據，或匯入學校評量系統建檔。
    * 派送 HTML 時學生「截圖送出」的圖片會記錄在歷程中；圖片點選題會在歷程中呈現**全班熱點圖結果**（含姓名與老師圈選的正確區域），並依正確區域標示每位學生的對錯與正解率。
+7. 🗄️ **本機題庫匯出 / 匯入（Cloudflare V2.1 新增）**：
+   * 教師面板左下角的綠色浮動按鈕，只在教師面板顯示，進入各模組後會自動隱藏。
+   * **匯出**：一鍵把這台電腦上的選擇題、排序題、配對題、閱讀測驗題庫存成一個 JSON 檔。
+   * **匯入**：選擇題庫檔後，可勾選要匯入的模組與題庫（預設全選），同名題庫會覆蓋；匯入後到各模組的「選擇本地題庫」載入派送。
+   * **教學效益**：在家或辦公室先用 AI 生成題庫並匯出，到教室電腦匯入即可使用，不必重新出題。
 
 ---
 
-## 十四、完整教學使用流程圖解
+## 十四、使用 Mac 本機 Apple AI（選用）
+
+教師端的 AI 設定新增第三種模型來源：**🍎 macOS 本地 Apple AI**，呼叫 macOS 內建的 Apple Intelligence 模型，不需要 API 金鑰，AI 運算在自己的 Mac 上完成。不使用此功能不影響其他任何功能。
+
+**使用條件**：Apple Silicon Mac、系統有 `fm` 指令（macOS 27），並已在「系統設定 > Apple Intelligence」開啟且模型下載完成。
+
+### 運作方式
+
+macOS 的 `fm serve` 只接受從 `localhost` 網頁發出的請求，因此從 `https://xxx.workers.dev` 直接連線會被拒絕（403）。解決方式有兩種：
+
+| 情況 | 做法 |
+|---|---|
+| 用 `http://localhost` / `http://127.0.0.1` 開啟本站（例如第五節的 `npx wrangler dev`） | 終端機執行 `fm serve --host 127.0.0.1 --port 1976`，服務網址維持預設 `http://127.0.0.1:1976` |
+| 用雲端網址（workers.dev 或自訂網域）開啟本站 | 改用 `fm-cors-proxy.py` 轉接站（見下） |
+
+### 轉接站 `fm-cors-proxy.py`
+
+在本機監聽 `127.0.0.1:1977`，替回應加上 CORS 標頭後轉送給 `fm serve`（作用類似 Ollama 的 `OLLAMA_ORIGINS`）。只用 Python 3 內建模組，不需安裝套件；若 `fm serve` 尚未執行，會自動幫你啟動。
+
+1. 到「AI 設定」把 AI 模型來源選為「🍎 macOS 本地 Apple AI」。若目前網址不是本機網址，畫面會自動顯示轉接指令（可按「複製」）：
+   ```
+   curl -sO https://<你的網站網址>/fm-cors-proxy.py && python3 fm-cors-proxy.py --origin https://<你的網站網址>
+   ```
+2. 終端機視窗保持開啟（關閉即停止服務；重開機後需再執行一次）。
+3. 按「套用轉接站位址 (1977)」，再按「測試連線」，出現綠色 ✅ 後按「儲存設定」。
+
+可用參數：`--port`（轉接站埠號，預設 1977）、`--target-port`（`fm serve` 埠號，預設 1976）、`--origin`（允許的網站來源，可重複指定；不指定則允許全部，指定自己的網址較安全）。
+
+> 部署時 `public/fm-cors-proxy.py` 會一併上傳，上面的 `curl` 指令才能從你的網站下載到它；不需要此功能的話可以不放。
+> 使用 Chrome / Edge 時，若瀏覽器詢問「存取本機網路」請選擇允許；Safari 會阻擋 https 網頁連線本機 http 服務，請改用 Chrome / Edge / Firefox。
+
+---
+
+## 十五、完整教學使用流程圖解
 
 ```mermaid
 flowchart TD
@@ -472,9 +516,19 @@ flowchart TD
 
 ---
 
-## 十五、作者與授權說明
+## 十六、作者與授權說明
 
 * **作者**：阿剛老師（Kentxchang）
 * **個人網站**：[阿剛老師的數位教學資源](https://kentxchang.blogspot.tw)
 * **授權方式**：本作品採用 [創用CC 姓名標示-非商業性-相同方式分享 4.0 國際 (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-TW) 授權。
 * **轉載須知**：歡迎教育非商業用途轉載、引用或改編教學，請保留「阿剛老師」署名，並附上本作品原始連結。
+
+---
+
+## 十七、版本更新紀錄
+
+### Cloudflare V2.1
+* **新增「本機題庫匯出 / 匯入」**：教師面板左下角浮動按鈕，可匯出所有本機題庫（選擇題、排序題、配對題、閱讀測驗）為 JSON 檔，並在另一台電腦勾選模組與題庫後匯入，方便跨電腦備課。程式位於 `modules/bank-transfer/`。
+
+### Cloudflare V2
+* 主程式版本：Cloudflare Workers + Durable Objects 版，內含 16 種互動模組與 AI 設定（Gemini / Ollama / Apple AI）。

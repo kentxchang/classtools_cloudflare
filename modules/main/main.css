@@ -925,6 +925,7 @@
         }
 
         /* @include 05-drawing/drawing-floating-paste.css */
+        /* @include bank-transfer/bank-transfer.css */
         /* Floating button: 學生加入網址 / QR Code (教師端右上角) */
         #floating-qr-btn {
             position: fixed;

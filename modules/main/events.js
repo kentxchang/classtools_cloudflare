@@ -129,6 +129,7 @@
                 }
             });
             setupChoiceSequencingMatchingEventListeners(); // → modules/02-choice-sequencing-matching/choice-sequencing-matching.js
+            setupBankTransferEventListeners(); // → modules/bank-transfer/bank-transfer.js
 
             // REMOVED: Old multiple-choice-settings-btn listener (now handled by open-multiple-choice-settings-btn from B menu)
 

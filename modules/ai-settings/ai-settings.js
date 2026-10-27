@@ -11,8 +11,8 @@
             selectedModel: 'gemini-3-flash-preview', // Selected AI model (default to Gemini 3 Flash Preview)
             ollamaHost: 'http://localhost:11434', // Local Ollama host
             ollamaModel: '', // Selected Ollama model
-            appleAiHost: 'http://localhost:11435', // Local macOS Apple AI host (e.g. afm-Server or apple-to-openai)
-            appleAiModel: 'apple-intelligence' // Selected macOS Apple AI model
+            appleAiHost: 'http://127.0.0.1:1976', // macOS 內建 `fm serve` 預設位址
+            appleAiModel: 'system' // `fm serve` 使用的模型識別碼
         };
 
         // --- AI Settings Modal Functions ---
@@ -52,6 +52,13 @@
             if (geminiApiKeyGroup) geminiApiKeyGroup.classList.toggle('hidden', !isGemini);
             if (ollamaSettingsGroup) ollamaSettingsGroup.classList.toggle('hidden', !isOllama);
             if (appleAiSettingsGroup) appleAiSettingsGroup.classList.toggle('hidden', !isAppleAi);
+
+            const localWarn = document.getElementById('apple-ai-local-warning');
+            if (localWarn) {
+                const cmdEl = document.getElementById('apple-ai-proxy-cmd');
+                if (cmdEl) cmdEl.textContent = appleAiProxyCmd();
+                localWarn.classList.toggle('hidden', isLocalPageOrigin());
+            }
 
             if (appleAiDetectedBanner) {
                 const isMac = detectIsMacOS();
@@ -152,84 +159,85 @@
             }
         }
 
+        // fm serve 只接受來自 localhost / 127.0.0.1 / [::1] 網頁的請求，其他網址 (如 workers.dev) 會回 403
+        function isLocalPageOrigin() {
+            return ['localhost', '127.0.0.1', '[::1]', '::1'].includes(location.hostname);
+        }
+        function appleAiProxyCmd() {
+            return `curl -sO ${location.origin}/fm-cors-proxy.py && python3 fm-cors-proxy.py --origin ${location.origin}`;
+        }
+        function appleAiLocalOnlyMsg() {
+            return `目前網址 ${location.origin} 不是本機網址，fm serve 基於安全限制會拒絕 (403)。請在終端機執行轉接指令 ${appleAiProxyCmd()} （視窗保持開啟），並將上方服務網址改為 http://127.0.0.1:1977 後再測試。`;
+        }
+
         async function testAppleAiConnection() {
-            const host = (appleAiHostInput ? appleAiHostInput.value : aiSettings.appleAiHost || 'http://localhost:11435').trim().replace(/\/+$/, '');
-            const model = (appleAiModelInput ? appleAiModelInput.value : aiSettings.appleAiModel || 'apple-intelligence').trim();
+            const host = (appleAiHostInput ? appleAiHostInput.value : aiSettings.appleAiHost || 'http://127.0.0.1:1976').trim().replace(/\/+$/, '');
+            const model = (appleAiModelInput ? appleAiModelInput.value : aiSettings.appleAiModel || 'system').trim() || 'system';
             const btn = document.getElementById('test-apple-ai-btn');
             const statusEl = document.getElementById('apple-ai-test-status');
+            const setStatus = (text, cls) => {
+                if (statusEl) { statusEl.textContent = text; statusEl.className = `text-xs ${cls} mt-1`; }
+            };
+            const resetBtn = () => {
+                if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-plug mr-1"></i> 測試連線'; }
+            };
 
             if (btn) {
                 btn.disabled = true;
                 btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> 測試中...';
             }
-            if (statusEl) {
-                statusEl.textContent = '測試連線至 Apple AI 本地服務...';
-                statusEl.className = 'text-xs text-blue-600 mt-1';
-            }
+            setStatus('測試連線至 Apple AI 本地服務...', 'text-blue-600');
 
-            // 檢查是否有 window.ai 原生支援
-            if (typeof window !== 'undefined' && window.ai?.languageModel) {
-                if (statusEl) {
-                    statusEl.textContent = '✅ 偵測到瀏覽器原生系統 AI 介面已啟用！';
-                    statusEl.className = 'text-xs text-green-600 mt-1 font-semibold';
-                }
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-plug mr-1"></i> 測試連線';
-                }
-                showMessage('✅ 偵測到 macOS 系統原生 AI 介面！', 'success');
-                return;
-            }
+            const base = host.replace(/\/v1$/, '');
+            const fetchWithTimeout = async (url, opts = {}) => {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), 4000);
+                try { return await fetch(url, { ...opts, signal: controller.signal }); }
+                finally { clearTimeout(timer); }
+            };
 
             try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 4000);
-                const modelsUrl = host.endsWith('/v1') ? `${host}/models` : `${host}/v1/models`;
-                let connected = false;
-
-                try {
-                    const res = await fetch(modelsUrl, { signal: controller.signal });
-                    if (res.ok) connected = true;
-                } catch (e) {
-                    // 若 /v1/models 不通，嘗試 ping chat completions
-                    const chatUrl = host.endsWith('/v1') ? `${host}/chat/completions` : `${host}/v1/chat/completions`;
-                    const chatRes = await fetch(chatUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            model: model,
-                            messages: [{ role: 'user', content: 'ping' }],
-                            max_tokens: 1
-                        }),
-                        signal: controller.signal
-                    });
-                    if (chatRes.ok || chatRes.status === 400 || chatRes.status === 422) {
-                        connected = true;
-                    }
-                } finally {
-                    clearTimeout(timeoutId);
+                // 1) 先確認 fm serve 服務是否存在 (/health，失敗再試 /v1/models)
+                let reachable = false;
+                for (const path of ['/health', '/v1/models']) {
+                    try {
+                        const res = await fetchWithTimeout(base + path);
+                        if (res.ok) { reachable = true; break; }
+                    } catch (e) { /* 試下一個端點 */ }
+                }
+                if (!reachable) {
+                    const isHttpsPage = location.protocol === 'https:' && /^http:\/\//.test(host);
+                    const hint = isHttpsPage
+                        ? '可能是服務尚未啟動，或瀏覽器（如 Safari）阻擋 https 網頁連線本機 http 服務／CORS 限制。'
+                        : '可能是服務尚未啟動，或被 CORS 限制。';
+                    setStatus(`❌ 無法連線 ${host}。${hint} 請依下方步驟在「終端機」執行 fm serve 後再測試。`, 'text-red-600');
+                    showMessage('無法連線至 macOS 本地 Apple AI 服務，請依設定畫面步驟啟動 fm serve', 'error');
+                    return;
                 }
 
-                if (connected) {
-                    if (statusEl) {
-                        statusEl.textContent = '✅ 連線成功！本地 Apple AI 模型伺服器已就緒。';
-                        statusEl.className = 'text-xs text-green-600 mt-1 font-semibold';
-                    }
-                    showMessage('macOS 本地 Apple AI 連線成功！', 'success');
-                } else {
-                    throw new Error('未收到預期回應');
+                // 2) 實際送出一則極短的對話，確認模型可用
+                const res = await fetchWithTimeout(`${base}/v1/chat/completions`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer sk-local' },
+                    body: JSON.stringify({ model, messages: [{ role: 'user', content: '請只回答「OK」' }], stream: false })
+                });
+                if (res.status === 403) {
+                    setStatus(`⚠️ 服務已啟動，但拒絕了此網頁的請求 (403)。${appleAiLocalOnlyMsg()}`, 'text-red-600');
+                    showMessage('fm serve 拒絕非本機網址的請求，請改用 http://localhost 開啟本站', 'error');
+                    return;
                 }
+                if (!res.ok) {
+                    setStatus(`⚠️ 服務已啟動，但模型回應失敗 (${res.status})。請確認「系統設定 > Apple Intelligence」已開啟且模型下載完成。`, 'text-yellow-700');
+                    showMessage('Apple AI 服務已啟動，但模型無法回應', 'error');
+                    return;
+                }
+                setStatus('✅ 連線成功！本地 Apple AI 已就緒，請按「儲存設定」。', 'text-green-600 font-semibold');
+                showMessage('macOS 本地 Apple AI 連線成功！', 'success');
             } catch (err) {
-                if (statusEl) {
-                    statusEl.textContent = `❌ 連線未成功 (${err.message})。請確認已啟動 afm-Server (埠號 11435) 或 apple-to-openai (埠號 8000)。`;
-                    statusEl.className = 'text-xs text-red-600 mt-1';
-                }
+                setStatus(`❌ 連線未成功 (${err.message})。請確認已在終端機執行 fm serve。`, 'text-red-600');
                 showMessage('無法連線至本地 Apple AI 伺服器', 'error');
             } finally {
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-plug mr-1"></i> 測試連線';
-                }
+                resetBtn();
             }
         }
 
@@ -272,8 +280,8 @@
                 ollamaModelSelect.value = aiSettings.ollamaModel;
             }
 
-            if (appleAiHostInput) appleAiHostInput.value = aiSettings.appleAiHost || 'http://localhost:11435';
-            if (appleAiModelInput) appleAiModelInput.value = aiSettings.appleAiModel || 'apple-intelligence';
+            if (appleAiHostInput) appleAiHostInput.value = aiSettings.appleAiHost || 'http://127.0.0.1:1976';
+            if (appleAiModelInput) appleAiModelInput.value = aiSettings.appleAiModel || 'system';
 
             updateAiSourceDisplay(currentSource);
 
@@ -312,9 +320,9 @@
                 // 針對 macOS 本地 Apple AI 專屬錯誤處理解析
                 errorMessage = error.message || 'macOS 本地 Apple AI 呼叫失敗';
                 solutions = [
-                    '請確認您的 Mac 搭載 Apple Silicon (M1/M2/M3/M4 系列晶片)',
+                    '請確認您的 Mac 搭載 Apple Silicon 且系統內建 fm 指令（macOS 27）',
                     '請至 Mac「系統設定 > Apple Intelligence」確認已開啟功能並完成本地模型下載',
-                    '請確認已啟動本地轉接伺服器（例如 afm-Server 埠號 11435，或 apple-to-openai 埠號 8000）',
+                    '請開啟「終端機」執行：<code class="bg-gray-100 px-1 rounded">fm serve --host 127.0.0.1 --port 1976</code>（視窗需保持開啟）',
                     '請至右上角齒輪「AI 設定」確認服務網址與埠號是否正確，並點擊「測試連線」'
                 ];
             } else if (response && !response.ok) {
@@ -415,10 +423,10 @@
 
             // 儲存 Apple AI 設定
             if (appleAiHostInput) {
-                aiSettings.appleAiHost = appleAiHostInput.value.trim() || 'http://localhost:11435';
+                aiSettings.appleAiHost = appleAiHostInput.value.trim() || 'http://127.0.0.1:1976';
             }
             if (appleAiModelInput) {
-                aiSettings.appleAiModel = appleAiModelInput.value.trim() || 'apple-intelligence';
+                aiSettings.appleAiModel = appleAiModelInput.value.trim() || 'system';
             }
 
             localStorage.setItem('aiSettings', JSON.stringify(aiSettings));
@@ -441,6 +449,11 @@
                     if (parsedSettings.ollamaModel) aiSettings.ollamaModel = parsedSettings.ollamaModel;
                     if (parsedSettings.appleAiHost) aiSettings.appleAiHost = parsedSettings.appleAiHost;
                     if (parsedSettings.appleAiModel) aiSettings.appleAiModel = parsedSettings.appleAiModel;
+                    // 舊版預設值 (afm-Server 11435 / apple-intelligence) 已無法使用，自動升級為 fm serve 預設
+                    if (/:11435\/?$/.test(aiSettings.appleAiHost || '') && (aiSettings.appleAiModel || '') === 'apple-intelligence') {
+                        aiSettings.appleAiHost = 'http://127.0.0.1:1976';
+                        aiSettings.appleAiModel = 'system';
+                    }
                 } catch (e) {
                     console.error("Failed to parse AI settings from localStorage:", e);
                     aiSettings.geminiApiKey = '';
@@ -593,20 +606,8 @@
 
             // 2. macOS 本地 Apple AI 模式
             if (aiSettings.aiSource === 'apple-ai') {
-                // 若瀏覽器原生支援 window.ai 則優先使用
-                if (typeof window !== 'undefined' && window.ai?.languageModel) {
-                    try {
-                        const userPrompt = payload.contents?.map(c => (c.parts || []).map(p => p.text).join('\n')).join('\n') || '';
-                        const session = await window.ai.languageModel.create();
-                        const result = await session.prompt(userPrompt);
-                        if (result) return result;
-                    } catch (e) {
-                        console.warn('原生 window.ai 呼叫失敗，嘗試透過本地 Apple AI 服務端點呼叫:', e);
-                    }
-                }
-
-                const host = (aiSettings.appleAiHost || 'http://localhost:11435').trim().replace(/\/+$/, '');
-                const model = (aiSettings.appleAiModel || 'apple-intelligence').trim();
+                const host = (aiSettings.appleAiHost || 'http://127.0.0.1:1976').trim().replace(/\/+$/, '');
+                const model = (aiSettings.appleAiModel || 'system').trim() || 'system';
                 const messages = geminiPayloadToOpenAiMessages(payload);
                 const temp = payload.generationConfig?.temperature ?? 0.7;
                 const endpoint = host.endsWith('/v1') ? `${host}/chat/completions` : `${host}/v1/chat/completions`;
@@ -616,7 +617,7 @@
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': 'Bearer local'
+                            'Authorization': 'Bearer sk-local'
                         },
                         body: JSON.stringify({
                             model: model,
@@ -626,6 +627,9 @@
                         })
                     });
 
+                    if (response.status === 403) {
+                        throw new Error(appleAiLocalOnlyMsg());
+                    }
                     if (!response.ok) {
                         throw new Error(`macOS Apple AI 請求失敗 (${response.status}: ${response.statusText})`);
                     }
@@ -637,7 +641,7 @@
                 } catch (err) {
                     console.error('Apple AI 呼叫失敗:', err);
                     if (err.message && (err.message.includes('Failed to fetch') || err.name === 'TypeError')) {
-                        throw new Error(`無法連線至 macOS 本地 Apple AI 服務 (${host})。請確認已開啟 Apple Intelligence 並啟動本地轉接服務 (afm-Server 或 apple-to-openai)。`);
+                        throw new Error(`無法連線至 macOS 本地 Apple AI 服務 (${host})。請開啟「終端機」執行 fm serve --host 127.0.0.1 --port 1976 後再試（詳見右上角齒輪「AI 設定」的啟用步驟）。`);
                     }
                     throw err;
                 }
@@ -720,7 +724,7 @@
                 return `Ollama: ${model}`;
             }
             if (aiSettings.aiSource === 'apple-ai') {
-                const model = aiSettings.appleAiModel || 'apple-intelligence';
+                const model = aiSettings.appleAiModel || 'system';
                 return `Apple AI: ${model}`;
             }
 
@@ -767,6 +771,38 @@
             });
             if (fetchOllamaModelsBtn) {
                 fetchOllamaModelsBtn.addEventListener('click', () => fetchOllamaModels(false));
+            }
+            const useProxyBtn = document.getElementById('use-apple-ai-proxy-btn');
+            if (useProxyBtn) {
+                useProxyBtn.addEventListener('click', () => {
+                    if (appleAiHostInput) appleAiHostInput.value = 'http://127.0.0.1:1977';
+                    if (appleAiModelInput) appleAiModelInput.value = 'system';
+                    showMessage('已套用轉接站位址 http://127.0.0.1:1977，請執行指令後按「測試連線」', 'info');
+                });
+            }
+            const copyProxyCmdBtn = document.getElementById('copy-apple-ai-proxy-btn');
+            if (copyProxyCmdBtn) {
+                copyProxyCmdBtn.addEventListener('click', async () => {
+                    try { await navigator.clipboard.writeText(appleAiProxyCmd()); copyProxyCmdBtn.textContent = '已複製 ✓'; }
+                    catch (e) { copyProxyCmdBtn.textContent = '請手動選取複製'; }
+                    setTimeout(() => { copyProxyCmdBtn.textContent = '複製'; }, 1800);
+                });
+            }
+            const copyAppleAiCmdBtn = document.getElementById('copy-apple-ai-cmd-btn');
+            if (copyAppleAiCmdBtn) {
+                copyAppleAiCmdBtn.addEventListener('click', async () => {
+                    const cmd = document.getElementById('apple-ai-serve-cmd').textContent.trim();
+                    try {
+                        await navigator.clipboard.writeText(cmd);
+                        copyAppleAiCmdBtn.textContent = '已複製 ✓';
+                    } catch (e) {
+                        const range = document.createRange();
+                        range.selectNodeContents(document.getElementById('apple-ai-serve-cmd'));
+                        const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+                        copyAppleAiCmdBtn.textContent = '請按 ⌘C';
+                    }
+                    setTimeout(() => { copyAppleAiCmdBtn.textContent = '複製'; }, 1800);
+                });
             }
             if (testAppleAiBtn) {
                 testAppleAiBtn.addEventListener('click', testAppleAiConnection);

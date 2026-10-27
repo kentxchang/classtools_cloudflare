@@ -2074,6 +2074,48 @@
             visibility: visible;
         }
 
+        /* Floating button: 匯出 / 匯入本機題庫 (教師面板左下角) */
+        #floating-bank-transfer-btn {
+            position: fixed;
+            bottom: 1.5rem;
+            left: 1.5rem;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #14b8a6, #0d9488);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(13, 148, 136, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        #floating-bank-transfer-btn:hover {
+            transform: scale(1.1);
+        }
+
+        #floating-bank-transfer-btn .bank-transfer-tooltip {
+            position: absolute;
+            left: 68px;
+            white-space: nowrap;
+            background: #1e293b;
+            color: white;
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        #floating-bank-transfer-btn:hover .bank-transfer-tooltip {
+            opacity: 1;
+        }
         /* Floating button: 學生加入網址 / QR Code (教師端右上角) */
         #floating-qr-btn {
             position: fixed;
@@ -3456,7 +3498,7 @@
                     <div class="mt-2 text-slate-400 text-sm">
                         Made with <i class="fas fa-heart text-pink-400 mx-1"></i> by <a
                             href="https://kentxchang.blogspot.tw" target="_blank" rel="noopener noreferrer"
-                            class="text-indigo-500 hover:text-indigo-600 font-bold hover:underline">阿剛老師 cloudflare V2</a>
+                            class="text-indigo-500 hover:text-indigo-600 font-bold hover:underline">阿剛老師 cloudflare V2.1</a>
                     </div>
                     <div class="mt-4 text-slate-500 text-xs max-w-2xl mx-auto px-4">
                         <p class="mb-2">
@@ -3793,6 +3835,50 @@
                     </button>
                 </div>
             </div>
+        <!-- 題庫匯出 / 匯入：浮動按鈕（左下角，只在教師面板顯示；本檔位於 #teacher-menu-view 內，進入各模組後隨之隱藏） -->
+        <button id="floating-bank-transfer-btn" type="button" title="匯出 / 匯入本機題庫">
+            <i class="fas fa-database"></i>
+            <span class="bank-transfer-tooltip">匯出 / 匯入題庫</span>
+        </button>
+
+        <div id="bank-transfer-modal"
+            class="hidden fixed inset-0 bg-black bg-opacity-50 z-[130] flex items-center justify-center p-4 overflow-y-auto">
+            <div class="bg-white rounded-xl shadow-2xl p-6 max-w-lg w-full my-auto max-h-[90vh] overflow-y-auto text-left text-slate-700">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                        <i class="fas fa-database text-teal-500"></i>匯出 / 匯入本機題庫
+                    </h2>
+                    <button id="bank-transfer-close-btn" type="button"
+                        class="text-gray-400 hover:text-gray-700 text-3xl font-bold leading-none">&times;</button>
+                </div>
+
+                <div id="bank-transfer-main">
+                    <p class="text-sm text-slate-500 mb-4">換電腦備課時，先在自己的電腦匯出題庫檔，再到教室電腦匯入即可（包含選擇題、排序題、配對題、閱讀測驗題庫）。</p>
+                    <div class="flex gap-3">
+                        <button id="bank-export-btn" type="button"
+                            class="flex-1 py-3 bg-teal-500 hover:bg-teal-600 text-white rounded-lg font-bold">
+                            <i class="fas fa-file-export mr-1"></i> 匯出全部題庫
+                        </button>
+                        <button id="bank-import-btn" type="button"
+                            class="flex-1 py-3 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg font-bold">
+                            <i class="fas fa-file-import mr-1"></i> 匯入題庫檔
+                        </button>
+                    </div>
+                    <input type="file" id="bank-import-file" accept=".json,application/json" class="hidden">
+                </div>
+
+                <div id="bank-import-select" class="hidden">
+                    <p class="text-sm text-slate-500 mb-3">請勾選要匯入的模組與題庫（預設全選）。同名題庫會被覆蓋。</p>
+                    <div id="bank-import-tree" class="space-y-3 mb-4"></div>
+                    <div class="flex gap-3">
+                        <button id="bank-import-cancel-btn" type="button"
+                            class="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-bold">取消</button>
+                        <button id="bank-import-confirm-btn" type="button"
+                            class="flex-1 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg font-bold">匯入勾選的題庫</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         </div>
 
         <!-- 浮動貼上圖片按鈕 -->
@@ -4904,7 +4990,7 @@
     </div>
 
     <div id="ai-settings-modal" class="magnified-image-modal hidden">
-        <div id="ai-settings-modal-content" class="magnified-image-modal-content" style="max-width: 600px; width: 95%;">
+        <div id="ai-settings-modal-content" class="magnified-image-modal-content" style="max-width: 600px; width: 95%; overflow-x: hidden;">
             <button id="ai-settings-modal-close-btn" class="magnified-image-modal-close">×</button>
             <h4 class="text-2xl font-bold mb-3 text-gray-800 flex items-center">
                 <i class="fas fa-robot text-blue-600 mr-2"></i>AI 服務設定
@@ -4991,9 +5077,9 @@
 
                     <div>
                         <label for="apple-ai-host-input" class="block font-semibold text-gray-700 mb-1">Apple AI 服務網址 (Host):</label>
-                        <input type="text" id="apple-ai-host-input" value="http://localhost:11435" placeholder="http://localhost:11435"
+                        <input type="text" id="apple-ai-host-input" value="http://127.0.0.1:1976" placeholder="http://127.0.0.1:1976"
                             class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <p class="text-xs text-gray-500 mt-1">afm-Server 預設為 http://localhost:11435；apple-to-openai / maclocal-api 預設為 http://localhost:8000</p>
+                        <p class="text-xs text-gray-500 mt-1">macOS 內建 <code>fm serve</code> 預設為 http://127.0.0.1:1976（若自行轉接可改為其他位址，如 fm-proxy 的 http://127.0.0.1:1977）</p>
                     </div>
 
                     <div>
@@ -5003,16 +5089,38 @@
                                 <i class="fas fa-plug mr-1"></i> 測試連線
                             </button>
                         </div>
-                        <input type="text" id="apple-ai-model-input" value="apple-intelligence" placeholder="apple-intelligence 或 foundation"
+                        <input type="text" id="apple-ai-model-input" value="system" placeholder="system"
                             class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <p id="apple-ai-test-status" class="text-xs text-gray-500 mt-1"></p>
                     </div>
 
-                    <div style="margin-top: 10px; padding: 12px; background-color: #faf5ff; border-left: 4px solid #9333ea; border-radius: 4px;">
-                        <p style="font-size: 13px; color: #6b21a8; margin: 0; line-height: 1.5;">
-                            <i class="fas fa-apple-alt"></i> <strong>Apple Intelligence 本地模型說明：</strong><br>
-                            • 適用於 Apple Silicon (M系列晶片) Mac，需在系統設定中開啟 Apple Intelligence 並下載模型<br>
-                            • 配合輕量本地伺服器（如 afm-Server、maclocal-api 或 apple-to-openai）轉接，即可完全離線由 Mac 內建晶片執行生成，免金鑰、零網路延遲！
+                    <div id="apple-ai-local-warning" style="overflow-wrap:anywhere;" class="hidden p-3 bg-amber-50 border border-amber-300 rounded-lg text-sm text-amber-900">
+                        <strong>⚠️ 你正在從網路網址開啟本站，需多做一步「轉接站」：</strong><br>
+                        Apple 的 <code>fm serve</code> 只接受本機網址的網頁；為了讓網路上的網頁也能用，請在「終端機」執行下列指令（視窗保持開啟，會自動幫你啟動 fm serve，只需 Python 3）：
+                        <div style="display:flex; gap:6px; align-items:center; margin:6px 0;">
+                            <code id="apple-ai-proxy-cmd" style="flex:1; background:#fff; border:1px solid #fcd34d; border-radius:4px; padding:4px 6px; min-width:0; white-space:pre-wrap; word-break:break-all;"></code>
+                            <button type="button" id="copy-apple-ai-proxy-btn" class="px-2 py-1 text-xs bg-amber-600 hover:bg-amber-700 text-white rounded-md">複製</button>
+                        </div>
+                        接著按 <button type="button" id="use-apple-ai-proxy-btn" class="px-2 py-0.5 text-xs bg-purple-600 hover:bg-purple-700 text-white rounded-md">套用轉接站位址 (1977)</button> 再「測試連線」。使用 Chrome / Edge 時，若瀏覽器詢問「存取本機網路」請選擇允許。
+                    </div>
+                    <div id="apple-ai-guide" style="overflow-wrap:anywhere; margin-top: 10px; padding: 12px; background-color: #faf5ff; border-left: 4px solid #9333ea; border-radius: 4px;">
+                        <p style="font-size: 13px; color: #6b21a8; margin: 0 0 8px; line-height: 1.5;">
+                            <i class="fas fa-apple-alt"></i> <strong>啟用 Apple 本地 AI（只需做一次，約 1 分鐘）</strong>
+                        </p>
+                        <ol style="font-size: 13px; color: #581c87; margin: 0; padding-left: 20px; line-height: 1.7;">
+                            <li>需 Apple Silicon Mac 且系統內建 <code>fm</code> 指令（macOS 27）。到「系統設定 &gt; Apple Intelligence」開啟並等待模型下載完成。</li>
+                            <li>開啟「終端機」App，貼上下列指令並按 Enter（<strong>視窗需保持開啟</strong>，關閉即停止服務）：
+                                <div style="display:flex; gap:6px; align-items:center; margin:4px 0;">
+                                    <code id="apple-ai-serve-cmd" style="flex:1; background:#fff; border:1px solid #e9d5ff; border-radius:4px; padding:4px 6px; min-width:0; white-space:pre-wrap; word-break:break-all;">fm serve --host 127.0.0.1 --port 1976</code>
+                                    <button type="button" id="copy-apple-ai-cmd-btn" class="px-2 py-1 text-xs bg-purple-600 hover:bg-purple-700 text-white rounded-md">複製</button>
+                                </div>
+                                <span style="font-size:12px;">若出現 <code>Address already in use</code>，代表服務已在執行，可直接進行下一步；若出現 <code>command not found</code>，代表此 Mac 尚無 <code>fm</code> 指令。</span>
+                            </li>
+                            <li>回到本頁按上方「測試連線」，顯示綠色 ✅ 後按「儲存設定」，並將 AI 來源維持為「macOS 本地 Apple AI」即可。</li>
+                        </ol>
+                        <p style="font-size: 12px; color: #6b21a8; margin: 8px 0 0; line-height: 1.5;">
+                            💡 若測試顯示「被瀏覽器阻擋」：請使用 Chrome / Edge / Firefox 開啟本頁（Safari 會阻擋 https 網頁連線本機 http 服務），或改用本機 <code>http://localhost</code> 開啟本站。<br>
+                            💡 之後每次重開機，都需要再執行一次步驟 2 的指令。
                         </p>
                     </div>
                 </div>
@@ -10549,6 +10657,7 @@
                 }
             });
             setupChoiceSequencingMatchingEventListeners(); // → modules/02-choice-sequencing-matching/choice-sequencing-matching.js
+            setupBankTransferEventListeners(); // → modules/bank-transfer/bank-transfer.js
 
             // REMOVED: Old multiple-choice-settings-btn listener (now handled by open-multiple-choice-settings-btn from B menu)
 
@@ -18714,6 +18823,125 @@ ${existingText}
             teacherImg.addEventListener('load', renderHotspotTeacher);
             new ResizeObserver(() => { if (currentInteractionMode === 'hotspot') renderHotspotTeacher(); }).observe(teacherImg);
         }
+        // ==================== 本機題庫匯出 / 匯入（教師面板左下角浮動按鈕） ====================
+        // 匯出：把這台電腦上所有題庫（跨課堂本地題庫 + 各課堂代碼下的題庫，同名取後者）存成 JSON 檔。
+        // 匯入：讀取 JSON 檔，勾選模組 / 題庫後寫入「跨課堂本地題庫」，之後在各模組以「選擇本地題庫」載入。
+        const BANK_TRANSFER_TYPES = {
+            mc:      { label: '選擇題',   prefix: 'questionBanks_' },
+            seq:     { label: '排序題',   prefix: 'sequencingBanks_' },
+            match:   { label: '配對題',   prefix: 'matchingBanks_' },
+            reading: { label: '閱讀測驗', prefix: 'readingQuestionBanks_' },
+        };
+
+        function collectAllLocalBanks() {
+            const result = {};
+            Object.entries(BANK_TRANSFER_TYPES).forEach(([type, { prefix }]) => {
+                const byName = new Map();
+                const keys = Object.keys(localStorage).filter(k => k.startsWith(prefix) && k !== prefix + 'global');
+                [...keys, prefix + 'global'].forEach(key => {
+                    let arr = [];
+                    try { arr = JSON.parse(localStorage.getItem(key) || '[]'); } catch (e) { /* ignore */ }
+                    if (Array.isArray(arr)) arr.forEach(b => { if (b && b.name) byName.set(b.name, b); });
+                });
+                result[type] = [...byName.values()];
+            });
+            return result;
+        }
+
+        function exportAllLocalBanks() {
+            const banks = collectAllLocalBanks();
+            const total = Object.values(banks).reduce((n, arr) => n + arr.length, 0);
+            if (total === 0) { showMessage('這台電腦目前沒有可匯出的題庫', 'error'); return; }
+            const data = { app: 'classtools-banks', version: 1, exportedAt: new Date().toISOString(), banks };
+            const stamp = new Date().toISOString().slice(0, 10);
+            saveAs(new Blob([JSON.stringify(data)], { type: 'application/json' }), `剛好學題庫_${stamp}.json`);
+            showMessage(`已匯出 ${total} 個題庫`, 'success');
+        }
+
+        let pendingImportBanks = null;
+
+        function showBankImportSelection(banks) {
+            pendingImportBanks = banks;
+            const tree = document.getElementById('bank-import-tree');
+            tree.innerHTML = Object.entries(BANK_TRANSFER_TYPES).map(([type, { label }]) => {
+                const arr = Array.isArray(banks[type]) ? banks[type].filter(b => b && b.name) : [];
+                if (arr.length === 0) return '';
+                return `<div class="border border-slate-200 rounded-lg p-3">
+                    <label class="flex items-center gap-2 font-bold text-slate-800">
+                        <input type="checkbox" class="bank-type-check" data-type="${type}" checked>
+                        ${label}（${arr.length}）
+                    </label>
+                    <div class="mt-2 ml-6 space-y-1">
+                        ${arr.map((b, i) => `<label class="flex items-center gap-2 text-sm">
+                            <input type="checkbox" class="bank-item-check" data-type="${type}" data-index="${i}" checked>
+                            ${escapeHtml(b.name)}
+                        </label>`).join('')}
+                    </div>
+                </div>`;
+            }).join('');
+            if (!tree.innerHTML) { showMessage('檔案中沒有可匯入的題庫', 'error'); return; }
+            document.getElementById('bank-transfer-main').classList.add('hidden');
+            document.getElementById('bank-import-select').classList.remove('hidden');
+        }
+
+        function resetBankTransferModal() {
+            pendingImportBanks = null;
+            document.getElementById('bank-import-file').value = '';
+            document.getElementById('bank-import-select').classList.add('hidden');
+            document.getElementById('bank-transfer-main').classList.remove('hidden');
+        }
+
+        function importSelectedBanks() {
+            let count = 0;
+            Object.keys(BANK_TRANSFER_TYPES).forEach(type => {
+                const picked = [...document.querySelectorAll(`.bank-item-check[data-type="${type}"]:checked`)]
+                    .map(el => pendingImportBanks[type].filter(b => b && b.name)[parseInt(el.dataset.index)]);
+                if (picked.length === 0) return;
+                mirrorBanksToGlobal(BANK_REGISTRY[type].globalKey, picked);
+                populateGlobalBankSelect(type);
+                count += picked.length;
+            });
+            if (count === 0) { showMessage('請至少勾選一個題庫', 'error'); return; }
+            document.getElementById('bank-transfer-modal').classList.add('hidden');
+            resetBankTransferModal();
+            showMessage(`已匯入 ${count} 個題庫，進入各模組後可從「選擇本地題庫」載入`, 'success');
+        }
+
+        function setupBankTransferEventListeners() {
+            const modal = document.getElementById('bank-transfer-modal');
+            const fileInput = document.getElementById('bank-import-file');
+            document.getElementById('floating-bank-transfer-btn').addEventListener('click', () => {
+                resetBankTransferModal();
+                modal.classList.remove('hidden');
+            });
+            document.getElementById('bank-transfer-close-btn').addEventListener('click', () => modal.classList.add('hidden'));
+            document.getElementById('bank-export-btn').addEventListener('click', exportAllLocalBanks);
+            document.getElementById('bank-import-btn').addEventListener('click', () => fileInput.click());
+            document.getElementById('bank-import-cancel-btn').addEventListener('click', resetBankTransferModal);
+            document.getElementById('bank-import-confirm-btn').addEventListener('click', importSelectedBanks);
+            fileInput.addEventListener('change', async () => {
+                const file = fileInput.files[0];
+                if (!file) return;
+                try {
+                    const data = JSON.parse(await file.text());
+                    if (data.app !== 'classtools-banks' || !data.banks) throw new Error('format');
+                    showBankImportSelection(data.banks);
+                } catch (e) {
+                    showMessage('無法讀取此檔案，請選擇由本功能匯出的題庫檔', 'error');
+                }
+                fileInput.value = '';
+            });
+            // 勾選模組 → 連動底下所有題庫；取消單一題庫 → 更新模組勾選狀態
+            document.getElementById('bank-import-tree').addEventListener('change', (e) => {
+                const el = e.target;
+                if (el.classList.contains('bank-type-check')) {
+                    document.querySelectorAll(`.bank-item-check[data-type="${el.dataset.type}"]`).forEach(c => { c.checked = el.checked; });
+                } else if (el.classList.contains('bank-item-check')) {
+                    const items = [...document.querySelectorAll(`.bank-item-check[data-type="${el.dataset.type}"]`)];
+                    document.querySelector(`.bank-type-check[data-type="${el.dataset.type}"]`).checked = items.some(c => c.checked);
+                }
+            });
+        }
         // =====================================================================
         // 【AI 設定】 modules/ai-settings/ai-settings.js
         // 本檔不是獨立的 ES module：build.js 會依 modules/main/index.html 的順序把它組合進
@@ -18727,8 +18955,8 @@ ${existingText}
             selectedModel: 'gemini-3-flash-preview', // Selected AI model (default to Gemini 3 Flash Preview)
             ollamaHost: 'http://localhost:11434', // Local Ollama host
             ollamaModel: '', // Selected Ollama model
-            appleAiHost: 'http://localhost:11435', // Local macOS Apple AI host (e.g. afm-Server or apple-to-openai)
-            appleAiModel: 'apple-intelligence' // Selected macOS Apple AI model
+            appleAiHost: 'http://127.0.0.1:1976', // macOS 內建 `fm serve` 預設位址
+            appleAiModel: 'system' // `fm serve` 使用的模型識別碼
         };
 
         // --- AI Settings Modal Functions ---
@@ -18768,6 +18996,13 @@ ${existingText}
             if (geminiApiKeyGroup) geminiApiKeyGroup.classList.toggle('hidden', !isGemini);
             if (ollamaSettingsGroup) ollamaSettingsGroup.classList.toggle('hidden', !isOllama);
             if (appleAiSettingsGroup) appleAiSettingsGroup.classList.toggle('hidden', !isAppleAi);
+
+            const localWarn = document.getElementById('apple-ai-local-warning');
+            if (localWarn) {
+                const cmdEl = document.getElementById('apple-ai-proxy-cmd');
+                if (cmdEl) cmdEl.textContent = appleAiProxyCmd();
+                localWarn.classList.toggle('hidden', isLocalPageOrigin());
+            }
 
             if (appleAiDetectedBanner) {
                 const isMac = detectIsMacOS();
@@ -18868,84 +19103,85 @@ ${existingText}
             }
         }
 
+        // fm serve 只接受來自 localhost / 127.0.0.1 / [::1] 網頁的請求，其他網址 (如 workers.dev) 會回 403
+        function isLocalPageOrigin() {
+            return ['localhost', '127.0.0.1', '[::1]', '::1'].includes(location.hostname);
+        }
+        function appleAiProxyCmd() {
+            return `curl -sO ${location.origin}/fm-cors-proxy.py && python3 fm-cors-proxy.py --origin ${location.origin}`;
+        }
+        function appleAiLocalOnlyMsg() {
+            return `目前網址 ${location.origin} 不是本機網址，fm serve 基於安全限制會拒絕 (403)。請在終端機執行轉接指令 ${appleAiProxyCmd()} （視窗保持開啟），並將上方服務網址改為 http://127.0.0.1:1977 後再測試。`;
+        }
+
         async function testAppleAiConnection() {
-            const host = (appleAiHostInput ? appleAiHostInput.value : aiSettings.appleAiHost || 'http://localhost:11435').trim().replace(/\/+$/, '');
-            const model = (appleAiModelInput ? appleAiModelInput.value : aiSettings.appleAiModel || 'apple-intelligence').trim();
+            const host = (appleAiHostInput ? appleAiHostInput.value : aiSettings.appleAiHost || 'http://127.0.0.1:1976').trim().replace(/\/+$/, '');
+            const model = (appleAiModelInput ? appleAiModelInput.value : aiSettings.appleAiModel || 'system').trim() || 'system';
             const btn = document.getElementById('test-apple-ai-btn');
             const statusEl = document.getElementById('apple-ai-test-status');
+            const setStatus = (text, cls) => {
+                if (statusEl) { statusEl.textContent = text; statusEl.className = `text-xs ${cls} mt-1`; }
+            };
+            const resetBtn = () => {
+                if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-plug mr-1"></i> 測試連線'; }
+            };
 
             if (btn) {
                 btn.disabled = true;
                 btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> 測試中...';
             }
-            if (statusEl) {
-                statusEl.textContent = '測試連線至 Apple AI 本地服務...';
-                statusEl.className = 'text-xs text-blue-600 mt-1';
-            }
+            setStatus('測試連線至 Apple AI 本地服務...', 'text-blue-600');
 
-            // 檢查是否有 window.ai 原生支援
-            if (typeof window !== 'undefined' && window.ai?.languageModel) {
-                if (statusEl) {
-                    statusEl.textContent = '✅ 偵測到瀏覽器原生系統 AI 介面已啟用！';
-                    statusEl.className = 'text-xs text-green-600 mt-1 font-semibold';
-                }
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-plug mr-1"></i> 測試連線';
-                }
-                showMessage('✅ 偵測到 macOS 系統原生 AI 介面！', 'success');
-                return;
-            }
+            const base = host.replace(/\/v1$/, '');
+            const fetchWithTimeout = async (url, opts = {}) => {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), 4000);
+                try { return await fetch(url, { ...opts, signal: controller.signal }); }
+                finally { clearTimeout(timer); }
+            };
 
             try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 4000);
-                const modelsUrl = host.endsWith('/v1') ? `${host}/models` : `${host}/v1/models`;
-                let connected = false;
-
-                try {
-                    const res = await fetch(modelsUrl, { signal: controller.signal });
-                    if (res.ok) connected = true;
-                } catch (e) {
-                    // 若 /v1/models 不通，嘗試 ping chat completions
-                    const chatUrl = host.endsWith('/v1') ? `${host}/chat/completions` : `${host}/v1/chat/completions`;
-                    const chatRes = await fetch(chatUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            model: model,
-                            messages: [{ role: 'user', content: 'ping' }],
-                            max_tokens: 1
-                        }),
-                        signal: controller.signal
-                    });
-                    if (chatRes.ok || chatRes.status === 400 || chatRes.status === 422) {
-                        connected = true;
-                    }
-                } finally {
-                    clearTimeout(timeoutId);
+                // 1) 先確認 fm serve 服務是否存在 (/health，失敗再試 /v1/models)
+                let reachable = false;
+                for (const path of ['/health', '/v1/models']) {
+                    try {
+                        const res = await fetchWithTimeout(base + path);
+                        if (res.ok) { reachable = true; break; }
+                    } catch (e) { /* 試下一個端點 */ }
+                }
+                if (!reachable) {
+                    const isHttpsPage = location.protocol === 'https:' && /^http:\/\//.test(host);
+                    const hint = isHttpsPage
+                        ? '可能是服務尚未啟動，或瀏覽器（如 Safari）阻擋 https 網頁連線本機 http 服務／CORS 限制。'
+                        : '可能是服務尚未啟動，或被 CORS 限制。';
+                    setStatus(`❌ 無法連線 ${host}。${hint} 請依下方步驟在「終端機」執行 fm serve 後再測試。`, 'text-red-600');
+                    showMessage('無法連線至 macOS 本地 Apple AI 服務，請依設定畫面步驟啟動 fm serve', 'error');
+                    return;
                 }
 
-                if (connected) {
-                    if (statusEl) {
-                        statusEl.textContent = '✅ 連線成功！本地 Apple AI 模型伺服器已就緒。';
-                        statusEl.className = 'text-xs text-green-600 mt-1 font-semibold';
-                    }
-                    showMessage('macOS 本地 Apple AI 連線成功！', 'success');
-                } else {
-                    throw new Error('未收到預期回應');
+                // 2) 實際送出一則極短的對話，確認模型可用
+                const res = await fetchWithTimeout(`${base}/v1/chat/completions`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer sk-local' },
+                    body: JSON.stringify({ model, messages: [{ role: 'user', content: '請只回答「OK」' }], stream: false })
+                });
+                if (res.status === 403) {
+                    setStatus(`⚠️ 服務已啟動，但拒絕了此網頁的請求 (403)。${appleAiLocalOnlyMsg()}`, 'text-red-600');
+                    showMessage('fm serve 拒絕非本機網址的請求，請改用 http://localhost 開啟本站', 'error');
+                    return;
                 }
+                if (!res.ok) {
+                    setStatus(`⚠️ 服務已啟動，但模型回應失敗 (${res.status})。請確認「系統設定 > Apple Intelligence」已開啟且模型下載完成。`, 'text-yellow-700');
+                    showMessage('Apple AI 服務已啟動，但模型無法回應', 'error');
+                    return;
+                }
+                setStatus('✅ 連線成功！本地 Apple AI 已就緒，請按「儲存設定」。', 'text-green-600 font-semibold');
+                showMessage('macOS 本地 Apple AI 連線成功！', 'success');
             } catch (err) {
-                if (statusEl) {
-                    statusEl.textContent = `❌ 連線未成功 (${err.message})。請確認已啟動 afm-Server (埠號 11435) 或 apple-to-openai (埠號 8000)。`;
-                    statusEl.className = 'text-xs text-red-600 mt-1';
-                }
+                setStatus(`❌ 連線未成功 (${err.message})。請確認已在終端機執行 fm serve。`, 'text-red-600');
                 showMessage('無法連線至本地 Apple AI 伺服器', 'error');
             } finally {
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-plug mr-1"></i> 測試連線';
-                }
+                resetBtn();
             }
         }
 
@@ -18988,8 +19224,8 @@ ${existingText}
                 ollamaModelSelect.value = aiSettings.ollamaModel;
             }
 
-            if (appleAiHostInput) appleAiHostInput.value = aiSettings.appleAiHost || 'http://localhost:11435';
-            if (appleAiModelInput) appleAiModelInput.value = aiSettings.appleAiModel || 'apple-intelligence';
+            if (appleAiHostInput) appleAiHostInput.value = aiSettings.appleAiHost || 'http://127.0.0.1:1976';
+            if (appleAiModelInput) appleAiModelInput.value = aiSettings.appleAiModel || 'system';
 
             updateAiSourceDisplay(currentSource);
 
@@ -19028,9 +19264,9 @@ ${existingText}
                 // 針對 macOS 本地 Apple AI 專屬錯誤處理解析
                 errorMessage = error.message || 'macOS 本地 Apple AI 呼叫失敗';
                 solutions = [
-                    '請確認您的 Mac 搭載 Apple Silicon (M1/M2/M3/M4 系列晶片)',
+                    '請確認您的 Mac 搭載 Apple Silicon 且系統內建 fm 指令（macOS 27）',
                     '請至 Mac「系統設定 > Apple Intelligence」確認已開啟功能並完成本地模型下載',
-                    '請確認已啟動本地轉接伺服器（例如 afm-Server 埠號 11435，或 apple-to-openai 埠號 8000）',
+                    '請開啟「終端機」執行：<code class="bg-gray-100 px-1 rounded">fm serve --host 127.0.0.1 --port 1976</code>（視窗需保持開啟）',
                     '請至右上角齒輪「AI 設定」確認服務網址與埠號是否正確，並點擊「測試連線」'
                 ];
             } else if (response && !response.ok) {
@@ -19131,10 +19367,10 @@ ${existingText}
 
             // 儲存 Apple AI 設定
             if (appleAiHostInput) {
-                aiSettings.appleAiHost = appleAiHostInput.value.trim() || 'http://localhost:11435';
+                aiSettings.appleAiHost = appleAiHostInput.value.trim() || 'http://127.0.0.1:1976';
             }
             if (appleAiModelInput) {
-                aiSettings.appleAiModel = appleAiModelInput.value.trim() || 'apple-intelligence';
+                aiSettings.appleAiModel = appleAiModelInput.value.trim() || 'system';
             }
 
             localStorage.setItem('aiSettings', JSON.stringify(aiSettings));
@@ -19157,6 +19393,11 @@ ${existingText}
                     if (parsedSettings.ollamaModel) aiSettings.ollamaModel = parsedSettings.ollamaModel;
                     if (parsedSettings.appleAiHost) aiSettings.appleAiHost = parsedSettings.appleAiHost;
                     if (parsedSettings.appleAiModel) aiSettings.appleAiModel = parsedSettings.appleAiModel;
+                    // 舊版預設值 (afm-Server 11435 / apple-intelligence) 已無法使用，自動升級為 fm serve 預設
+                    if (/:11435\/?$/.test(aiSettings.appleAiHost || '') && (aiSettings.appleAiModel || '') === 'apple-intelligence') {
+                        aiSettings.appleAiHost = 'http://127.0.0.1:1976';
+                        aiSettings.appleAiModel = 'system';
+                    }
                 } catch (e) {
                     console.error("Failed to parse AI settings from localStorage:", e);
                     aiSettings.geminiApiKey = '';
@@ -19309,20 +19550,8 @@ ${existingText}
 
             // 2. macOS 本地 Apple AI 模式
             if (aiSettings.aiSource === 'apple-ai') {
-                // 若瀏覽器原生支援 window.ai 則優先使用
-                if (typeof window !== 'undefined' && window.ai?.languageModel) {
-                    try {
-                        const userPrompt = payload.contents?.map(c => (c.parts || []).map(p => p.text).join('\n')).join('\n') || '';
-                        const session = await window.ai.languageModel.create();
-                        const result = await session.prompt(userPrompt);
-                        if (result) return result;
-                    } catch (e) {
-                        console.warn('原生 window.ai 呼叫失敗，嘗試透過本地 Apple AI 服務端點呼叫:', e);
-                    }
-                }
-
-                const host = (aiSettings.appleAiHost || 'http://localhost:11435').trim().replace(/\/+$/, '');
-                const model = (aiSettings.appleAiModel || 'apple-intelligence').trim();
+                const host = (aiSettings.appleAiHost || 'http://127.0.0.1:1976').trim().replace(/\/+$/, '');
+                const model = (aiSettings.appleAiModel || 'system').trim() || 'system';
                 const messages = geminiPayloadToOpenAiMessages(payload);
                 const temp = payload.generationConfig?.temperature ?? 0.7;
                 const endpoint = host.endsWith('/v1') ? `${host}/chat/completions` : `${host}/v1/chat/completions`;
@@ -19332,7 +19561,7 @@ ${existingText}
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': 'Bearer local'
+                            'Authorization': 'Bearer sk-local'
                         },
                         body: JSON.stringify({
                             model: model,
@@ -19342,6 +19571,9 @@ ${existingText}
                         })
                     });
 
+                    if (response.status === 403) {
+                        throw new Error(appleAiLocalOnlyMsg());
+                    }
                     if (!response.ok) {
                         throw new Error(`macOS Apple AI 請求失敗 (${response.status}: ${response.statusText})`);
                     }
@@ -19353,7 +19585,7 @@ ${existingText}
                 } catch (err) {
                     console.error('Apple AI 呼叫失敗:', err);
                     if (err.message && (err.message.includes('Failed to fetch') || err.name === 'TypeError')) {
-                        throw new Error(`無法連線至 macOS 本地 Apple AI 服務 (${host})。請確認已開啟 Apple Intelligence 並啟動本地轉接服務 (afm-Server 或 apple-to-openai)。`);
+                        throw new Error(`無法連線至 macOS 本地 Apple AI 服務 (${host})。請開啟「終端機」執行 fm serve --host 127.0.0.1 --port 1976 後再試（詳見右上角齒輪「AI 設定」的啟用步驟）。`);
                     }
                     throw err;
                 }
@@ -19436,7 +19668,7 @@ ${existingText}
                 return `Ollama: ${model}`;
             }
             if (aiSettings.aiSource === 'apple-ai') {
-                const model = aiSettings.appleAiModel || 'apple-intelligence';
+                const model = aiSettings.appleAiModel || 'system';
                 return `Apple AI: ${model}`;
             }
 
@@ -19483,6 +19715,38 @@ ${existingText}
             });
             if (fetchOllamaModelsBtn) {
                 fetchOllamaModelsBtn.addEventListener('click', () => fetchOllamaModels(false));
+            }
+            const useProxyBtn = document.getElementById('use-apple-ai-proxy-btn');
+            if (useProxyBtn) {
+                useProxyBtn.addEventListener('click', () => {
+                    if (appleAiHostInput) appleAiHostInput.value = 'http://127.0.0.1:1977';
+                    if (appleAiModelInput) appleAiModelInput.value = 'system';
+                    showMessage('已套用轉接站位址 http://127.0.0.1:1977，請執行指令後按「測試連線」', 'info');
+                });
+            }
+            const copyProxyCmdBtn = document.getElementById('copy-apple-ai-proxy-btn');
+            if (copyProxyCmdBtn) {
+                copyProxyCmdBtn.addEventListener('click', async () => {
+                    try { await navigator.clipboard.writeText(appleAiProxyCmd()); copyProxyCmdBtn.textContent = '已複製 ✓'; }
+                    catch (e) { copyProxyCmdBtn.textContent = '請手動選取複製'; }
+                    setTimeout(() => { copyProxyCmdBtn.textContent = '複製'; }, 1800);
+                });
+            }
+            const copyAppleAiCmdBtn = document.getElementById('copy-apple-ai-cmd-btn');
+            if (copyAppleAiCmdBtn) {
+                copyAppleAiCmdBtn.addEventListener('click', async () => {
+                    const cmd = document.getElementById('apple-ai-serve-cmd').textContent.trim();
+                    try {
+                        await navigator.clipboard.writeText(cmd);
+                        copyAppleAiCmdBtn.textContent = '已複製 ✓';
+                    } catch (e) {
+                        const range = document.createRange();
+                        range.selectNodeContents(document.getElementById('apple-ai-serve-cmd'));
+                        const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+                        copyAppleAiCmdBtn.textContent = '請按 ⌘C';
+                    }
+                    setTimeout(() => { copyAppleAiCmdBtn.textContent = '複製'; }, 1800);
+                });
             }
             if (testAppleAiBtn) {
                 testAppleAiBtn.addEventListener('click', testAppleAiConnection);

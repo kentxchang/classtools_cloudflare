@@ -1,0 +1,44 @@
+        <!-- 題庫匯出 / 匯入：浮動按鈕（左下角，只在教師面板顯示；本檔位於 #teacher-menu-view 內，進入各模組後隨之隱藏） -->
+        <button id="floating-bank-transfer-btn" type="button" title="匯出 / 匯入本機題庫">
+            <i class="fas fa-database"></i>
+            <span class="bank-transfer-tooltip">匯出 / 匯入題庫</span>
+        </button>
+
+        <div id="bank-transfer-modal"
+            class="hidden fixed inset-0 bg-black bg-opacity-50 z-[130] flex items-center justify-center p-4 overflow-y-auto">
+            <div class="bg-white rounded-xl shadow-2xl p-6 max-w-lg w-full my-auto max-h-[90vh] overflow-y-auto text-left text-slate-700">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                        <i class="fas fa-database text-teal-500"></i>匯出 / 匯入本機題庫
+                    </h2>
+                    <button id="bank-transfer-close-btn" type="button"
+                        class="text-gray-400 hover:text-gray-700 text-3xl font-bold leading-none">&times;</button>
+                </div>
+
+                <div id="bank-transfer-main">
+                    <p class="text-sm text-slate-500 mb-4">換電腦備課時，先在自己的電腦匯出題庫檔，再到教室電腦匯入即可（包含選擇題、排序題、配對題、閱讀測驗題庫）。</p>
+                    <div class="flex gap-3">
+                        <button id="bank-export-btn" type="button"
+                            class="flex-1 py-3 bg-teal-500 hover:bg-teal-600 text-white rounded-lg font-bold">
+                            <i class="fas fa-file-export mr-1"></i> 匯出全部題庫
+                        </button>
+                        <button id="bank-import-btn" type="button"
+                            class="flex-1 py-3 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg font-bold">
+                            <i class="fas fa-file-import mr-1"></i> 匯入題庫檔
+                        </button>
+                    </div>
+                    <input type="file" id="bank-import-file" accept=".json,application/json" class="hidden">
+                </div>
+
+                <div id="bank-import-select" class="hidden">
+                    <p class="text-sm text-slate-500 mb-3">請勾選要匯入的模組與題庫（預設全選）。同名題庫會被覆蓋。</p>
+                    <div id="bank-import-tree" class="space-y-3 mb-4"></div>
+                    <div class="flex gap-3">
+                        <button id="bank-import-cancel-btn" type="button"
+                            class="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-bold">取消</button>
+                        <button id="bank-import-confirm-btn" type="button"
+                            class="flex-1 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg font-bold">匯入勾選的題庫</button>
+                    </div>
+                </div>
+            </div>
+        </div>
