@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>單人練習：四線跑酷</title>
+    <style>
+:root {
+    --ink: #3a2e5c;
+    --paper: rgba(255, 255, 255, 0.85);
+    --cat: #ff9f43;
+    --dog: #4dabf7;
+    --pink: #ff8fb1;
+    --mint: #2ec4a6;
+    --grape: #9775fa;
+    --coral: #ff6b6b;
+    --font-plain: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", system-ui, sans-serif;
+    --font-zhuyin: 'ㄅ注音芫荽 Regular', 'BpmfIansui', 'Iansui', var(--font-plain);
+    --font: var(--font-zhuyin);
+}
+:root.plain { --font: var(--font-plain); }
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: var(--font);
+    color: var(--ink);
+    background: linear-gradient(160deg, #ffe3ee, #e3ecff 50%, #d9f8ea) fixed;
+    overflow-x: hidden;
+}
+body::before, body::after {
+    content: "";
+    position: fixed;
+    z-index: -1;
+    border-radius: 50%;
+    filter: blur(40px);
+    opacity: .6;
+    animation: drift 14s ease-in-out infinite alternate;
+}
+body::before { width: 42vmax; height: 42vmax; left: -12vmax; top: -10vmax; background: #ffd6a5; }
+body::after { width: 38vmax; height: 38vmax; right: -10vmax; bottom: -12vmax; background: #a5d8ff; animation-delay: -7s; }
+@keyframes drift { to { transform: translate(4vmax, 3vmax) scale(1.12); } }
+@keyframes pop { from { transform: scale(.85); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes wiggle { 0%, 100% { transform: rotate(-8deg); } 50% { transform: rotate(8deg); } }
+@keyframes shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+
+.topbar, .hud { width: min(900px, calc(100vw - 24px)); }
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0 8px; }
+.logo { margin: 0; font-size: clamp(20px, 4.2vw, 30px); font-weight: 900; letter-spacing: .06em; }
+.logo span { display: inline-block; animation: wiggle 2.4s ease-in-out infinite; }
+.logo span:last-child { animation-delay: -1.2s; }
+
+.switch {
+    display: inline-flex; align-items: center; gap: 8px;
+    font: inherit; font-weight: 800; color: var(--ink);
+    background: var(--paper); border: 0; border-radius: 999px;
+    padding: 6px 14px 6px 8px; cursor: pointer;
+    box-shadow: 0 4px 0 rgba(58, 46, 92, .15);
+    transition: transform .1s, box-shadow .1s;
+}
+.switch:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(58, 46, 92, .15); }
+.switch .track { width: 44px; height: 26px; border-radius: 999px; background: #c9c3dc; position: relative; transition: background .25s; }
+.switch .thumb {
+    position: absolute; top: 3px; left: 3px; width: 20px; height: 20px;
+    border-radius: 50%; background: #fff; box-shadow: 0 2px 4px rgba(0, 0, 0, .25);
+    transition: transform .25s cubic-bezier(.3, 1.6, .5, 1);
+}
+.switch[aria-checked="true"] .track { background: var(--mint); }
+.switch[aria-checked="true"] .thumb { transform: translateX(18px); }
+
+.hud { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center; margin-bottom: 10px; }
+.player {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--paper); border-radius: 999px; padding: 6px 14px;
+    box-shadow: 0 4px 0 rgba(58, 46, 92, .12); backdrop-filter: blur(6px);
+    min-height: 46px;
+}
+.player.dog { flex-direction: row-reverse; }
+.avatar { font-size: 28px; line-height: 1; }
+.bar { flex: 1; height: 22px; border-radius: 999px; background: rgba(58, 46, 92, .12); position: relative; overflow: hidden; }
+.fill { position: absolute; top: 0; bottom: 0; left: 0; width: 100%; border-radius: inherit; transition: width .4s ease, background .3s; }
+.player.dog .fill { left: auto; right: 0; }
+.player.cat .fill { background: linear-gradient(90deg, #ffc078, var(--cat)); }
+.player.dog .fill { background: linear-gradient(270deg, #74c0fc, var(--dog)); }
+.player .fill.low { background: linear-gradient(90deg, #ff8787, var(--coral)); }
+.player.boss .fill { background: linear-gradient(90deg, #b197fc, #7048e8); }
+.hp { font-weight: 900; min-width: 2.4em; text-align: center; }
+.vs { font-weight: 900; font-size: 20px; color: var(--pink); }
+.info { font-size: 13px; font-weight: 800; white-space: nowrap; }
+
+.stage {
+    position: relative;
+    width: min(900px, calc(100vw - 24px), max(320px, calc((100dvh - var(--chrome, 210px)) * var(--ratio, 1.3846))));
+    aspect-ratio: var(--ratio, 1.3846);
+    border-radius: 28px; overflow: hidden;
+    border: 4px solid #fff;
+    box-shadow: 0 10px 0 rgba(58, 46, 92, .14), 0 22px 40px rgba(58, 46, 92, .18);
+    background: #bfe6ff; touch-action: manipulation;
+}
+canvas { display: block; width: 100%; height: 100%; cursor: pointer; }
+.hint {
+    position: absolute; left: 50%; top: 10px; transform: translateX(-50%);
+    max-width: calc(100% - 20px);
+    background: rgba(255, 255, 255, .92); padding: 6px 16px; border-radius: 999px;
+    font-weight: 800; font-size: clamp(13px, 2.2vw, 18px); text-align: center;
+    pointer-events: none; box-shadow: 0 3px 0 rgba(58, 46, 92, .12);
+}
+.hint:empty { display: none; }
+
+footer { padding: 12px 0 14px; font-size: 14px; font-weight: 700; }
+footer a { color: var(--grape); }
+
+.overlay {
+    position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+    padding: 12px; background: rgba(58, 46, 92, .35); backdrop-filter: blur(6px);
+}
+.overlay.show { display: flex; }
+#question-layer.overlay { z-index: 1500; }
+#choice { z-index: 1600; }
+#generator-screen { z-index: 2000; }
+#game-over { z-index: 1800; }
+.card {
+    width: min(900px, 100%); max-height: calc(100dvh - 24px); overflow: auto;
+    background: #fff; border-radius: 28px; padding: clamp(14px, 3vw, 26px);
+    box-shadow: 0 10px 0 rgba(58, 46, 92, .18), 0 24px 50px rgba(58, 46, 92, .3);
+    animation: pop .3s cubic-bezier(.3, 1.6, .5, 1);
+}
+
+#question-text {
+    margin: 0 0 14px; padding: 12px 16px; border-radius: 18px;
+    background: linear-gradient(135deg, #f3ecff, #e6f4ff);
+    font-size: clamp(18px, 3.4vw, 28px); font-weight: 900; line-height: 1.7; text-align: center;
+}
+.sides { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.side { border-radius: 20px; padding: 10px; transition: opacity .2s; }
+.side.cat { background: rgba(255, 159, 67, .14); }
+.side.dog { background: rgba(77, 171, 247, .14); }
+.side.locked { opacity: .45; pointer-events: none; }
+.side h3 { margin: 0 0 8px; text-align: center; font-size: clamp(15px, 2.4vw, 19px); }
+.options { display: flex; flex-direction: column; gap: 10px; }
+.options.blurred .opt { filter: blur(7px); }
+.opt {
+    --c: var(--coral);
+    font: inherit; font-size: clamp(15px, 2.4vw, 21px); font-weight: 800; line-height: 1.5;
+    color: #fff; text-shadow: 0 1px 2px rgba(0, 0, 0, .25);
+    min-height: clamp(46px, 8vw, 62px); padding: 6px 10px;
+    border: 0; border-radius: 16px; background: var(--c);
+    box-shadow: 0 5px 0 color-mix(in srgb, var(--c) 68%, #000);
+    cursor: pointer; transition: transform .1s, box-shadow .1s, filter .2s;
+}
+.opt:hover { filter: brightness(1.08); }
+.opt:active { transform: translateY(3px); box-shadow: 0 2px 0 color-mix(in srgb, var(--c) 68%, #000); }
+.opt.c1 { --c: var(--mint); }
+.opt.c2 { --c: var(--dog); }
+.opt.c3 { --c: var(--grape); }
+.opt.wrong { text-decoration: line-through; opacity: .4; pointer-events: none; animation: shake .3s; }
+.opt.right { --c: #2f9e44; outline: 4px solid #fff; pointer-events: none; }
+.opt.right::after { content: " ✓"; }
+
+/* 下方嵌入式題目（快節奏玩法） */
+.dock { width: min(900px, calc(100vw - 24px)); margin-top: 14px; padding: 12px; max-height: none; overflow: visible; animation: none; border-radius: 24px; }
+.dock .hint { position: static; transform: none; max-width: none; margin: 0 0 8px; box-shadow: none; background: #fff6d9; border-radius: 14px; font-size: clamp(13px, 2vw, 16px); }
+.dock.idle .options { opacity: .45; pointer-events: none; }
+.dock #question-text { font-size: clamp(16px, 2.6vw, 22px); padding: 8px 12px; margin-bottom: 8px; }
+.dock .side { padding: 8px; }
+.dock .side h3 { margin-bottom: 6px; font-size: 15px; }
+.dock .options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.dock .opt { min-height: 44px; font-size: clamp(14px, 2vw, 18px); box-shadow: 0 4px 0 color-mix(in srgb, var(--c) 68%, #000); }
+
+.btn {
+    font: inherit; font-weight: 800; font-size: clamp(15px, 2.4vw, 18px); color: #fff;
+    border: 0; border-radius: 16px; padding: 10px 20px; background: var(--mint);
+    box-shadow: 0 5px 0 rgba(0, 0, 0, .18); cursor: pointer;
+    transition: transform .1s, box-shadow .1s, filter .2s;
+}
+.btn:hover { filter: brightness(1.06); }
+.btn:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0, 0, 0, .18); }
+.btn:disabled { opacity: .45; pointer-events: none; }
+.btn.grape { background: var(--grape); }
+.btn.sky { background: var(--dog); }
+.btn.pink { background: var(--pink); }
+.btn.orange { background: var(--cat); }
+.btn[hidden] { display: none; }
+
+#game-over .card, #choice .card { width: min(440px, 100%); text-align: center; }
+#winner-text, #choice-title { margin: 0 0 14px; font-weight: 900; }
+#winner-text { font-size: clamp(34px, 9vw, 56px); color: var(--coral); }
+#choice-title { font-size: clamp(20px, 4vw, 26px); }
+#choice .actions { flex-direction: column; }
+
+.cards { flex: 1; display: flex; gap: 6px; min-height: 30px; align-items: center; }
+.player.dog .cards { flex-direction: row-reverse; }
+.card-btn {
+    font: inherit; font-weight: 800; font-size: 13px; color: var(--ink);
+    background: #fff; border: 2px solid #e3dcf5; border-radius: 12px; padding: 3px 8px; cursor: pointer;
+    box-shadow: 0 3px 0 rgba(58, 46, 92, .15); animation: pop .3s;
+}
+.card-btn:active { transform: translateY(2px); box-shadow: none; }
+.cards .empty { font-size: 12px; opacity: .55; font-weight: 700; }
+
+#generator-screen .card { text-align: center; }
+#generator-screen h1 { margin: 0 0 14px; font-size: clamp(20px, 4vw, 28px); }
+#generator-input {
+    width: 100%; height: 110px; margin-bottom: 14px; padding: 12px;
+    font: inherit; font-size: 16px; color: var(--ink);
+    border: 3px solid #e3dcf5; border-radius: 16px; resize: vertical;
+}
+#generator-input:focus { outline: none; border-color: var(--grape); }
+.actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-bottom: 14px; }
+.table-wrap { max-height: 38dvh; overflow: auto; border-radius: 14px; border: 2px solid #eee8fa; }
+#output-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+#output-table th { position: sticky; top: 0; background: #efe9ff; }
+#output-table th, #output-table td { padding: 8px 10px; text-align: left; border-bottom: 1px solid #eee8fa; }
+
+#secret-trigger { position: fixed; bottom: 0; left: 0; width: 50px; height: 50px; z-index: 9999; }
+
+@media (max-width: 640px) {
+    .hud { grid-template-columns: 1fr 1fr; }
+    .vs { display: none; }
+    .sides { gap: 8px; }
+    .dock .sides { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* 鍵盤提示 */
+.opt[data-key]::before {
+    content: attr(data-key);
+    display: inline-block; min-width: 1.6em; margin-right: .5em; padding: 0 .35em;
+    border-radius: 8px; background: rgba(255, 255, 255, .3); font-size: .75em;
+}
+
+/* 大屏版面 */
+body.big .topbar, body.big .hud, body.big .dock { width: min(1400px, calc(100vw - 32px)); }
+body.big .stage { width: min(1400px, calc(100vw - 32px), max(600px, calc((100dvh - var(--chrome)) * var(--ratio)))); }
+body.big .logo { font-size: clamp(22px, 2.6vw, 40px); }
+body.big .player { min-height: clamp(46px, 4.6vw, 70px); padding: 6px clamp(14px, 1.6vw, 26px); }
+body.big .avatar { font-size: clamp(28px, 3vw, 46px); }
+body.big .bar { height: clamp(22px, 2.4vw, 36px); }
+body.big .hp { font-size: clamp(16px, 1.8vw, 28px); }
+body.big .vs { font-size: clamp(20px, 2.4vw, 36px); }
+body.big #question-text { font-size: clamp(20px, 2.8vw, 46px); padding: clamp(8px, 1vw, 16px); }
+body.big .opt { font-size: clamp(18px, 2.1vw, 34px); min-height: clamp(48px, 5vw, 84px); }
+body.big .dock .side h3 { font-size: clamp(16px, 1.8vw, 28px); }
+body.big .dock .hint { font-size: clamp(14px, 1.6vw, 24px); }
+
+/* 紅藍隊配色 */
+.theme-rb .side.cat { background: rgba(255, 107, 107, .14); }
+.theme-rb .side.dog { background: rgba(77, 171, 247, .14); }
+.theme-rb .player.cat .fill { background: linear-gradient(90deg, #ffa8a8, #ff6b6b); }
+.theme-rb .player.dog .fill { background: linear-gradient(270deg, #74c0fc, #4dabf7); }
+.theme-rb .player.dog { flex-direction: row-reverse; }
+
+/* 單人練習版面 */
+body.solo .topbar, body.solo .hud, body.solo .dock { width: min(1100px, calc(100vw - 32px)); }
+body.solo .stage { width: min(1100px, calc(100vw - 32px), max(520px, calc((100dvh - var(--chrome)) * var(--ratio)))); }
+body.solo .hud { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; }
+body.solo .dock { margin: 0 0 12px; padding: 10px 14px; }
+body.solo #question-text { margin: 0; }
+.solo-chip {
+    display: flex; align-items: center; gap: 8px; padding: 6px 18px; border-radius: 999px;
+    background: var(--paper); box-shadow: 0 4px 0 rgba(58, 46, 92, .12); backdrop-filter: blur(6px);
+    font-weight: 900; font-size: clamp(16px, 1.8vw, 26px);
+}
+.solo-chip b { min-width: 2em; text-align: center; color: var(--grape); }
+#final-stats { margin: 0 0 14px; font-weight: 800; font-size: clamp(15px, 2vw, 20px); line-height: 1.7; }
+
+/* 單人練習：觸控操作 */
+body.solo canvas { touch-action: none; }
+#touch-ui { position: absolute; inset: 0; pointer-events: none; z-index: 5; }
+body.touch-off #touch-ui { display: none; }
+.joy {
+    position: absolute; left: 14px; bottom: 14px; width: 132px; height: 132px; border-radius: 50%;
+    background: rgba(255, 255, 255, .32); border: 3px solid rgba(255, 255, 255, .85);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .28); pointer-events: auto; touch-action: none; user-select: none;
+}
+.joy .a { position: absolute; font-style: normal; font-size: 15px; color: rgba(58, 46, 92, .7); }
+.joy .up { top: 6px; left: 50%; transform: translateX(-50%); }
+.joy .down { bottom: 6px; left: 50%; transform: translateX(-50%); }
+.joy .left { left: 9px; top: 50%; transform: translateY(-50%); }
+.joy .right { right: 9px; top: 50%; transform: translateY(-50%); }
+.joy .knob {
+    position: absolute; left: 50%; top: 50%; width: 46%; height: 46%; margin: -23% 0 0 -23%; border-radius: 50%;
+    background: rgba(255, 255, 255, .95); box-shadow: 0 3px 8px rgba(0, 0, 0, .35); transition: transform .06s;
+}
+.tbtn {
+    position: absolute; bottom: 16px; width: 84px; height: 84px; border-radius: 50%; font-size: 34px; line-height: 1;
+    background: rgba(255, 255, 255, .5); border: 3px solid #fff; color: #3a2e5c; font-weight: 900;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .28); pointer-events: auto; touch-action: none; user-select: none; cursor: pointer;
+}
+.tbtn.on { background: rgba(255, 255, 255, .95); transform: scale(.94); }
+.tbtn.l1 { left: 14px; } .tbtn.l2 { left: 108px; } .tbtn.r1 { right: 14px; } .tbtn.r2 { right: 108px; }
+.tbtn.big { width: 100px; height: 100px; font-size: 40px; }
+
+.topbar { flex-wrap: wrap; }
+
+    </style>
+</head>
+<body class="big solo" style="--ratio:1.7143;--chrome:340px">
+    <header class="topbar">
+        <h1 class="logo"><span>🎮</span> 單人練習：四線跑酷 <span>⭐</span></h1>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end"><button id="touch-toggle" class="switch" type="button" role="switch" aria-checked="true"><span class="track"><span class="thumb"></span></span><span>🕹️ 觸控操作</span></button><button id="fs-toggle" class="switch" type="button"><span>⛶ 全螢幕</span></button>
+        <button id="zhuyin-toggle" class="switch" type="button" role="switch" aria-checked="true">
+            <span class="track"><span class="thumb"></span></span>
+            <span>注音字體</span>
+        </button></div>
+    </header>
+
+    <section class="hud" aria-label="狀態">
+<div class="solo-chip"><span>⭐ 得分</span><b id="hud-score">0</b></div>
+<div class="solo-chip"><span>生命</span><b id="hud-lives">❤️❤️❤️</b></div>
+<div class="solo-chip"><span>✅ 答對</span><b id="hud-solved">0/10</b></div>
+<div class="solo-chip"><span>🔥 連對</span><b id="hud-streak">0</b></div>
+
+    </section>
+
+    <section class="card dock">
+        <div class="hint" id="hint" aria-live="polite"></div>
+        <h2 id="question-text">請先輸入題庫（按 r 開啟題庫面板）</h2>
+    </section>
+    <main class="stage">
+        <canvas id="gameCanvas" width="960" height="560"></canvas><div id="touch-ui"></div>
+    </main>
+
+    <footer>Made by <a href="https://kentxchang.blogspot.tw" target="_blank">阿剛老師</a></footer>
+
+
+    <div id="game-over" class="overlay">
+        <div class="card">
+            <h2 id="winner-text"></h2>
+            <p id="final-stats"></p>
+            <button class="btn" id="restart-game" type="button">重新開始</button>
+        </div>
+    </div>
+
+    <div id="generator-screen" class="overlay">
+        <div class="card">
+            <h1>題庫設定</h1>
+            <textarea id="generator-input" placeholder="輸入題目，請用逗號或制表符分隔各列...">對阿剛老師的最佳形容詞是什麼?,4,帥,很帥,超帥,帥到爆了!
+台灣最高的山是哪一座?,2,阿里山,玉山,雪山,合歡山
+一年有幾個月?,3,10,11,12,13
+水的化學式是什麼?,1,H2O,CO2,O2,NaCl
+下列哪一種動物會下蛋?,4,貓,狗,牛,雞</textarea>
+            <div class="actions">
+                <button class="btn" id="generator-submit" type="button">送出</button>
+                <button class="btn pink" id="start-game" type="button" hidden>開始遊玩</button>
+                <button class="btn sky" id="download-game" type="button">下載完整遊戲</button>
+            </div>
+            <div class="table-wrap">
+                <table id="output-table">
+                    <thead>
+                        <tr><th>題目</th><th>答案</th><th>選項1</th><th>選項2</th><th>選項3</th><th>選項4</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="secret-trigger"></div>
+
+    <script type="application/json" id="game-config">{}</script>
+    <script>
+/* ===== 共用：畫布、字體、題庫、迴圈、角色繪製 ===== */
+const TAU = Math.PI * 2;
+const $ = id => document.getElementById(id);
+const canvas = $('gameCanvas');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+const dpr = Math.min(window.devicePixelRatio || 1, 2);
+canvas.width = W * dpr;
+canvas.height = H * dpr;
+ctx.scale(dpr, dpr);
+const hintEl = $('hint');
+/* 生成器寫入的難易度設定（#game-config）；沒有設定時使用預設值 */
+const CONFIG = (() => { try { return JSON.parse($('game-config').textContent) || {}; } catch (e) { return {}; } })();
+const cfg = (key, fallback) => { const v = Number(CONFIG[key]); return CONFIG[key] != null && CONFIG[key] !== '' && Number.isFinite(v) ? v : fallback; };
+const setHint = text => { hintEl.textContent = text; };
+const rand = (a, b) => a + Math.random() * (b - a);
+const pick = list => list[Math.floor(Math.random() * list.length)];
+
+/* ---------- 注音字體切換 ---------- */
+const FONT_PLAIN = '"Noto Sans TC","Microsoft JhengHei","PingFang TC",sans-serif';
+const FONT_ZHUYIN = '"ㄅ注音芫荽 Regular","BpmfIansui","Iansui",' + FONT_PLAIN;
+let useZhuyin = true;
+const gameFont = (px, weight = 700) => `${weight} ${px}px ${useZhuyin ? FONT_ZHUYIN : FONT_PLAIN}`;
+const zhuyinToggle = $('zhuyin-toggle');
+
+function setZhuyin(on) {
+    useZhuyin = on;
+    document.documentElement.classList.toggle('plain', !on);
+    zhuyinToggle.setAttribute('aria-checked', String(on));
+    try { localStorage.setItem('catdog-zhuyin', on ? '1' : '0'); } catch (e) {}
+}
+zhuyinToggle.addEventListener('click', () => setZhuyin(!useZhuyin));
+let savedZhuyin = null;
+try { savedZhuyin = localStorage.getItem('catdog-zhuyin'); } catch (e) {}
+setZhuyin(savedZhuyin === '1');
+
+/* ---------- 繪圖工具 ---------- */
+function makeLayer() {
+    const c = document.createElement('canvas');
+    c.width = W * dpr;
+    c.height = H * dpr;
+    const g = c.getContext('2d');
+    g.scale(dpr, dpr);
+    return [c, g];
+}
+
+function circles(g, color, list) {
+    g.fillStyle = color;
+    g.beginPath();
+    for (const [x, y, r] of list) { g.moveTo(x + r, y); g.arc(x, y, r, 0, TAU); }
+    g.fill();
+}
+
+function drawLabel(text, x, y, color = '#ff6b6b', g = ctx) {
+    g.font = gameFont(18, 800);
+    const w = g.measureText(text).width + 24;
+    x = Math.max(w / 2 + 4, Math.min(W - w / 2 - 4, x));
+    g.fillStyle = 'rgba(255,255,255,.95)';
+    g.beginPath(); g.roundRect(x - w / 2, y - 17, w, 34, 17); g.fill();
+    g.fillStyle = color;
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillText(text, x, y);
+    g.textAlign = 'left'; g.textBaseline = 'alphabetic';
+}
+
+function drawTree(g, x, y, s = 1) {
+    g.fillStyle = '#b9824f';
+    g.beginPath(); g.roundRect(x - 8 * s, y - 60 * s, 16 * s, 62 * s, 6); g.fill();
+    circles(g, '#3fb865', [[x, y - 82 * s, 34 * s], [x - 25 * s, y - 60 * s, 24 * s], [x + 25 * s, y - 60 * s, 24 * s]]);
+    circles(g, '#63d483', [[x - 8 * s, y - 92 * s, 16 * s], [x + 14 * s, y - 70 * s, 9 * s]]);
+}
+
+function drawFlower(g, x, y, color) {
+    for (let i = 0; i < 5; i++) {
+        const a = i * TAU / 5;
+        circles(g, color, [[x + Math.cos(a) * 8, y + Math.sin(a) * 8, 7]]);
+    }
+    circles(g, '#ffe066', [[x, y, 5]]);
+}
+
+function randomFlowers(n, y0, y1) {
+    const colors = ['#ff6b6b', '#ffa94d', '#4dabf7', '#9775fa', '#ff8fb1', '#ffffff'];
+    return Array.from({ length: n }, () => ({ x: rand(20, W - 20), y: rand(y0, y1), color: pick(colors) }));
+}
+
+function drawSun(g, x, y) {
+    const glow = g.createRadialGradient(x, y, 20, x, y, 120);
+    glow.addColorStop(0, 'rgba(255,214,102,.9)');
+    glow.addColorStop(1, 'rgba(255,214,102,0)');
+    g.fillStyle = glow;
+    g.fillRect(x - 120, y - 120, 240, 240);
+    circles(g, '#ffd166', [[x, y, 42]]);
+    g.fillStyle = '#3a2e5c';
+    g.beginPath(); g.arc(x - 11, y - 4, 3.5, 0, TAU); g.arc(x + 11, y - 4, 3.5, 0, TAU); g.fill();
+    g.strokeStyle = '#3a2e5c'; g.lineWidth = 3; g.lineCap = 'round';
+    g.beginPath(); g.arc(x, y + 4, 10, .2 * Math.PI, .8 * Math.PI); g.stroke();
+    circles(g, 'rgba(255,120,120,.45)', [[x - 21, y + 8, 6], [x + 21, y + 8, 6]]);
+}
+
+/* 天空＋彩虹＋太陽＋山丘＋草地 */
+function drawMeadow(g, groundY, { rainbow = true, sun = true } = {}) {
+    const sky = g.createLinearGradient(0, 0, 0, groundY + 20);
+    sky.addColorStop(0, '#6ec3ff');
+    sky.addColorStop(1, '#e6f7ff');
+    g.fillStyle = sky;
+    g.fillRect(0, 0, W, H);
+    if (rainbow) {
+        const colors = ['#ff6b6b', '#ffa94d', '#ffe066', '#69db7c', '#4dabf7', '#9775fa'];
+        g.lineWidth = 12; g.globalAlpha = .45;
+        colors.forEach((c, i) => {
+            g.strokeStyle = c;
+            g.beginPath(); g.arc(W * .64, groundY + 10, Math.min(250, groundY - 20) - i * 12, Math.PI, TAU); g.stroke();
+        });
+        g.globalAlpha = 1;
+    }
+    if (sun) drawSun(g, W - 100, Math.min(100, groundY * .35));
+    g.fillStyle = '#b6ecbd';
+    g.beginPath(); g.moveTo(0, groundY + 5);
+    g.quadraticCurveTo(W * .18, groundY - 90, W * .4, groundY + 5);
+    g.quadraticCurveTo(W * .58, groundY - 60, W * .78, groundY + 5);
+    g.quadraticCurveTo(W * .91, groundY - 40, W, groundY + 5);
+    g.closePath(); g.fill();
+    const grass = g.createLinearGradient(0, groundY, 0, H);
+    grass.addColorStop(0, '#a3e8a4');
+    grass.addColorStop(1, '#62c872');
+    g.fillStyle = grass;
+    g.fillRect(0, groundY, W, H - groundY);
+    g.fillStyle = 'rgba(255,255,255,.08)';
+    for (let y = groundY + 40; y < H; y += 80) g.fillRect(0, y, W, 40);
+}
+
+const defaultClouds = [
+    { x: 60, y: 60, s: 1, v: .012 }, { x: 380, y: 40, s: 1.2, v: .008 },
+    { x: 620, y: 90, s: .9, v: .015 }, { x: 220, y: 110, s: .7, v: .01 }
+];
+function drawClouds(t, list = defaultClouds) {
+    for (const c of list) {
+        const x = ((c.x + t * c.v) % (W + 200)) - 100;
+        const { y, s } = c;
+        circles(ctx, 'rgba(255,255,255,.95)', [[x, y, 20 * s], [x + 28 * s, y - 10 * s, 26 * s], [x + 58 * s, y, 21 * s], [x + 30 * s, y + 6 * s, 20 * s]]);
+    }
+}
+
+/* ---------- 特效（星星與飄字） ---------- */
+const fx = [];
+const Fx = {
+    burst(x, y, colors, n = 12) {
+        for (let i = 0; i < n; i++) {
+            const a = Math.random() * TAU, s = 1 + Math.random() * 3;
+            fx.push({ kind: 'star', x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 1.5, life: 1, color: colors[i % colors.length] });
+        }
+    },
+    text(x, y, text, color = '#ff6b6b') {
+        fx.push({ kind: 'text', x, y, vx: 0, vy: -.6, life: 1.2, text, color });
+    },
+    clear() { fx.length = 0; },
+    update() {
+        for (let i = fx.length - 1; i >= 0; i--) {
+            const f = fx[i];
+            f.x += f.vx; f.y += f.vy;
+            if (f.kind === 'star') f.vy += .08;
+            f.life -= f.kind === 'star' ? .015 : .01;
+            if (f.life <= 0) fx.splice(i, 1);
+        }
+    },
+    draw() {
+        for (const f of fx) {
+            ctx.globalAlpha = Math.max(0, Math.min(1, f.life * 1.5));
+            if (f.kind === 'star') {
+                circles(ctx, f.color, [[f.x, f.y, 3 + 5 * f.life]]);
+            } else {
+                ctx.font = gameFont(30, 900);
+                ctx.textAlign = 'center';
+                ctx.lineWidth = 6; ctx.strokeStyle = '#fff'; ctx.lineJoin = 'round';
+                ctx.strokeText(f.text, f.x, f.y);
+                ctx.fillStyle = f.color;
+                ctx.fillText(f.text, f.x, f.y);
+                ctx.textAlign = 'left';
+            }
+        }
+        ctx.globalAlpha = 1;
+    }
+};
+
+/* ---------- 遊戲時鐘（暫停時一併停止）與迴圈 ---------- */
+const STEP_MS = 1000 / 120;
+const Game = {
+    paused: false, ended: false, time: 0, timers: [],
+    after(ms, fn) { this.timers.push({ t: this.time + ms, fn }); },
+    runTimers() {
+        if (!this.timers.length) return;
+        const due = this.timers.filter(x => x.t <= this.time);
+        if (!due.length) return;
+        this.timers = this.timers.filter(x => x.t > this.time);
+        due.sort((a, b) => a.t - b.t).forEach(x => x.fn());
+    },
+    reset() { this.timers = []; this.ended = false; },
+    finish(text) {
+        if (this.ended) return;
+        this.ended = true;
+        setHint('');
+        $('winner-text').textContent = text;
+        $('game-over').classList.add('show');
+    }
+};
+
+function runLoop(update, render) {
+    let last = 0, acc = 0;
+    function frame(t) {
+        requestAnimationFrame(frame);
+        acc = Math.min(acc + (last ? t - last : 0), 100);
+        last = t;
+        if (Game.paused || Game.ended) {
+            acc = 0;
+        } else {
+            while (acc >= STEP_MS && !Game.ended) {
+                Game.time += STEP_MS;
+                Game.runTimers();
+                update();
+                acc -= STEP_MS;
+            }
+        }
+        render(t);
+    }
+    requestAnimationFrame(frame);
+}
+
+function setBar(id, pct, text, low = false) {
+    const bar = $(id + '-health');
+    bar.style.width = Math.max(0, Math.min(100, pct)) + '%';
+    bar.classList.toggle('low', low);
+    $(id + '-hp').textContent = text;
+}
+
+/* ---------- 題庫與出題 ---------- */
+/* 內部以 cat＝左隊、dog＝右隊 代表兩邊；鍵盤：左隊 1 2 3 4、右隊 7 8 9 0 */
+const ANSWER_KEYS = { cat: ['1', '2', '3', '4'], dog: ['7', '8', '9', '0'] };
+const ANSWER_INDEX = { '1': 0, '2': 1, '3': 2, '4': 3, A: 0, B: 1, C: 2, D: 3 };
+
+function parseInput(input) {
+    return input.split('\n').map(row => {
+        const [question = '', answer = '', option1 = '', option2 = '', option3 = '', option4 = ''] = row.split(/,|\t/).map(c => c.trim());
+        return { question, answer, option1, option2, option3, option4 };
+    }).filter(r => Object.values(r).some(Boolean));
+}
+
+function shuffle(list) {
+    const a = [...list];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+/*
+ * mode 'race'：第一個答對的人結束本題
+ * mode 'both'：兩邊各自作答，都答對或 grace 毫秒後結束
+ * 結束後（nextDelay 毫秒）呼叫 onRoundEnd({cat, dog})，由遊戲決定何時 next()
+ */
+const Quiz = {
+    data: [], used: [], current: null, round: 0, shownAt: 0, ended: true,
+    mode: 'race', grace: 3000, nextDelay: 900, wrongLock: 1500, maxTime: 0,
+    done: { cat: false, dog: false }, ok: { cat: false, dog: false },
+    lockUntil: { cat: 0, dog: 0 }, blurUntil: { cat: 0, dog: 0 },
+    onCorrect: null, onWrong: null, onRoundEnd: null,
+    layer: $('question-layer'),
+    sides: { cat: $('cat-options'), dog: $('dog-options') },
+
+    load(text) { this.data = parseInput(text); this.used = []; },
+    elapsed() { return Game.time - this.shownAt; },
+
+    setActive(on) {
+        const l = this.layer;
+        if (l.classList.contains('dock')) l.classList.toggle('idle', !on);
+        else l.classList.toggle('show', on);
+    },
+
+    next() {
+        if (!this.data.length) return;
+        if (this.used.length >= this.data.length) this.used = [];
+        const q = this.current = pick(this.data.filter(x => !this.used.includes(x)));
+        this.used.push(q);
+        this.round++;
+        this.ended = false;
+        this.done = { cat: false, dog: false };
+        this.ok = { cat: false, dog: false };
+        this.lockUntil = { cat: 0, dog: 0 };
+        this.blurUntil = { cat: 0, dog: 0 };
+        this.shownAt = Game.time;
+        $('question-text').textContent = q.question;
+        this.render('cat');
+        this.render('dog');
+        this.refresh();
+        this.setActive(true);
+        if (this.maxTime) {
+            const r = this.round;
+            Game.after(this.maxTime, () => { if (r === this.round) this.finishRound(); });
+        }
+    },
+
+    render(who) {
+        const q = this.current;
+        const options = [q.option1, q.option2, q.option3, q.option4].map((text, index) => ({ text, index }));
+        const box = this.sides[who];
+        box.replaceChildren();
+        shuffle(options).forEach((opt, i) => {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = `opt c${i}`;
+            b.textContent = opt.text;
+            b.dataset.key = ANSWER_KEYS[who][i];
+            b.addEventListener('click', () => this.answer(who, opt.index, b));
+            box.appendChild(b);
+        });
+    },
+
+    answer(who, index, btn) {
+        if (this.ended || this.done[who] || Game.time < this.lockUntil[who]) return;
+        if (index === ANSWER_INDEX[String(this.current.answer).toUpperCase()]) {
+            btn.classList.add('right');
+            this.done[who] = this.ok[who] = true;
+            this.refresh();
+            if (this.onCorrect) this.onCorrect(who, this.elapsed());
+            if (this.mode === 'race' || (this.done.cat && this.done.dog)) {
+                this.finishRound();
+            } else {
+                const r = this.round;
+                Game.after(this.grace, () => { if (r === this.round) this.finishRound(); });
+            }
+        } else {
+            btn.classList.add('wrong');
+            if (this.onWrong) this.onWrong(who);
+            this.lockSide(who, this.wrongLock);
+        }
+    },
+
+    finishRound() {
+        if (this.ended) return;
+        this.ended = true;
+        this.refresh();
+        const result = { ...this.ok };
+        Game.after(this.nextDelay, () => { if (this.onRoundEnd) this.onRoundEnd(result); });
+    },
+
+    refresh() {
+        for (const who of ['cat', 'dog']) {
+            const locked = this.ended || this.done[who] || Game.time < this.lockUntil[who];
+            this.sides[who].parentElement.classList.toggle('locked', locked);
+            this.sides[who].classList.toggle('blurred', Game.time < this.blurUntil[who]);
+        }
+    },
+
+    lockSide(who, ms) {
+        this.lockUntil[who] = Math.max(this.lockUntil[who], Game.time + ms);
+        this.refresh();
+        Game.after(ms + 5, () => this.refresh());
+    },
+
+    blurSide(who, ms) {
+        this.blurUntil[who] = Game.time + ms;
+        this.refresh();
+        Game.after(ms + 5, () => this.refresh());
+    },
+
+    reshuffle(who) { if (!this.done[who]) this.render(who); }
+};
+
+/* ---------- 題庫面板 ---------- */
+const generatorScreen = $('generator-screen');
+const generatorInput = $('generator-input');
+const startGameButton = $('start-game');
+const outputTableBody = document.querySelector('#output-table tbody');
+
+function displayOutput(data) {
+    outputTableBody.replaceChildren();
+    for (const row of data) {
+        const tr = document.createElement('tr');
+        for (const key of ['question', 'answer', 'option1', 'option2', 'option3', 'option4']) {
+            const td = document.createElement('td');
+            td.textContent = row[key];
+            tr.appendChild(td);
+        }
+        outputTableBody.appendChild(tr);
+    }
+}
+
+$('generator-submit').addEventListener('click', () => {
+    Quiz.load(generatorInput.value);
+    displayOutput(Quiz.data);
+    startGameButton.hidden = false;
+});
+
+startGameButton.addEventListener('click', () => {
+    generatorScreen.classList.remove('show');
+    Game.paused = false;
+    $('game-over').classList.remove('show');
+    startGame();
+});
+
+$('restart-game').addEventListener('click', () => {
+    $('game-over').classList.remove('show');
+    startGame();
+});
+
+$('secret-trigger').addEventListener('click', () => {
+    generatorScreen.classList.add('show');
+    Game.paused = true;
+});
+
+document.addEventListener('keydown', (event) => {
+    if (event.target.matches('textarea, input')) return;
+    if (event.key === 'r' || event.key === 'R') { Game.paused = generatorScreen.classList.toggle('show'); return; }
+    if (Game.paused || Game.ended) return;
+    for (const who of ['cat', 'dog']) {
+        const i = ANSWER_KEYS[who].indexOf(event.key);
+        if (i >= 0 && Quiz.sides[who] && Quiz.sides[who].children[i]) Quiz.sides[who].children[i].click();
+    }
+});
+
+const fsButton = $('fs-toggle');
+if (fsButton) {
+    fsButton.addEventListener('click', () => {
+        if (document.fullscreenElement) document.exitFullscreen();
+        else document.documentElement.requestFullscreen().catch(() => {});
+    });
+}
+
+$('download-game').addEventListener('click', () => {
+    const clone = document.documentElement.cloneNode(true);
+    clone.querySelector('#generator-input').textContent = generatorInput.value;
+    clone.querySelectorAll('.overlay.show').forEach(el => el.classList.remove('show'));
+    const blob = new Blob(['<!DOCTYPE html>\n' + clone.outerHTML], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = document.title + '.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+});
+
+
+// 頁面載入時若有預填題庫，直接送出並開始
+window.addEventListener('load', () => {
+    if (generatorInput.value.trim() !== '') {
+        $('generator-submit').click();
+        startGameButton.click();
+    }
+});
+
+
+/* ===== 單人練習共用：題目、生命、分數、最高紀錄 ===== */
+const OPT_COL = ['#ff6b6b', '#2ec4a6', '#4dabf7', '#9775fa'];
+const OPT_LETTER = ['A', 'B', 'C', 'D'];
+
+const Solo = {
+    lives: 3, score: 0, solved: 0, asked: 0, streak: 0, goal: 10, best: 0, over: false,
+    current: null, options: [], correct: -1,
+    storeKey: 'catdog-best-' + document.title,
+
+    reset() {
+        this.lives = cfg('lives', 3);
+        this.goal = cfg('goal', 10);
+        this.score = this.solved = this.asked = this.streak = 0;
+        this.over = false;
+        Quiz.used = [];
+        try { this.best = Number(localStorage.getItem(this.storeKey)) || 0; } catch (e) { this.best = 0; }
+        this.hud();
+    },
+
+    /* 抽下一題；options 為已洗牌的 [{text, index}]，correct 是正確選項在 options 中的位置 */
+    next() {
+        if (!Quiz.data.length) return false;
+        if (Quiz.used.length >= Quiz.data.length) Quiz.used = [];
+        const q = this.current = pick(Quiz.data.filter(x => !Quiz.used.includes(x)));
+        Quiz.used.push(q);
+        const answerIndex = ANSWER_INDEX[String(q.answer).toUpperCase()];
+        this.options = shuffle([q.option1, q.option2, q.option3, q.option4].map((text, index) => ({ text, index })));
+        this.correct = this.options.findIndex(o => o.index === answerIndex);
+        this.asked++;
+        $('question-text').textContent = q.question;
+        return true;
+    },
+
+    get correctText() { return this.options[this.correct] ? this.options[this.correct].text : ''; },
+
+    hud() {
+        $('hud-score').textContent = this.score;
+        $('hud-lives').textContent = '❤️'.repeat(Math.max(0, this.lives)) || '💔';
+        $('hud-solved').textContent = `${this.solved}/${this.goal}`;
+        $('hud-streak').textContent = this.streak;
+    },
+
+    /* 答對：回傳 'win' 或 'continue' */
+    right(points = 100) {
+        this.solved++;
+        this.streak++;
+        const gain = points + Math.min(this.streak - 1, 5) * 10;
+        this.score += gain;
+        this.hud();
+        if (this.solved >= this.goal) { this.end(true); return 'win'; }
+        return 'continue';
+    },
+
+    /* 答錯：扣一條命，並顯示正確答案；回傳 'lose' 或 'continue' */
+    wrong() {
+        setHint(`正確答案是：${this.correctText}`);
+        return this.loseLife();
+    },
+
+    loseLife() {
+        this.lives--;
+        this.streak = 0;
+        this.hud();
+        if (this.lives <= 0) { this.end(false); return 'lose'; }
+        return 'continue';
+    },
+
+    end(win) {
+        this.over = true;
+        if (this.score > this.best) {
+            this.best = this.score;
+            try { localStorage.setItem(this.storeKey, String(this.score)); } catch (e) {}
+        }
+        $('final-stats').textContent = `得分 ${this.score}　答對 ${this.solved} 題　最高紀錄 ${this.best}`;
+        Game.after(900, () => Game.finish(win ? '🎉 挑戰成功！' : '💔 挑戰結束'));
+    }
+};
+
+/* ---------- 畫布文字工具 ---------- */
+function wrapLines(text, maxW, size, weight = 800) {
+    ctx.font = gameFont(size, weight);
+    const lines = [];
+    let line = '';
+    for (const ch of String(text)) {
+        if (ctx.measureText(line + ch).width > maxW && line) { lines.push(line); line = ch; } else line += ch;
+    }
+    if (line) lines.push(line);
+    return lines;
+}
+
+/* 在 (cx, cy) 置中顯示會自動換行的文字（超過 maxLines 行會以…截斷） */
+function drawWrapped(text, cx, cy, maxW, size, color = '#fff', maxLines = 3, weight = 800) {
+    let lines = wrapLines(text, maxW, size, weight);
+    if (lines.length > maxLines) { lines = lines.slice(0, maxLines); lines[maxLines - 1] = lines[maxLines - 1].slice(0, -1) + '…'; }
+    const lh = size * 1.25, y0 = cy - (lines.length - 1) * lh / 2;
+    ctx.font = gameFont(size, weight);
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    lines.forEach((l, i) => {
+        ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(0,0,0,.35)'; ctx.lineJoin = 'round';
+        ctx.strokeText(l, cx, y0 + i * lh);
+        ctx.fillStyle = color;
+        ctx.fillText(l, cx, y0 + i * lh);
+    });
+    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+}
+
+function badge(letter, x, y, r, color) {
+    circles(ctx, '#fff', [[x, y, r + 3]]);
+    circles(ctx, color, [[x, y, r]]);
+    ctx.font = gameFont(r * 1.2, 900);
+    ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(letter, x, y + 1);
+    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+}
+
+/* 觸控／滑鼠：判斷滑動方向 */
+function onSwipe(el, handler, min = 24) {
+    let sx = 0, sy = 0, active = false;
+    el.addEventListener('pointerdown', e => { sx = e.clientX; sy = e.clientY; active = true; });
+    el.addEventListener('pointerup', e => {
+        if (!active) return;
+        active = false;
+        const dx = e.clientX - sx, dy = e.clientY - sy;
+        if (Math.max(Math.abs(dx), Math.abs(dy)) < min) return;
+        handler(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up'));
+    });
+}
+
+
+/* ---------- 觸控操作（虛擬搖桿／按鈕）；可用右上角「觸控操作」開關顯示或隱藏 ---------- */
+const Touch = {
+    ui: $('touch-ui'),
+
+    /* 虛擬搖桿：方向改變時呼叫 onDir('left' | 'right' | 'up' | 'down') */
+    joystick(onDir) {
+        const base = document.createElement('div');
+        base.className = 'joy';
+        base.innerHTML = '<i class="a up">▲</i><i class="a down">▼</i><i class="a left">◀</i><i class="a right">▶</i><div class="knob"></div>';
+        const knob = base.querySelector('.knob');
+        let id = null, last = null;
+        const move = e => {
+            const r = base.getBoundingClientRect(), max = r.width / 2;
+            let dx = e.clientX - (r.left + max), dy = e.clientY - (r.top + max);
+            const len = Math.hypot(dx, dy);
+            if (len > max) { dx *= max / len; dy *= max / len; }
+            knob.style.transform = `translate(${dx * .55}px, ${dy * .55}px)`;
+            if (Math.hypot(dx, dy) < max * .28) return;
+            const dir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up');
+            if (dir !== last) { last = dir; onDir(dir); }
+        };
+        base.addEventListener('pointerdown', e => { e.preventDefault(); id = e.pointerId; base.setPointerCapture(id); move(e); });
+        base.addEventListener('pointermove', e => { if (e.pointerId === id) move(e); });
+        const end = e => { if (e.pointerId !== id) return; id = null; last = null; knob.style.transform = ''; };
+        base.addEventListener('pointerup', end);
+        base.addEventListener('pointercancel', end);
+        this.ui.appendChild(base);
+    },
+
+    /* 螢幕按鈕：pos 為 l1 l2 r1 r2（左下／右下）；按下呼叫 down，放開呼叫 up */
+    button(label, pos, down, up, big = false) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = `tbtn ${pos}${big ? ' big' : ''}`;
+        b.textContent = label;
+        b.addEventListener('pointerdown', e => { e.preventDefault(); b.setPointerCapture(e.pointerId); b.classList.add('on'); if (down) down(); });
+        const release = () => { b.classList.remove('on'); if (up) up(); };
+        b.addEventListener('pointerup', release);
+        b.addEventListener('pointercancel', release);
+        this.ui.appendChild(b);
+    }
+};
+
+const touchToggle = $('touch-toggle');
+function setTouchUi(on) {
+    document.body.classList.toggle('touch-off', !on);
+    touchToggle.setAttribute('aria-checked', String(on));
+    try { localStorage.setItem('catdog-touch', on ? '1' : '0'); } catch (e) {}
+}
+touchToggle.addEventListener('click', () => setTouchUi(document.body.classList.contains('touch-off')));
+let savedTouch = null;
+try { savedTouch = localStorage.getItem('catdog-touch'); } catch (e) {}
+const hasTouch = navigator.maxTouchPoints > 0 || window.matchMedia('(pointer: coarse)').matches;
+setTouchUi(savedTouch === null ? hasTouch : savedTouch === '1');
+
+/* 全場總分：對外公開的唯一路徑 window.score（有限數字，分數一變動就同步） */
+Object.defineProperty(window, 'score', { get: () => Solo.score, configurable: true });
+
+
+/* ===== 單人玩法 3：四線跑酷（衝進正確答案的門） ===== */
+const LANES = 4, LANE_W = 160, ROAD_X = (W - LANES * LANE_W) / 2, PY = 470, GATE_H = 104;
+const BASE_SPEED = 130 * cfg('speedPct', 100) / 100;
+
+let laneTarget, laneX, gates, scroll, resolving, picked;
+
+const laneCenter = i => ROAD_X + i * LANE_W + LANE_W / 2;
+
+function spawnGates() {
+    gates = [0, 1, 2, 3].map(i => ({ lane: i, y: -GATE_H }));
+    resolving = false;
+    picked = -1;
+}
+
+const speedNow = () => BASE_SPEED * (1 + .03 * Solo.solved);
+
+function resolve(lane) {
+    resolving = true;
+    picked = lane;
+    const x = laneCenter(lane);
+    let result;
+    if (lane === Solo.correct) {
+        Fx.text(x, PY - 90, '✅ 答對!', '#69db7c');
+        Fx.burst(x, PY - 40, ['#ffd43b', '#69db7c', '#fff']);
+        result = Solo.right();
+    } else {
+        Fx.text(x, PY - 90, '❌ 答錯了', '#ff8787');
+        result = Solo.wrong();
+    }
+    if (result !== 'continue') return;
+    Game.after(lane === Solo.correct ? 900 : 1900, () => { Solo.next(); setHint(''); spawnGates(); });
+}
+
+function update() {
+    Fx.update();
+    laneX += (laneTarget - laneX) * .18;
+    if (resolving) return;
+    const dt = STEP_MS / 1000, v = speedNow();
+    scroll = (scroll + v * dt) % 80;
+    for (const g of gates) g.y += v * dt;
+    if (gates[0] && gates[0].y + GATE_H / 2 >= PY - 20) resolve(laneTarget);
+}
+
+/* ---------- 繪製 ---------- */
+function render(t) {
+    ctx.clearRect(0, 0, W, H);
+    const sky = ctx.createLinearGradient(0, 0, 0, H);
+    sky.addColorStop(0, '#74c0fc'); sky.addColorStop(1, '#d3f9d8');
+    ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H);
+    // 草地與路旁樹
+    ctx.fillStyle = '#8ce99a'; ctx.fillRect(0, 0, ROAD_X, H); ctx.fillRect(ROAD_X + LANES * LANE_W, 0, ROAD_X, H);
+    for (let i = -1; i < 6; i++) {
+        const y = ((i * 110 + (scroll * 1.4) % 110) + 60) % (H + 100) - 50;
+        circles(ctx, '#2f9e44', [[ROAD_X / 2, y, 34], [W - ROAD_X / 2, y + 40, 30]]);
+        circles(ctx, '#51cf66', [[ROAD_X / 2 - 8, y - 8, 14], [W - ROAD_X / 2 - 8, y + 32, 12]]);
+    }
+    // 跑道
+    ctx.fillStyle = '#495057'; ctx.fillRect(ROAD_X, 0, LANES * LANE_W, H);
+    ctx.fillStyle = 'rgba(255,255,255,.05)';
+    for (let i = 0; i < LANES; i += 2) ctx.fillRect(ROAD_X + i * LANE_W, 0, LANE_W, H);
+    ctx.strokeStyle = 'rgba(255,255,255,.55)'; ctx.lineWidth = 4; ctx.setLineDash([36, 44]); ctx.lineDashOffset = -scroll;
+    for (let i = 1; i < LANES; i++) { ctx.beginPath(); ctx.moveTo(ROAD_X + i * LANE_W, 0); ctx.lineTo(ROAD_X + i * LANE_W, H); ctx.stroke(); }
+    ctx.setLineDash([]);
+    ctx.strokeStyle = '#ffd43b'; ctx.lineWidth = 6;
+    ctx.beginPath(); ctx.moveTo(ROAD_X, 0); ctx.lineTo(ROAD_X, H); ctx.moveTo(ROAD_X + LANES * LANE_W, 0); ctx.lineTo(ROAD_X + LANES * LANE_W, H); ctx.stroke();
+    // 玩家所在跑道的提示光
+    ctx.fillStyle = 'rgba(255,255,255,.12)';
+    ctx.fillRect(ROAD_X + Math.round(laneX) * LANE_W, 0, LANE_W, H);
+    // 門
+    for (const g of gates) {
+        const x = ROAD_X + g.lane * LANE_W + 8, w = LANE_W - 16;
+        const isRight = resolving && g.lane === Solo.correct, isWrongPick = resolving && g.lane === picked && picked !== Solo.correct;
+        const col = isRight ? '#2f9e44' : isWrongPick ? '#868e96' : OPT_COL[g.lane];
+        ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.beginPath(); ctx.roundRect(x + 4, g.y + 8, w, GATE_H, 18); ctx.fill();
+        ctx.fillStyle = col; ctx.beginPath(); ctx.roundRect(x, g.y, w, GATE_H, 18); ctx.fill();
+        ctx.fillStyle = 'rgba(255,255,255,.25)'; ctx.beginPath(); ctx.roundRect(x + 8, g.y + 8, w - 16, 12, 6); ctx.fill();
+        badge(OPT_LETTER[g.lane], x + 20, g.y + 20, 13, col);
+        if (Solo.options[g.lane]) drawWrapped(Solo.options[g.lane].text, x + w / 2 + 6, g.y + GATE_H / 2 + 8, w - 26, 20, '#fff', 3);
+    }
+    // 跑者
+    const px = ROAD_X + laneX * LANE_W + LANE_W / 2, lean = (laneTarget - laneX) * .35;
+    ctx.fillStyle = 'rgba(0,0,0,.3)'; ctx.beginPath(); ctx.ellipse(px, PY + 30, 30, 9, 0, 0, TAU); ctx.fill();
+    ctx.save(); ctx.translate(px, PY + Math.abs(Math.sin(t / 110)) * -6); ctx.rotate(lean);
+    ctx.font = gameFont(66, 400); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('🏃', 0, 0);
+    ctx.restore();
+    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    Fx.draw();
+}
+
+/* ---------- 輸入 ---------- */
+const move = d => { laneTarget = Math.max(0, Math.min(LANES - 1, laneTarget + d)); };
+document.addEventListener('keydown', e => {
+    if (e.target.matches('textarea, input') || Game.paused) return;
+    const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+    if (k === 'ArrowLeft' || k === 'a') { move(-1); e.preventDefault(); }
+    if (k === 'ArrowRight' || k === 'd') { move(1); e.preventDefault(); }
+    if (['1', '2', '3', '4'].includes(k)) laneTarget = Number(k) - 1;
+});
+canvas.addEventListener('click', e => {
+    const p = canvasPoint(e);
+    const lane = Math.floor((p.x - ROAD_X) / LANE_W);
+    if (lane >= 0 && lane < LANES) laneTarget = lane; else move(p.x < W / 2 ? -1 : 1);
+});
+onSwipe(canvas, d => { if (d === 'left') move(-1); if (d === 'right') move(1); });
+Touch.button('◀', 'l1', () => move(-1), null, true);
+Touch.button('▶', 'r1', () => move(1), null, true);
+
+function canvasPoint(event) {
+    const r = canvas.getBoundingClientRect();
+    return { x: (event.clientX - r.left) * W / r.width, y: (event.clientY - r.top) * H / r.height };
+}
+
+function startGame() {
+    Game.reset();
+    Fx.clear();
+    Solo.reset();
+    laneTarget = laneX = 1;
+    scroll = 0;
+    const ok = Solo.next();
+    spawnGates();
+    setHint(ok ? '用 ← → （或 A D、數字鍵 1~4、螢幕按鈕、直接點跑道）換跑道，在門衝到你面前時站在正確答案的門前！' : '請先輸入題庫');
+}
+
+laneTarget = laneX = 1;
+scroll = 0;
+gates = [];
+resolving = false;
+runLoop(update, render);
+
+    </script>
+</body>
+</html>
