@@ -1107,6 +1107,14 @@
                 } else {
                     answerContentHTML = `<p class="text-gray-500">繪圖未完成或格式錯誤</p>`;
                 }
+            } else if (mode === 'game_quiz') { // 02 遊戲化派送：遊戲結束時的成績
+                const a = student.answer;
+                answerContentHTML = `<div class="text-center w-full">
+                    <p class="text-xs text-gray-500">${a.game || ''}</p>
+                    <p class="text-2xl font-bold text-blue-600">${a.score ?? 0} 分</p>
+                    <p class="text-sm text-gray-700">答對 ${a.correct ?? 0} / ${a.total ?? 0}</p>
+                    ${a.result ? `<p class="text-xs font-bold text-emerald-600">${a.result}</p>` : ''}
+                </div>`;
             } else if (mode === 'calc') {
                 answerContentHTML = buildCalcAnswerHTML(student); // 15 計算題：總覽圖，點擊開啟「計算過程」
             } else if (mode === 'recording') {

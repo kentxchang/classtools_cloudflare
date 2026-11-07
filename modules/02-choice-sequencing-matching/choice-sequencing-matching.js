@@ -71,6 +71,7 @@
                         <span class="text-sm font-medium text-gray-700">${bank.name}</span>
                         <div class="flex gap-2">
                             <button onclick="loadQuestionBankToTextarea(${index})" class="px-2 py-1 bg-blue-500 hover:bg-blue-600 text-white text-xs rounded">載入</button>
+                            <button onclick="openGqExportModal('mc', ${index})" class="px-2 py-1 bg-emerald-500 hover:bg-emerald-600 text-white text-xs rounded">匯出 Excel</button>
                             <button onclick="deleteQuestionBank(${index})" class="px-2 py-1 bg-red-500 hover:bg-red-600 text-white text-xs rounded">刪除</button>
                         </div>
                     </div>
@@ -394,6 +395,7 @@
                         <span class="text-sm font-medium text-gray-700">${bank.name}</span>
                         <div class="flex gap-2">
                             <button onclick="loadMatchingBankToTextarea(${index})" class="px-2 py-1 bg-blue-500 hover:bg-blue-600 text-white text-xs rounded">載入</button>
+                            <button onclick="openGqExportModal('match', ${index})" class="px-2 py-1 bg-emerald-500 hover:bg-emerald-600 text-white text-xs rounded">匯出 Excel</button>
                             <button onclick="deleteMatchingBank(${index})" class="px-2 py-1 bg-red-500 hover:bg-red-600 text-white text-xs rounded">刪除</button>
                         </div>
                     </div>
@@ -1189,6 +1191,8 @@
                     customMcQuestionsTextarea.value = '';
                 }
                 customMcQuestionsStatus.classList.add('hidden');
+                gqRenderPicker('multiple_choice'); // 派送方式：原題型或遊戲
+                document.getElementById('gq-picker-mc').classList.toggle('hidden', !mcQuestionTypeCustom.checked); // 無題目出題：不提供遊戲選項
                 document.getElementById('multiple-choice-settings-modal').classList.remove('hidden');
             });
 
@@ -1198,6 +1202,7 @@
 
                 // Update sequencing bank list for current classroom
                 updateSequencingBankList();
+                gqRenderPicker('sequencing'); // 派送方式：原題型或遊戲
 
                 document.getElementById('sequencing-settings-modal').classList.remove('hidden');
             });
@@ -1208,6 +1213,7 @@
 
                 // Update matching bank list for current classroom
                 updateMatchingBankList();
+                gqRenderPicker('matching'); // 派送方式：原題型或遊戲
 
                 document.getElementById('matching-settings-modal').classList.remove('hidden');
             });
@@ -1227,11 +1233,13 @@
 
             // 題型切換按鈕
             document.getElementById('switch-to-matching-btn').addEventListener('click', () => {
+                gqRenderPicker('matching');
                 document.getElementById('sequencing-settings-modal').classList.add('hidden');
                 document.getElementById('matching-settings-modal').classList.remove('hidden');
             });
 
             document.getElementById('switch-to-sequencing-btn').addEventListener('click', () => {
+                gqRenderPicker('sequencing');
                 document.getElementById('matching-settings-modal').classList.add('hidden');
                 document.getElementById('sequencing-settings-modal').classList.remove('hidden');
             });
@@ -1311,6 +1319,7 @@
                 sequencingData.correctOrder = items;
 
                 document.getElementById('sequencing-settings-modal').classList.add('hidden');
+                if (await gqDispatchIfSelected('sequencing', items.join('\t'))) return; // 遊戲化派送：整份項目當作一題
                 showView('teacherMonitor');
                 await setInteractionMode('sequencing', {
                     question: question,
@@ -1353,6 +1362,7 @@
                 matchingData.pairs = pairs;
 
                 document.getElementById('matching-settings-modal').classList.add('hidden');
+                if (await gqDispatchIfSelected('matching', pairs.map(p => `${p.left}\t${p.right}`).join('\n'))) return; // 遊戲化派送
                 showView('teacherMonitor');
                 await setInteractionMode('matching', {
                     question: question,
@@ -1398,6 +1408,7 @@
                     const isCustomMode = e.target.value === 'custom';
                     customMcQuestionsSection.classList.toggle('hidden', !isCustomMode);
                     document.getElementById('question-bank-management-section').classList.toggle('hidden', !isCustomMode);
+                    document.getElementById('gq-picker-mc').classList.toggle('hidden', !isCustomMode); // 無題目出題：不提供遊戲選項
                     customMcQuestionsStatus.classList.add('hidden'); // Hide status when changing radio
                 });
             });
@@ -1420,6 +1431,7 @@
 
                 customMcQuestionsStatus.classList.add('hidden'); // Hide status on successful dispatch
                 multipleChoiceSettingsModal.classList.add('hidden');
+                if (questionsToDispatch && await gqDispatchIfSelected('multiple_choice', questionsToDispatch.map(q => [q.questionText, q.correctAnswer, ...q.options].join('\t')).join('\n'))) return; // 遊戲化派送
                 showView('teacherMonitor');
                 await setInteractionMode('multiple_choice', { customQuestions: questionsToDispatch });
             });

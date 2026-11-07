@@ -123,6 +123,8 @@
                 </div>
 
             </div>
+            <!-- 派送方式：原題型或遊戲（由 choice-sequencing-matching-game.js 繪製） -->
+            <div id="gq-picker-mc" class="w-full bg-gray-50 p-4 rounded-lg border mt-4 text-center"></div>
             <div class="settings-button-group mt-6 w-full">
                 <button id="start-mc-interaction-btn" class="btn btn-primary">確認並開始互動 🚀</button>
                 <button id="cancel-mc-settings-btn" class="btn btn-gray">取消 ↩️</button>
@@ -268,6 +270,8 @@
                     </div>
                 </div>
 
+                <!-- 派送方式：原題型或遊戲（由 choice-sequencing-matching-game.js 繪製） -->
+                <div id="gq-picker-seq" class="bg-gray-50 p-4 rounded-lg border mb-4 text-center"></div>
                 <div class="settings-button-group mt-4">
                     <button id="start-sequencing-interaction-btn" class="btn bg-cyan-500 hover:bg-cyan-600">確認並開始互動
                         🚀</button>
@@ -386,11 +390,50 @@
                     </div>
                 </div>
 
+                <!-- 派送方式：原題型或遊戲（由 choice-sequencing-matching-game.js 繪製） -->
+                <div id="gq-picker-match" class="bg-gray-50 p-4 rounded-lg border mb-4 text-center"></div>
                 <div class="settings-button-group mt-4">
                     <button id="start-matching-interaction-btn" class="btn bg-pink-500 hover:bg-pink-600">確認並開始互動
                         🚀</button>
                     <button id="cancel-matching-settings-btn" class="btn btn-gray">取消 ↩️</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 匯出題庫為各平台 Excel (.xlsx) 範例格式 -->
+    <div id="gq-export-modal" class="magnified-image-modal hidden">
+        <div class="magnified-image-modal-content" style="max-width: 440px;">
+            <button id="gq-export-close-btn" class="magnified-image-modal-close">×</button>
+            <h4 id="gq-export-title" class="text-xl font-bold mb-1 text-gray-800">匯出 Excel</h4>
+            <p class="text-sm text-gray-500 mb-4">請選擇要匯入的平台範例格式：</p>
+            <div id="gq-export-mc-options" class="w-full space-y-2">
+                <button type="button" data-gq-export="wayground" class="w-full p-3 rounded-xl border-2 border-gray-200 hover:border-indigo-500 hover:bg-indigo-50 flex items-center justify-between text-left">
+                    <span><span class="block text-sm font-bold text-gray-800">Wayground</span><span class="block text-xs text-gray-500">Question Text、Question Type、Option 1~5、Correct Answer…</span></span>
+                    <span class="text-xs font-bold text-indigo-600">下載 📥</span>
+                </button>
+                <button type="button" data-gq-export="kahoot" class="w-full p-3 rounded-xl border-2 border-gray-200 hover:border-indigo-500 hover:bg-indigo-50 flex items-center justify-between text-left">
+                    <span><span class="block text-sm font-bold text-gray-800">Kahoot</span><span class="block text-xs text-gray-500">含官方範本說明列，題目、Answer 1~4、時間、正確答案</span></span>
+                    <span class="text-xs font-bold text-indigo-600">下載 📥</span>
+                </button>
+                <button type="button" data-gq-export="wordwall" class="w-full p-3 rounded-xl border-2 border-gray-200 hover:border-indigo-500 hover:bg-indigo-50 flex items-center justify-between text-left">
+                    <span><span class="block text-sm font-bold text-gray-800">Wordwall</span><span class="block text-xs text-gray-500">題目、選項 1~4、正確答案編號</span></span>
+                    <span class="text-xs font-bold text-indigo-600">下載 📥</span>
+                </button>
+                <button type="button" data-gq-export="publishers" class="w-full p-3 rounded-xl border-2 border-gray-200 hover:border-indigo-500 hover:bg-indigo-50 flex items-center justify-between text-left">
+                    <span><span class="block text-sm font-bold text-gray-800">書商格式</span><span class="block text-xs text-gray-500">題目、正確答案編號、選項 1~4</span></span>
+                    <span class="text-xs font-bold text-indigo-600">下載 📥</span>
+                </button>
+            </div>
+            <div id="gq-export-match-options" class="w-full space-y-2 hidden">
+                <button type="button" data-gq-export="match-forward" class="w-full p-3 rounded-xl border-2 border-gray-200 hover:border-indigo-500 hover:bg-indigo-50 flex items-center justify-between text-left">
+                    <span><span class="block text-sm font-bold text-gray-800">正向配對（左欄 ➔ 右欄）</span><span class="block text-xs text-gray-500">A 欄題目／詞彙，B 欄配對／解釋</span></span>
+                    <span class="text-xs font-bold text-indigo-600">下載 📥</span>
+                </button>
+                <button type="button" data-gq-export="match-reverse" class="w-full p-3 rounded-xl border-2 border-gray-200 hover:border-indigo-500 hover:bg-indigo-50 flex items-center justify-between text-left">
+                    <span><span class="block text-sm font-bold text-gray-800">二欄互換（右欄 ➔ 左欄）</span><span class="block text-xs text-gray-500">A 欄解釋／答案，B 欄題目／詞彙</span></span>
+                    <span class="text-xs font-bold text-indigo-600">下載 📥</span>
+                </button>
             </div>
         </div>
     </div>

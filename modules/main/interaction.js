@@ -33,7 +33,8 @@
                 'sequencing': '排序題',
                 'matching': '配對題',
                 'calc': '計算題',
-                'hotspot': '圖片點選題'
+                'hotspot': '圖片點選題',
+                'game_quiz': '遊戲化練習'
             };
             
             if (mode !== 'waiting') {
@@ -56,6 +57,8 @@
                     details.numberCount = options.numberCount;
                 } else if (mode === 'url_dispatch') {
                     details.dispatchSettings = dispatchSettings;
+                } else if (mode === 'game_quiz' && options.gameQuiz) {
+                    details.gameQuiz = options.gameQuiz; // 02 遊戲化派送：遊戲名稱與題庫
                 } else if (mode === 'hotspot') {
                     details.questionImage = teacherUploadedBackgroundImageDataURL || null; // 16 圖片點選題：歷程中畫熱點圖用
                 }
@@ -208,6 +211,9 @@
                     payload.matchingSettings = null;
                 }
 
+                // 02 遊戲化派送：遊戲模板、題庫與參數
+                payload.gameQuizSettings = (mode === 'game_quiz' && options.gameQuiz) ? options.gameQuiz : null;
+
                 // NEW: Add reading comprehension data if in that mode
                 if (mode === 'reading_comprehension' && options.readingData) {
                     payload.readingComprehensionData = options.readingData;
@@ -293,6 +299,8 @@
                         classroomPresenceUnsubscribe = null;
                     }
                     studentPauseOverlay.classList.add('hidden'); // Hide overlay if class ends
+                    lqCloseStudent(); // 17 Live Quiz：課程結束時關閉競賽畫面
+                    gqCloseStudent(); // 02 遊戲化派送：課程結束時關閉遊戲
                     currentInteractionMode = null; // Reset global mode for student
                     isResponsePaused = false; // Reset global pause state for student
                     return; // Exit the function as the session is over
@@ -313,6 +321,14 @@
                 } else if (window.__CTP && window.__CTP.cur) {
                     window.__CTP.close();
                 }
+                // 17 Live Quiz：老師啟動競賽 → 學生自動進入競賽畫面（全螢幕圖層），其餘模式關閉之
+                if (currentRole !== 'teacher' && newMode === 'live_quiz') {
+                    currentInteractionMode = newMode;
+                    lqMountStudent();
+                    return;
+                }
+                lqCloseStudent();
+                if (newMode !== 'game_quiz') gqCloseStudent(); // 02 遊戲化派送：換到其他模式時關閉遊戲
                 const newIsResponsePaused = data.isPaused || false;
                 const newMultipleChoiceQuestions = data.multiple_choice_questions || null;
 
@@ -428,6 +444,9 @@
                         updateCalcPaused(isResponsePaused);
                     } else if (currentInteractionMode === 'hotspot') { // 16 圖片點選題
                         if (modeChanged) initHotspotStudent();
+                    } else if (currentInteractionMode === 'game_quiz') { // 02 遊戲化派送
+                        await gqMountStudent(data.gameQuizSettings);
+                        gqSetPaused(isResponsePaused);
                     }
                 }
             }, (error) => {

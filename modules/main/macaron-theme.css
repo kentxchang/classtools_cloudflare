@@ -244,6 +244,12 @@
             align-items: flex-start;
             transform: translateX(calc(-1 * var(--drawer-w)));
             transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+            /* 兩個圖層疊在同一位置：容器本身不攔截點擊，避免下方圖層的透明區域蓋住上方把手而無法點擊展開 */
+            pointer-events: none;
+        }
+
+        .side-drawer > * {
+            pointer-events: auto;
         }
 
         .side-drawer.open {

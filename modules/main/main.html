@@ -82,7 +82,7 @@
                     <div class="mt-2 text-slate-400 text-sm">
                         Made with <i class="fas fa-heart text-pink-400 mx-1"></i> by <a
                             href="https://kentxchang.blogspot.tw" target="_blank" rel="noopener noreferrer"
-                            class="text-indigo-500 hover:text-indigo-600 font-bold hover:underline">阿剛老師 cloudflare V2.1</a>
+                            class="text-indigo-500 hover:text-indigo-600 font-bold hover:underline">阿剛老師 cloudflare V3</a>
                     </div>
                     <div class="mt-4 text-slate-500 text-xs max-w-2xl mx-auto px-4">
                         <p class="mb-2">
@@ -317,6 +317,14 @@
                     </div>
                     <span class="font-bold text-slate-700 text-lg">圖片點選題</span>
                 </button>
+                <button id="live-quiz-card"
+                    class="landing-card hover:scale-105 transition transform duration-200 !p-6 flex flex-col items-center justify-center gap-3 group">
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-violet-100 text-violet-600 flex items-center justify-center text-2xl group-hover:bg-violet-600 group-hover:text-white transition">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <span class="font-bold text-slate-700 text-lg">Live Quiz 即時答題</span>
+                </button>
             </div>
 
             <!-- @include 05-drawing/drawing-teacher-background.html -->
@@ -523,6 +531,7 @@
             <!-- @include 08-reading-comprehension/reading-comprehension-student.html -->
             <!-- @include 11-quick-answer/quick-answer-student.html -->
             <!-- @include 02-choice-sequencing-matching/choice-sequencing-matching-student-sequencing-matching.html -->
+            <!-- @include 02-choice-sequencing-matching/choice-sequencing-matching-student-game.html -->
 
             <!-- @include 12-quick-poll/quick-poll-student.html -->
             <!-- @include 15-calc/calc-student.html -->
@@ -765,6 +774,7 @@
 
     <!-- @include 12-quick-poll/quick-poll-modals.html -->
     <!-- @include 15-calc/calc-viewer-modal.html -->
+    <!-- @include 17-live-quiz/live-quiz-overlay.html -->
 
     <!-- 自定義確認對話框 -->
     <div id="custom-confirm-modal" class="magnified-image-modal hidden">

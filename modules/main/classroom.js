@@ -226,6 +226,9 @@
                             isCorrect = results.every(r => r.isCorrect);
                             formattedAnswer = results;
                         } 
+                        else if (currentInteractionMode === 'game_quiz' && typeof student.answer === 'object') { // 02 遊戲化派送
+                            formattedAnswer = gqAnswerText(student.answer);
+                        }
                         else if (currentInteractionMode === 'sequencing') {
                             try {
                                 const studentOrder = JSON.parse(student.answer);
@@ -421,14 +424,16 @@
                         case 'matching': icon = 'fa-link'; color = 'bg-fuchsia-500'; textColor = 'text-fuchsia-600'; break;
                         case 'calc': icon = 'fa-calculator'; color = 'bg-sky-500'; textColor = 'text-sky-600'; break;
                         case 'hotspot': icon = 'fa-crosshairs'; color = 'bg-red-500'; textColor = 'text-red-600'; break;
+                        case 'live_quiz': icon = 'fa-trophy'; color = 'bg-violet-500'; textColor = 'text-violet-600'; break;
+                        case 'game_quiz': icon = 'fa-gamepad'; color = 'bg-indigo-500'; textColor = 'text-indigo-600'; break;
                     }
                     
                     let questionHtml = '';
                     const details = event.details || {};
                     
-                    if (mode === 'multiple_choice' && details.questions) {
+                    if ((mode === 'multiple_choice' || mode === 'live_quiz') && details.questions) { // 17 Live Quiz：本場題目（依出題順序）
                         questionHtml = `<div class="question-box bg-slate-50 p-4 rounded-lg border border-slate-200 mt-2 mb-4">
-                            <span class="font-bold text-slate-800">📖 自訂選擇題題目內容：</span>
+                            <span class="font-bold text-slate-800">📖 ${mode === 'live_quiz' ? 'Live Quiz 本場題目' : '自訂選擇題題目內容'}：</span>
                             <ul class="list-decimal pl-5 mt-2 text-slate-700 space-y-3">`;
                         details.questions.forEach((q, qidx) => {
                             questionHtml += `<li>
@@ -444,6 +449,12 @@
                         });
                         questionHtml += `</ul></div>`;
                     } 
+                    else if (mode === 'game_quiz' && details.gameQuiz) { // 02 遊戲化派送：遊戲名稱與題庫
+                        questionHtml = `<div class="question-box bg-slate-50 p-4 rounded-lg border border-slate-200 mt-2 mb-4">
+                            <div class="font-bold text-slate-800">🎮 遊戲：<span class="text-blue-600">${details.gameQuiz.name}</span></div>
+                            <pre class="text-sm text-gray-700 whitespace-pre-wrap mt-2">${details.gameQuiz.content.replace(/\t/g, ' ｜ ')}</pre>
+                        </div>`;
+                    }
                     else if (mode === 'sequencing' && details.question) {
                         questionHtml = `<div class="question-box bg-slate-50 p-4 rounded-lg border border-slate-200 mt-2 mb-4">
                             <div class="font-bold text-slate-800">📖 排序題題目：<span class="text-blue-600">${details.question}</span></div>

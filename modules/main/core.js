@@ -83,6 +83,7 @@
             quick_poll: document.getElementById('interaction-quick-poll'), // Quick poll UI
             sequencing: document.getElementById('interaction-sequencing'), // Sequencing UI
             matching: document.getElementById('interaction-matching'), // Matching UI
+            game_quiz: document.getElementById('interaction-game-quiz'), // 02 選擇/排序/配對：遊戲化派送 UI
             calc: document.getElementById('interaction-calc'), // 15 計算題 UI
             hotspot: document.getElementById('interaction-hotspot'), // 16 圖片點選題 UI
         };
