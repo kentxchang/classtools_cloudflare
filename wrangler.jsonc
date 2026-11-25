@@ -28,7 +28,10 @@
     //  步驟 3：把下一行引號內的雜湊值換成步驟 2 得到的結果（引號要保留）。
     //  步驟 4：存檔後在本資料夾執行 npx wrangler deploy 重新部署，新密碼就會生效。
     //  （想先在自己電腦測試，可執行 npx wrangler dev，用新密碼登入看看。）
-    "TEACHER_PASSWORD_SHA256": "36448a762f5c74aad7ef2bbfa5dd0ea57026e9605291da7aedfb66e9cb8c1663"
+    "TEACHER_PASSWORD_SHA256": "36448a762f5c74aad7ef2bbfa5dd0ea57026e9605291da7aedfb66e9cb8c1663",
+    // 萬用班級密碼的 SHA-256 雜湊值：忘記班級密碼時，輸入此密碼即可進入任一教室或直接下課。
+    // 修改方式與上面的教師密碼相同（步驟 2 算出新密碼的雜湊值後替換下一行）；改成空字串 "" 即停用萬用密碼。
+    "MASTER_PASSWORD_SHA256": "2e52f4ab78f168a381a0fcee260ffcf8d74cc14f2f3fbf20e025336658c546e4"
   },
   "durable_objects": {
     "bindings": [{ "name": "ROOMS", "class_name": "Room" }]

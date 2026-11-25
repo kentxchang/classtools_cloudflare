@@ -19,15 +19,19 @@ export default {
       return env.ROOMS.get(env.ROOMS.idFromName(name)).fetch(request);
     }
     if (url.pathname === "/api/teacher-login" && request.method === "POST") {
-      return Response.json({ ok: await checkTeacherPassword(request, env) });
+      return Response.json({ ok: await checkPassword(request, env.TEACHER_PASSWORD_SHA256) });
+    }
+    if (url.pathname === "/api/master-password" && request.method === "POST") {
+      return Response.json({ ok: await checkPassword(request, env.MASTER_PASSWORD_SHA256) });
     }
     return new Response("Not found", { status: 404 });
   }
 };
 
-// 教師密碼驗證：把網頁送來的密碼做 SHA-256，與 wrangler.jsonc 的 TEACHER_PASSWORD_SHA256 比對
-async function checkTeacherPassword(request, env) {
-  const expected = (env.TEACHER_PASSWORD_SHA256 || "").trim().toLowerCase();
+// 密碼驗證：把網頁送來的密碼做 SHA-256，與 wrangler.jsonc 設定的雜湊值比對
+// （TEACHER_PASSWORD_SHA256 教師密碼；MASTER_PASSWORD_SHA256 萬用班級密碼）
+async function checkPassword(request, expectedHash) {
+  const expected = (expectedHash || "").trim().toLowerCase();
   if (!expected) return false; // 未設定密碼時一律拒絕
   let password;
   try { ({ password } = await request.json()); } catch { return false; }
