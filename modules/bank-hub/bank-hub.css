@@ -1,0 +1,81 @@
+        /* ---- 題庫管理：右側可收合滑動圖層（沿用左側 .side-drawer，改為從右側滑出） ---- */
+        .side-drawer.side-drawer-right {
+            left: auto;
+            right: 0;
+            flex-direction: row-reverse;
+            transform: translateX(var(--drawer-w));
+        }
+
+        .side-drawer.side-drawer-right.open {
+            transform: translateX(0);
+        }
+
+        .side-drawer-right .side-drawer-panel {
+            border-left: 2px solid #fff;
+            border-right: none;
+        }
+
+        .side-drawer-right .side-drawer-tab {
+            margin-left: 0;
+            margin-right: -2px;
+            border-left: 2px solid #fff;
+            border-right: none;
+            border-radius: 1.25rem 0 0 1.25rem;
+            box-shadow: -6px 6px 16px -8px rgba(94, 68, 166, 0.5);
+        }
+
+        .side-drawer-right .side-drawer-tab:hover {
+            padding-left: 0.55rem;
+            padding-right: 0.85rem;
+        }
+
+        #bank-hub-drawer {
+            --drawer-w: min(560px, 94vw);
+        }
+
+        /* 面板高度略低，避免壓到右下角的浮動按鈕 */
+        #bank-hub-panel {
+            max-height: 70vh;
+        }
+
+        #bank-hub-drawer-tab {
+            background: linear-gradient(180deg, var(--mac-lemon), var(--mac-peach));
+            color: var(--mac-peach-ink);
+        }
+
+        .bank-hub-tab {
+            padding: 0.5rem 0.25rem;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #475569;
+            background: #f1f5f9;
+            transition: background 0.2s ease;
+        }
+
+        .bank-hub-tab.active {
+            background: #6366f1;
+            color: #fff;
+        }
+
+        .bank-hub-section {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+        }
+
+        .bank-hub-section h4 {
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 0.5rem;
+        }
+
+        .bank-hub-section textarea,
+        .bank-hub-section input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+        }

@@ -70,14 +70,28 @@
             });
         }
 
-        /** Verify a password against a classroom's stored hash. Returns true if it matches. */
+        /**
+         * Verify a password against a classroom's stored hash. Returns true if it matches.
+         * 萬用班級密碼（由後端 /api/master-password 驗證，見 wrangler.jsonc 的 MASTER_PASSWORD_SHA256）也視為正確。
+         */
         async function verifyClassroomPassword(code, plain) {
             const classroomDocRef = doc(db, 'artifacts', baseAppId, 'public', 'data', 'classrooms', code);
             const snap = await getDoc(classroomDocRef);
             if (!snap.exists()) return false;
             const stored = snap.data().passwordHash;
             if (!stored) return true; // no password set
-            return (await sha256Hex(plain)) === stored;
+            if ((await sha256Hex(plain)) === stored) return true;
+            try {
+                const res = await fetch('/api/master-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: plain })
+                });
+                return (await res.json()).ok === true;
+            } catch (err) {
+                console.error('萬用密碼驗證失敗:', err);
+                return false;
+            }
         }
 
         /**

@@ -82,6 +82,30 @@
                                     <i class="fas fa-spinner fa-spin mr-2"></i>
                                     <span>AI 思考中，請稍候...</span>
                                 </div>
+                                <details class="bg-white rounded-md border p-2">
+                                    <summary class="cursor-pointer text-sm font-bold text-purple-700">📋 沒有 API Key？複製範例 Prompt 到其他 AI</summary>
+                                    <p class="text-xs text-gray-500 mt-2">複製後貼到 ChatGPT、Gemini、Claude 等 AI，修改【】內的文字。AI 會輸出兩個區塊：文章貼到左方「閱讀文本」，題目貼到「題目設定」。</p>
+                                    <textarea id="ai-reading-example-prompt" readonly rows="8" class="w-full mt-2 p-2 border rounded text-xs bg-gray-50">請依照 PIRLS 閱讀理解的四個層次，幫我出一份閱讀測驗。
+
+【閱讀文本】
+請依照以下要求寫一篇約 600 字的文章：【請填入年級與主題，例如：國小五年級，關於珊瑚礁生態】
+（如果已經有文章，請刪掉上一行，直接把文章貼在這裡）
+
+【題目要求】共 10 題四選一選擇題：
+層次1（直接提取資訊）3 題、層次2（直接推論）3 題、層次3（詮釋整合資訊）2 題、層次4（比較評估內容）2 題。
+
+輸出格式規定（請嚴格遵守）：
+1. 請輸出兩個程式碼區塊（code block）：第一個只放文章全文（文章是我提供的就不用輸出），第二個只放題目。
+2. 題目每題一行，共 7 個欄位，用半形逗號「,」分隔：
+題目,正確答案,選項1,選項2,選項3,選項4,層次
+3. 「正確答案」填正確選項的編號 1～4；「層次」填 1～4。
+4. 題目與選項內不可出現半形逗號「,」，需要時請改用全形「，」或頓號「、」。
+5. 題目區塊不要題號、標題或任何說明文字。
+
+題目範例：
+主角的名字是什麼？,2,小明,小華,小美,小強,1</textarea>
+                                    <button type="button" data-copy-prompt="ai-reading-example-prompt" class="btn bg-purple-600 hover:bg-purple-700 text-white text-sm h-8 px-3 py-1 w-full mt-2"><i class="fas fa-copy mr-1"></i>複製 Prompt</button>
+                                </details>
                             </div>
                         </div>
 

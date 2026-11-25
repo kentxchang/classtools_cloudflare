@@ -247,6 +247,13 @@
                 }
                 stopDispatchScreenshotListener(); // 06 派送網址/HTML：停止上一輪的學生截圖監聽
 
+                // 不經過 listenToStudentSubmissions() 的模式（派送網址/HTML、等待）：
+                // 還原為一般作答區，避免上一輪的專注力遊戲/文字雲/便利貼牆/熱點圖畫面殘留、蓋住學生截圖，
+                // 並清掉上一輪的作答快取（抽籤等功能才不會用到舊資料）。
+                if (mode === 'url_dispatch' || mode === 'waiting') {
+                    resetMonitorToDefaultDisplay();
+                }
+
                 if (mode === 'url_dispatch') { // Now handles both URL and HTML
                     // For URL/HTML dispatch, the monitor view shows online students, handled by presence listener.
                     // Clear existing responses display if any.
@@ -264,6 +271,20 @@
                 console.error("設定互動模式或清除學生資料失敗:", error);
                 showMessage("操作失敗，請檢查網路連線或聯繫管理員。", "error");
             }
+        }
+
+        /**
+         * (Teacher) 監看畫面還原為一般作答區：隱藏各模式專用顯示區與作答工具列，清空上一輪作答快取。
+         */
+        function resetMonitorToDefaultDisplay() {
+            ['word-cloud-display', 'sticky-note-wall', 'focus-game-results', 'hotspot-display'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            const container = document.getElementById('student-responses-container');
+            container.classList.remove('hidden', 'rounded-b-2xl');
+            container.classList.add('rounded-2xl');
+            document.getElementById('responses-control-bar').classList.add('hidden');
+            allStudentResponses = [];
         }
 
         /**
@@ -338,6 +359,8 @@
                 const pauseStateChanged = (currentInteractionMode === newMode && isResponsePaused !== newIsResponsePaused);
                 // Determine if we are resuming from a pause (mode is same, was paused, now not paused)
                 const isResumingFromPause = (currentInteractionMode === newMode) && isResponsePaused && !newIsResponsePaused;
+                // 10 專注力遊戲：老師在學生遊戲中途結束/切換時，停止仍在背景執行的計時器
+                if (modeChanged) clearInterval(focusGameState.timerInterval);
 
 
                 // Update global states *before* acting on them

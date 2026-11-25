@@ -41,6 +41,7 @@
                         dispatchSettings.type = fetchedDispatchSettings.type || 'url';
                         dispatchSettings.url = fetchedDispatchSettings.url || '';
                         dispatchSettings.isYoutube = fetchedDispatchSettings.isYoutube || false;
+                        dispatchSettings.isEmbed = fetchedDispatchSettings.isEmbed || false;
                         dispatchSettings.htmlContent = fetchedDispatchSettings.htmlContent || null;
                     }
                     // NEW: Load custom multiple choice questions from Firestore

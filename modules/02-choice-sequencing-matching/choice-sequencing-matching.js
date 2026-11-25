@@ -516,6 +516,30 @@
             }
         }
 
+        // ==================== AI 出題 Prompt（題型設定視窗與「題庫管理」共用） ====================
+        function buildMcAiPrompt(topic, count) {
+            return `請根據以下要求，生成 ${count} 題選擇題。
+                要求：${topic}
+                請嚴格遵守以下格式，每題一行，並用逗號分隔每個欄位：
+                題目,正確答案(1-4),選項1,選項2,選項3,選項4
+                請勿包含題號、任何多餘的說明文字或程式碼區塊標記。`;
+        }
+
+        function buildSeqAiPrompt(topic, count) {
+            return `請根據以下主題，生成 ${count} 個排序項目。
+主題：${topic}
+請按正確順序列出，每個項目一行，不要有題號或任何標記。
+只需提供項目內容，不要包含說明文字或程式碼區塊標記。`;
+        }
+
+        function buildMatchAiPrompt(topic, count) {
+            return `請根據以下主題，生成 ${count} 組配對題。
+主題：${topic}
+每行格式：左側項目,右側項目
+不要有題號、說明文字或程式碼區塊標記。
+直接提供配對內容，每行一組。`;
+        }
+
         // Make functions globally accessible
         window.loadSequencingBankToTextarea = loadSequencingBankToTextarea;
         window.deleteSequencingBank = deleteSequencingBank;
@@ -1457,11 +1481,7 @@
                 aiMcBtnIcon.classList.add('fa-spinner', 'fa-spin');
                 aiMcLoadingSpinner.classList.remove('hidden');
 
-                const prompt = `請根據以下要求，生成 ${count} 題選擇題。
-                要求：${topic}
-                請嚴格遵守以下格式，每題一行，並用逗號分隔每個欄位：
-                題目,正確答案(1-4),選項1,選項2,選項3,選項4
-                請勿包含題號、任何多餘的說明文字或程式碼區塊標記。`;
+                const prompt = buildMcAiPrompt(topic, count);
 
                 let apiResponse = null;
                 try {
@@ -1522,10 +1542,7 @@
                 aiSeqBtnIcon.classList.add('fa-spinner', 'fa-spin');
                 aiSeqLoadingSpinner.classList.remove('hidden');
 
-                const prompt = `請根據以下主題，生成 ${count} 個排序項目。
-主題：${topic}
-請按正確順序列出，每個項目一行，不要有題號或任何標記。
-只需提供項目內容，不要包含說明文字或程式碼區塊標記。`;
+                const prompt = buildSeqAiPrompt(topic, count);
 
                 let apiResponse = null;
                 try {
@@ -1585,11 +1602,7 @@
                 aiMatchBtnIcon.classList.add('fa-spinner', 'fa-spin');
                 aiMatchLoadingSpinner.classList.remove('hidden');
 
-                const prompt = `請根據以下主題，生成 ${count} 組配對題。
-主題：${topic}
-每行格式：左側項目,右側項目
-不要有題號、說明文字或程式碼區塊標記。
-直接提供配對內容，每行一組。`;
+                const prompt = buildMatchAiPrompt(topic, count);
 
                 let apiResponse = null;
                 try {

@@ -9,6 +9,7 @@
             type: 'url', // 'url' or 'html'
             url: '',
             isYoutube: false, // Only relevant if type is 'url'
+            isEmbed: false, // 內嵌模式：網址以全螢幕 iframe 顯示並提供截圖送出（type 為 'url' 時才有用）
             htmlContent: null // Only relevant if type is 'html'
         };
 
@@ -17,6 +18,10 @@
          * @param {object} settings - The URL settings object from Firestore.
          */
         function displayDispatchedUrl(settings) {
+            if (settings.isEmbed && !settings.isYoutube) {
+                displayDispatchedHtml(null, settings.url); // 內嵌模式：與派送 HTML 相同的呈現與截圖
+                return;
+            }
             const container = interactionUIs.url_dispatch;
             container.innerHTML = ''; // Clear previous content
 
@@ -82,25 +87,27 @@
         /**
          * NEW: (Student) Displays the dispatched HTML content in an iframe.
          * @param {string} htmlContent - The HTML content to display.
+         * @param {string} [url] - 內嵌模式派送網址時改用此網址（htmlContent 傳 null）
          */
-        function displayDispatchedHtml(htmlContent) {
+        function displayDispatchedHtml(htmlContent, url = null) {
             const container = interactionUIs.url_dispatch; // Use the same container
             container.innerHTML = ''; // Clear previous content
 
             const iframe = document.createElement('iframe');
             iframe.id = 'html-content-iframe'; // Re-use the ID for consistency if needed, but it's internal to this function now
             iframe.sandbox = 'allow-scripts allow-same-origin allow-popups allow-forms';
-            iframe.srcdoc = htmlContent;
+            if (url) iframe.src = url;
+            else iframe.srcdoc = htmlContent;
             iframe.style.cssText = 'width: 100vw; height: 100vh; margin: 0; padding: 0; border: none; background-color: white; display: block;';
             container.appendChild(iframe);
 
             // Add status indicator
             const statusIndicator = document.createElement('div');
             statusIndicator.className = 'html-dispatch-indicator';
-            statusIndicator.textContent = '教師派送html中...';
+            statusIndicator.textContent = url ? '教師派送網址中...' : '教師派送html中...';
             container.appendChild(statusIndicator);
 
-            addDispatchScreenshotUI(container, iframe); // 右下角「截圖送出」
+            addDispatchScreenshotUI(container, iframe, !!url); // 右下角「截圖送出」（內嵌網址改用螢幕擷取）
 
             // Apply the specific HTML dispatch container styles to the outer container
             container.style.cssText = 'position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; margin: 0; padding: 0; border: none; overflow: hidden; background-color: white; z-index: 1000;';
@@ -127,6 +134,7 @@
 
         const urlInput = document.getElementById('dispatch-url-input');
         const isYoutubeCheckbox = document.getElementById('is-youtube-checkbox');
+        const isEmbedCheckbox = document.getElementById('is-embed-checkbox');
 
         const dispatchHtmlUploadInput = document.getElementById('dispatch-html-upload-input');
         const clearDispatchHtmlBtn = document.getElementById('clear-dispatch-html-btn');
@@ -143,6 +151,7 @@
             // Populate URL fields
             urlInput.value = dispatchSettings.url;
             isYoutubeCheckbox.checked = dispatchSettings.isYoutube;
+            isEmbedCheckbox.checked = dispatchSettings.isEmbed;
 
             // Update HTML status
             dispatchHtmlStatus.textContent = dispatchSettings.htmlContent ? '已上傳 HTML 檔案。' : '目前沒有 HTML 檔案。';
@@ -174,11 +183,13 @@
             if (dispatchSettings.type === 'url') {
                 dispatchSettings.url = urlInput.value.trim();
                 dispatchSettings.isYoutube = isYoutubeCheckbox.checked;
+                dispatchSettings.isEmbed = isEmbedCheckbox.checked;
                 dispatchSettings.htmlContent = null; // Clear HTML content if switching to URL
             } else { // type === 'html'
                 // htmlContent is updated via handleHtmlFile or clearDispatchHtml
                 dispatchSettings.url = ''; // Clear URL if switching to HTML
                 dispatchSettings.isYoutube = false; // Clear YouTube flag
+                dispatchSettings.isEmbed = false;
             }
 
             localStorage.setItem('dispatchSettings', JSON.stringify(dispatchSettings));
@@ -189,10 +200,11 @@
         function clearDispatchSettings() { // Renamed from clearUrlDispatchSettings
             urlInput.value = '';
             isYoutubeCheckbox.checked = false;
+            isEmbedCheckbox.checked = false;
             dispatchHtmlUploadInput.value = ''; // Clear file input
             dispatchHtmlStatus.textContent = '目前沒有 HTML 檔案。';
 
-            dispatchSettings = { type: 'url', url: '', isYoutube: false, htmlContent: null }; // Reset global variable
+            dispatchSettings = { type: 'url', url: '', isYoutube: false, isEmbed: false, htmlContent: null }; // Reset global variable
             localStorage.removeItem('dispatchSettings'); // Clear from localStorage
 
             // Reset UI to default (URL selected)
@@ -210,11 +222,12 @@
                     dispatchSettings.type = parsedSettings.type || 'url';
                     dispatchSettings.url = parsedSettings.url || '';
                     dispatchSettings.isYoutube = parsedSettings.isYoutube || false;
+                    dispatchSettings.isEmbed = parsedSettings.isEmbed || false;
                     dispatchSettings.htmlContent = parsedSettings.htmlContent || null;
                 } catch (e) {
                     console.error("Failed to parse dispatch settings from localStorage:", e);
                     // Reset to default if parsing fails
-                    dispatchSettings = { type: 'url', url: '', isYoutube: false, htmlContent: null };
+                    dispatchSettings = { type: 'url', url: '', isYoutube: false, isEmbed: false, htmlContent: null };
                 }
             }
         }
@@ -308,8 +321,46 @@
             return dataUrl;
         }
 
-        /** 學生端：在派送 HTML 畫面加上右下角「截圖送出」按鈕、選單與預覽視窗 */
-        function addDispatchScreenshotUI(container, iframe) {
+        /**
+         * 內嵌網址截圖（與派送 HTML 的 html2canvas 截圖分開處理）：
+         * 其他網站的內容受瀏覽器安全限制無法讀取，改用螢幕擷取 API（getDisplayMedia）
+         * 擷取本分頁實際顯示的畫面。學生需在瀏覽器詢問時允許「分享此分頁」；
+         * 電腦／Chromebook 的 Chrome、Edge 可用；iPad、手機不使用此方式，改由 addDispatchScreenshotUI 提供上傳系統截圖。
+         * @param {HTMLElement[]} hideEls - 擷取時暫時隱藏的元素（截圖按鈕、派送提示），避免出現在截圖中
+         */
+        async function captureEmbeddedUrlByScreen(hideEls) {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+                const err = new Error('瀏覽器不支援螢幕擷取');
+                err.name = 'NotSupportedError';
+                throw err;
+            }
+            const stream = await navigator.mediaDevices.getDisplayMedia({
+                video: { displaySurface: 'browser' },
+                audio: false,
+                preferCurrentTab: true,        // Chrome／Edge：直接詢問是否分享「此分頁」
+                selfBrowserSurface: 'include',
+                surfaceSwitching: 'exclude'
+            });
+            hideEls.forEach(el => { el.style.visibility = 'hidden'; });
+            try {
+                const video = document.createElement('video');
+                video.muted = true;
+                video.srcObject = stream;
+                await video.play();
+                await new Promise(r => setTimeout(r, 500)); // 等畫面更新（按鈕已隱藏、權限提示已關閉）
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                canvas.getContext('2d').drawImage(video, 0, 0);
+                return canvas;
+            } finally {
+                stream.getTracks().forEach(t => t.stop()); // 立即停止分享
+                hideEls.forEach(el => { el.style.visibility = ''; });
+            }
+        }
+
+        /** 學生端：在派送 HTML 畫面加上右下角「截圖送出」按鈕、選單與預覽視窗（isUrl：內嵌網址模式） */
+        function addDispatchScreenshotUI(container, iframe, isUrl = false) {
             const ui = document.createElement('div');
             ui.innerHTML = `
                 <div class="dispatch-shot-menu hidden">
@@ -337,7 +388,78 @@
             let shot = null;
             const closeModal = () => { modal.classList.add('hidden'); shot = null; };
 
-            btn.addEventListener('click', () => menu.classList.toggle('hidden'));
+            // 內嵌網址：不支援螢幕擷取的裝置（手機）改為「系統截圖後從照片上傳」。
+            // iPad／iPhone：新版 iPadOS 雖有螢幕擷取 API，但會錄整個螢幕，擷取到的是系統「螢幕共享」面板而非網頁，
+            // 因此一律改用上傳（iPadOS 的 Safari 會偽裝成 Mac，以觸控點數判斷）。
+            const isAppleTouchDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            const canScreenCapture = !isAppleTouchDevice && !!(navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia);
+            let uploadMenu = null;
+            if (isUrl && !canScreenCapture) {
+                uploadMenu = document.createElement('div');
+                uploadMenu.className = 'dispatch-shot-menu hidden';
+                uploadMenu.innerHTML = `
+                    <p style="max-width: 240px; padding: 4px 8px; font-size: 13px; line-height: 1.5; color: #475569;">
+                        ① 先收起此選單，用裝置按鍵截圖（iPad：電源鍵＋音量上鍵）<br>② 再按「截圖送出」→ 下方按鈕，從照片選擇該截圖
+                    </p>
+                    <button type="button"><i class="fas fa-image mr-2"></i>選擇截圖上傳</button>
+                    <input type="file" accept="image/*" class="hidden">`;
+                ui.appendChild(uploadMenu);
+                const picker = uploadMenu.querySelector('input');
+                uploadMenu.querySelector('button').addEventListener('click', () => picker.click());
+                picker.addEventListener('change', async () => {
+                    const file = picker.files[0];
+                    picker.value = '';
+                    uploadMenu.classList.add('hidden');
+                    if (!file) return;
+                    const url = URL.createObjectURL(file);
+                    try {
+                        const img = new Image();
+                        await new Promise((resolve, reject) => { img.onload = resolve; img.onerror = reject; img.src = url; });
+                        shot = compressDispatchShot(img);
+                        ui.querySelector('.dispatch-shot-preview img').src = shot;
+                        ui.querySelector('.dispatch-shot-title').textContent = '截圖預覽（上傳的截圖）';
+                        status.textContent = '';
+                        sendBtn.disabled = false;
+                        modal.classList.remove('hidden');
+                    } catch (err) {
+                        console.error('讀取截圖失敗:', err);
+                        alert('無法讀取這張圖片，請改選其他截圖。');
+                    } finally {
+                        URL.revokeObjectURL(url);
+                    }
+                });
+            }
+
+            btn.addEventListener('click', () => {
+                if (uploadMenu) uploadMenu.classList.toggle('hidden'); // 內嵌網址（iPad／手機）：上傳系統截圖
+                else if (isUrl) captureUrlShot(); // 內嵌網址：直接以螢幕擷取截下目前畫面
+                else menu.classList.toggle('hidden');
+            });
+
+            // 內嵌網址的截圖流程（派送 HTML 走下方選單的 html2canvas 流程，兩者分開）
+            async function captureUrlShot() {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>截圖中…';
+                try {
+                    const hideEls = [btn, container.querySelector('.html-dispatch-indicator')].filter(Boolean);
+                    shot = compressDispatchShot(await captureEmbeddedUrlByScreen(hideEls));
+                    ui.querySelector('.dispatch-shot-preview img').src = shot;
+                    ui.querySelector('.dispatch-shot-title').textContent = '截圖預覽（目前畫面）';
+                    status.textContent = '';
+                    sendBtn.disabled = false;
+                    modal.classList.remove('hidden');
+                } catch (err) {
+                    console.error('內嵌網址截圖失敗:', err);
+                    if (err && err.name === 'NotSupportedError') alert('這個裝置的瀏覽器不支援內嵌網址截圖，請改用電腦或 Chromebook 的 Chrome／Edge。');
+                    else if (err && err.name === 'NotAllowedError') alert('已取消截圖。截圖時請在瀏覽器詢問時選擇「允許」分享此分頁。');
+                    else alert('截圖失敗，請再試一次。');
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-camera mr-2"></i>截圖送出';
+                }
+            }
+
             menu.querySelectorAll('[data-shot]').forEach(b => b.addEventListener('click', async () => {
                 menu.classList.add('hidden');
                 btn.disabled = true;

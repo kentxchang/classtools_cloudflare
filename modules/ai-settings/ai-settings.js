@@ -759,7 +759,23 @@
          * AI 設定：事件監聽設定（原本位於 setupEventListeners() 內的段落，
          * 由 modules/main/events.js 的 setupEventListeners() 依原順序呼叫）。
          */
+        /** 複製範例 Prompt 文字框內容（AI 出題區與「題庫管理」共用） */
+        async function copyExamplePrompt(textarea) {
+            try {
+                await navigator.clipboard.writeText(textarea.value);
+                showMessage('已複製範例 Prompt，請貼到其他 AI 使用。', 'success');
+            } catch (e) {
+                textarea.select(); // 瀏覽器不允許剪貼簿 API 時，改用選取＋複製；仍失敗就請使用者按 Ctrl+C
+                if (document.execCommand('copy')) showMessage('已複製範例 Prompt，請貼到其他 AI 使用。', 'success');
+                else showMessage('無法自動複製，已選取文字，請按 Ctrl+C 複製。', 'error');
+            }
+        }
+
         function setupAISettingsEventListeners() {
+            // 各 AI 出題區的「複製範例 Prompt」按鈕（選擇題／排序題／配對題／閱讀測驗），不需 API Key
+            document.querySelectorAll('[data-copy-prompt]').forEach(btn => {
+                btn.addEventListener('click', () => copyExamplePrompt(document.getElementById(btn.dataset.copyPrompt)));
+            });
             document.getElementById('ai-settings-btn').addEventListener('click', showAISettingsModal);
             aiSettingsModalCloseBtn.addEventListener('click', hideAISettingsModal);
             saveAiSettingsBtn.addEventListener('click', saveAISettings);

@@ -45,7 +45,7 @@
                     if (existing.hasPassword) {
                         const pw = await promptClassroomPassword('此教室已存在且有密碼，請輸入密碼以進入', `教室代碼：${code}`);
                         if (pw === null) return;
-                        if ((await sha256Hex(pw)) !== existing.passwordHash) {
+                        if (!(await verifyClassroomPassword(code, pw))) {
                             showMessage('密碼錯誤，無法進入既有教室。', 'error');
                             return;
                         }
@@ -458,6 +458,7 @@
                 }
             });
             setupAISettingsEventListeners(); // → modules/ai-settings/ai-settings.js
+            setupBankHubEventListeners(); // → modules/bank-hub/bank-hub.js（右側「題庫管理」滑動圖層）
             setupUrlDispatchEventListeners(); // → modules/06-url-dispatch/url-dispatch.js
             setupFocusGameEventListeners(); // → modules/10-focus-game/focus-game.js
             setupQuickPollEventListeners(); // → modules/12-quick-poll/quick-poll.js

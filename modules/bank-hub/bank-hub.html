@@ -1,0 +1,15 @@
+            <!-- 題庫管理：教師面板右側可收合的滑動圖層。集中管理選擇題／排序題／配對題／閱讀測驗題庫，
+                 並可直接 AI 生成、複製範例 Prompt。內容由 modules/bank-hub/bank-hub.js 產生。 -->
+            <div id="bank-hub-drawer" class="side-drawer side-drawer-right">
+                <div id="bank-hub-panel" class="side-drawer-panel bg-white p-5 rounded-l-3xl text-left">
+                    <h3 class="text-lg font-bold text-slate-700 mb-3 flex items-center justify-center">
+                        <i class="fas fa-book-open mr-2 text-indigo-500"></i> 題庫管理
+                    </h3>
+                    <div id="bank-hub-tabs" class="grid grid-cols-4 gap-1 mb-4"></div>
+                    <div id="bank-hub-body"></div>
+                </div>
+                <button id="bank-hub-drawer-tab" type="button" class="side-drawer-tab" title="題庫管理（點擊展開/收合）">
+                    <i class="fas fa-book-open"></i>
+                    <span>題庫管理</span>
+                </button>
+            </div>
